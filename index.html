@@ -5,22 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>線上投票</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <style>
-:root { --text:#2D2D3A; --muted:#9B9BAD; }
+:root{--text:#2D2D3A;--muted:#9B9BAD;}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-body{
-  min-height:100vh;
-  background:linear-gradient(160deg,#FFF0FB 0%,#EEF4FF 40%,#F0FFF8 100%);
-  display:flex;align-items:flex-start;justify-content:center;
-  padding:28px 14px 60px;
-  font-family:'Noto Sans TC','PingFang TC','Microsoft JhengHei',sans-serif;
-}
-#app{
-  background:#fff;border-radius:28px;width:100%;max-width:500px;
-  box-shadow:0 8px 48px rgba(120,80,200,0.13),0 2px 8px rgba(0,0,0,0.06);
-  overflow:hidden;position:relative;
-}
+body{min-height:100vh;background:linear-gradient(160deg,#FFF0FB 0%,#EEF4FF 40%,#F0FFF8 100%);display:flex;align-items:flex-start;justify-content:center;padding:28px 14px 60px;font-family:'Noto Sans TC','PingFang TC','Microsoft JhengHei',sans-serif;}
+#app{background:#fff;border-radius:28px;width:100%;max-width:500px;box-shadow:0 8px 48px rgba(120,80,200,0.13),0 2px 8px rgba(0,0,0,0.06);overflow:hidden;position:relative;}
 .screen{padding:36px 28px 44px;display:none;}
 .screen.active{display:block;animation:fadeUp .28s ease;}
 @keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
@@ -30,38 +19,17 @@ body{
 .survey-icon{font-size:48px;margin-bottom:8px;}
 .home-title{font-size:30px;font-weight:900;color:var(--text);letter-spacing:1px;margin-bottom:4px;}
 .home-sub{color:var(--muted);font-size:13px;}
-.qr-section{
-  margin:0 auto 24px;padding:20px;
-  background:#FAFAFE;border-radius:20px;
-  border:2px dashed #D8D0FF;text-align:center;
-}
-#qr-div{background:#fff;padding:8px;border-radius:8px;display:inline-block;}
-#qr-div img{display:block;}
+.qr-section{margin:0 auto 24px;padding:20px;background:#FAFAFE;border-radius:20px;border:2px dashed #D8D0FF;text-align:center;}
+.qr-svg-wrap{display:inline-block;background:#fff;padding:8px;border-radius:8px;}
+.qr-svg-wrap svg{display:block;}
 .qr-url-text{font-size:10px;color:#aaa;margin-top:10px;word-break:break-all;line-height:1.5;}
-.qr-local-warn{
-  font-size:12px;color:#e05555;line-height:1.7;
-  background:#fff5f5;border-radius:10px;padding:12px 14px;margin-top:10px;text-align:left;
-}
-.qr-local-warn b{display:block;margin-bottom:4px;}
+.qr-local-warn{font-size:12px;color:#e05555;line-height:1.7;background:#fff5f5;border-radius:10px;padding:12px 14px;margin-top:10px;text-align:left;}
 .voted-badge{text-align:center;color:#1A8A55;font-weight:800;font-size:16px;padding:14px 0;margin-bottom:12px;background:#f0fff8;border-radius:14px;}
 
 /* Buttons */
-.btn-primary{
-  display:block;width:100%;padding:15px 0;
-  background:linear-gradient(90deg,#FF6B9D,#FFB347);
-  color:#fff;border:none;border-radius:14px;
-  font-size:17px;font-weight:800;cursor:pointer;
-  margin-bottom:12px;font-family:inherit;
-  box-shadow:0 4px 16px rgba(255,107,157,0.3);
-  transition:transform .15s,box-shadow .15s;
-}
+.btn-primary{display:block;width:100%;padding:15px 0;background:linear-gradient(90deg,#FF6B9D,#FFB347);color:#fff;border:none;border-radius:14px;font-size:17px;font-weight:800;cursor:pointer;margin-bottom:12px;font-family:inherit;box-shadow:0 4px 16px rgba(255,107,157,0.3);transition:transform .15s,box-shadow .15s;}
 .btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(255,107,157,0.35);}
-.btn-ghost{
-  display:block;width:100%;padding:13px 0;
-  background:transparent;color:#8B7CF6;border:2px solid #C4B5FD;
-  border-radius:14px;font-size:15px;font-weight:700;cursor:pointer;
-  margin-bottom:8px;font-family:inherit;transition:background .2s;
-}
+.btn-ghost{display:block;width:100%;padding:13px 0;background:transparent;color:#8B7CF6;border:2px solid #C4B5FD;border-radius:14px;font-size:15px;font-weight:700;cursor:pointer;margin-bottom:8px;font-family:inherit;transition:background .2s;}
 .btn-ghost:hover{background:#F3F0FF;}
 .btn-back{background:none;border:none;color:#8B7CF6;font-weight:700;font-size:14px;cursor:pointer;padding:0 0 18px 0;font-family:inherit;}
 .btn-add{padding:11px 18px;background:linear-gradient(90deg,#6c63ff,#48cfad);color:#fff;border:none;border-radius:10px;font-weight:800;font-size:14px;cursor:pointer;font-family:inherit;white-space:nowrap;flex-shrink:0;}
@@ -71,12 +39,8 @@ body{
 
 /* Form */
 .screen-title{font-size:22px;font-weight:900;color:var(--text);margin-bottom:24px;}
-label.field-label{display:block;font-size:12px;font-weight:700;color:var(--muted);margin-bottom:6px;letter-spacing:0.5px;}
-input[type="text"],input[type="password"],input[type="url"]{
-  width:100%;padding:12px 14px;border:2px solid #EDE8FF;
-  border-radius:12px;font-size:15px;margin-bottom:16px;outline:none;
-  font-family:inherit;background:#FAFAFE;transition:border-color .2s,box-shadow .2s;color:var(--text);
-}
+label.fl{display:block;font-size:12px;font-weight:700;color:var(--muted);margin-bottom:6px;letter-spacing:0.5px;}
+input[type=text],input[type=password],input[type=url]{width:100%;padding:12px 14px;border:2px solid #EDE8FF;border-radius:12px;font-size:15px;margin-bottom:16px;outline:none;font-family:inherit;background:#FAFAFE;transition:border-color .2s,box-shadow .2s;color:var(--text);}
 input:focus{border-color:#8B7CF6;box-shadow:0 0 0 3px rgba(139,124,246,0.12);}
 .error-msg{color:#e05555;font-size:13px;font-weight:600;margin-bottom:12px;padding:10px 14px;background:#fff5f5;border-radius:10px;border:1px solid #ffd0d0;}
 
@@ -87,9 +51,9 @@ input:focus{border-color:#8B7CF6;box-shadow:0 0 0 3px rgba(139,124,246,0.12);}
 .vote-title{font-size:22px;font-weight:900;color:var(--text);}
 .vote-sub{font-size:13px;color:var(--muted);margin-top:4px;}
 .form-section{background:rgba(255,255,255,0.85);border-radius:16px;padding:16px 18px;margin-bottom:16px;box-shadow:0 2px 12px rgba(139,124,246,0.07);}
-.form-section label.field-label{margin-bottom:8px;}
+.form-section label.fl{margin-bottom:8px;}
 .form-section input{margin-bottom:0;}
-.form-section input:first-of-type{margin-bottom:14px;}
+.form-section input+label{margin-top:12px;}
 
 /* Candidate cards */
 .candidates-label{font-size:12px;font-weight:700;color:var(--muted);letter-spacing:0.5px;margin-bottom:12px;}
@@ -98,27 +62,19 @@ input:focus{border-color:#8B7CF6;box-shadow:0 0 0 3px rgba(139,124,246,0.12);}
 .ccard:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(0,0,0,0.1);}
 .ccard.selected{box-shadow:0 8px 28px rgba(0,0,0,0.15);transform:translateY(-3px);}
 .ccard.selected::after{content:'✓';position:absolute;top:8px;right:10px;font-size:16px;font-weight:900;}
-.ccard:nth-child(6n+1){background:linear-gradient(145deg,#FFF0F7,#FFE0F0);color:#D63B82;}
-.ccard:nth-child(6n+1).selected{border-color:#D63B82;}
-.ccard:nth-child(6n+2){background:linear-gradient(145deg,#FFF7E6,#FFECC7);color:#C47A00;}
-.ccard:nth-child(6n+2).selected{border-color:#C47A00;}
-.ccard:nth-child(6n+3){background:linear-gradient(145deg,#E8F7FF,#C9EDFF);color:#1A7DB8;}
-.ccard:nth-child(6n+3).selected{border-color:#1A7DB8;}
-.ccard:nth-child(6n+4){background:linear-gradient(145deg,#EDFFF5,#C8F7E0);color:#1A8A55;}
-.ccard:nth-child(6n+4).selected{border-color:#1A8A55;}
-.ccard:nth-child(6n+5){background:linear-gradient(145deg,#F3EEFF,#E2D4FF);color:#6B36CC;}
-.ccard:nth-child(6n+5).selected{border-color:#6B36CC;}
-.ccard:nth-child(6n+6){background:linear-gradient(145deg,#FFF3E8,#FFE0C5);color:#C05A00;}
-.ccard:nth-child(6n+6).selected{border-color:#C05A00;}
+.ccard:nth-child(6n+1){background:linear-gradient(145deg,#FFF0F7,#FFE0F0);color:#D63B82;}.ccard:nth-child(6n+1).selected{border-color:#D63B82;}
+.ccard:nth-child(6n+2){background:linear-gradient(145deg,#FFF7E6,#FFECC7);color:#C47A00;}.ccard:nth-child(6n+2).selected{border-color:#C47A00;}
+.ccard:nth-child(6n+3){background:linear-gradient(145deg,#E8F7FF,#C9EDFF);color:#1A7DB8;}.ccard:nth-child(6n+3).selected{border-color:#1A7DB8;}
+.ccard:nth-child(6n+4){background:linear-gradient(145deg,#EDFFF5,#C8F7E0);color:#1A8A55;}.ccard:nth-child(6n+4).selected{border-color:#1A8A55;}
+.ccard:nth-child(6n+5){background:linear-gradient(145deg,#F3EEFF,#E2D4FF);color:#6B36CC;}.ccard:nth-child(6n+5).selected{border-color:#6B36CC;}
+.ccard:nth-child(6n+6){background:linear-gradient(145deg,#FFF3E8,#FFE0C5);color:#C05A00;}.ccard:nth-child(6n+6).selected{border-color:#C05A00;}
 .ccard-photo{width:72px;height:72px;border-radius:50%;margin:0 auto 10px;object-fit:cover;display:block;border:3px solid rgba(255,255,255,0.8);box-shadow:0 3px 10px rgba(0,0,0,0.12);}
-.ccard-photo-placeholder{width:72px;height:72px;border-radius:50%;margin:0 auto 10px;display:flex;align-items:center;justify-content:center;font-size:30px;background:rgba(255,255,255,0.5);border:3px solid rgba(255,255,255,0.8);box-shadow:0 3px 10px rgba(0,0,0,0.1);}
+.ccard-ph{width:72px;height:72px;border-radius:50%;margin:0 auto 10px;display:flex;align-items:center;justify-content:center;font-size:30px;background:rgba(255,255,255,0.5);border:3px solid rgba(255,255,255,0.8);box-shadow:0 3px 10px rgba(0,0,0,0.1);}
 .ccard-name{font-size:14px;font-weight:800;line-height:1.3;}
 
 /* Done/Already */
 .center-screen{text-align:center;}
 .big-emoji{font-size:64px;margin-bottom:16px;}
-.done-sub{color:#555;margin-bottom:8px;}
-.done-thanks{color:#aaa;font-size:13px;margin-bottom:32px;}
 #screen-already{background:linear-gradient(160deg,#FFF5FB,#F0F7FF);}
 
 /* Admin */
@@ -132,439 +88,575 @@ input:focus{border-color:#8B7CF6;box-shadow:0 0 0 3px rgba(139,124,246,0.12);}
 .add-fields input{margin-bottom:8px;}
 .add-fields input:last-child{margin-bottom:0;}
 .list-item{display:flex;justify-content:space-between;align-items:center;padding:10px 14px;border:1px solid #EDE8FF;border-radius:12px;margin-bottom:8px;background:#FAFAFE;gap:8px;}
-.list-item-left{display:flex;align-items:center;gap:10px;}
-.list-thumb{width:38px;height:38px;border-radius:50%;object-fit:cover;flex-shrink:0;background:#eee;}
-.list-thumb-ph{width:38px;height:38px;border-radius:50%;background:#EDE8FF;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
-.list-item-name{font-weight:700;font-size:14px;}
+.list-item-l{display:flex;align-items:center;gap:10px;}
+.lthumb{width:38px;height:38px;border-radius:50%;object-fit:cover;flex-shrink:0;background:#eee;}
+.lthumb-ph{width:38px;height:38px;border-radius:50%;background:#EDE8FF;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+.li-name{font-weight:700;font-size:14px;}
 .log-item{padding:12px 14px;border:1px solid #EDE8FF;border-radius:12px;margin-bottom:8px;background:#FAFAFE;}
 .log-top{display:flex;gap:8px;margin-bottom:4px;align-items:center;flex-wrap:wrap;}
 .log-name{font-weight:800;font-size:14px;color:var(--text);}
 .log-aff{font-size:11px;color:#fff;background:#8B7CF6;padding:2px 8px;border-radius:100px;font-weight:600;}
-.log-bottom{display:flex;justify-content:space-between;align-items:center;}
-.log-candidate{font-size:13px;font-weight:700;color:#48cfad;}
+.log-bot{display:flex;justify-content:space-between;align-items:center;}
+.log-cand{font-size:13px;font-weight:700;color:#48cfad;}
 .log-time{font-size:10px;color:#bbb;}
 .tally-row{margin-bottom:16px;}
-.tally-header{display:flex;justify-content:space-between;margin-bottom:4px;align-items:center;}
+.tally-hdr{display:flex;justify-content:space-between;margin-bottom:4px;align-items:center;}
 .tally-name{font-weight:700;font-size:14px;}
-.tally-count{color:#555;font-size:13px;white-space:nowrap;}
+.tally-cnt{color:#555;font-size:13px;white-space:nowrap;}
 .bar-bg{background:#eee;border-radius:100px;height:10px;overflow:hidden;}
 .bar-fill{background:linear-gradient(90deg,#8B7CF6,#48cfad);height:100%;border-radius:100px;transition:width .6s ease;}
-.log-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;}
-.log-count{font-size:13px;color:#aaa;}
+.log-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;}
 .no-data{color:#ccc;font-size:13px;margin-top:8px;}
-.tally-sub{font-size:13px;color:#aaa;margin-bottom:12px;}
-.section-label{font-size:13px;font-weight:700;color:#888;margin-bottom:12px;}
-.pass-change-msg{font-size:13px;margin-bottom:12px;display:none;}
+.sec-label{font-size:13px;font-weight:700;color:#888;margin-bottom:12px;}
+
+/* image upload */
+.upload-area{border:2px dashed #C4B5FD;border-radius:12px;padding:16px;text-align:center;cursor:pointer;background:#FAFAFE;margin-bottom:12px;transition:border-color .2s;}
+.upload-area:hover{border-color:#8B7CF6;}
+.upload-area input{display:none;}
+.upload-preview{width:72px;height:72px;border-radius:50%;object-fit:cover;display:block;margin:8px auto 0;}
+.upload-label{font-size:13px;color:#8B7CF6;font-weight:600;}
+
+/* realtime badge */
+.rt-badge{display:inline-block;background:#e8fff4;color:#1A8A55;font-size:11px;font-weight:700;padding:3px 10px;border-radius:100px;margin-left:8px;vertical-align:middle;}
+
+/* info box */
+.info-box{background:#F3F0FF;border-radius:12px;padding:12px 14px;font-size:12px;color:#555;line-height:1.7;margin-bottom:16px;}
+.info-box b{color:#6c63ff;}
 </style>
 </head>
 <body>
 <div id="app">
 
-  <!-- HOME -->
-  <div id="screen-home" class="screen active">
-    <div class="home-header">
-      <div class="survey-icon">🗳️</div>
-      <div class="home-title">線上投票</div>
-      <div class="home-sub">掃描 QR Code 開始投票</div>
-    </div>
-    <div class="qr-section">
-      <div id="qr-div"></div>
-      <div id="qr-url-text" class="qr-url-text"></div>
-      <div id="qr-local-warn" class="qr-local-warn" style="display:none">
-        <b>⚠️ 目前為本機檔案模式，QR Code 無法使用</b>
-        請將此檔案上傳至 GitHub Pages 後，QR Code 將自動顯示正確網址。
-      </div>
-    </div>
-    <div id="home-voted-badge" class="voted-badge" style="display:none">✅ 您已完成投票，謝謝！</div>
-    <button id="btn-go-vote" class="btn-primary">開始投票 →</button>
-    <button class="admin-tiny" id="btn-go-admin-login">⚙</button>
+<!-- HOME -->
+<div id="screen-home" class="screen active">
+  <div class="home-header">
+    <div class="survey-icon">🗳️</div>
+    <div class="home-title">線上投票</div>
+    <div class="home-sub">掃描 QR Code 開始投票</div>
   </div>
-
-  <!-- VOTE -->
-  <div id="screen-vote" class="screen">
-    <button class="btn-back" data-to="home">← 返回</button>
-    <div class="vote-header">
-      <div class="vote-icon">✏️</div>
-      <div class="vote-title">投票表單</div>
-      <div class="vote-sub">請填寫資料並選擇候選人</div>
-    </div>
-    <div class="form-section">
-      <label class="field-label">所屬單位</label>
-      <input type="text" id="input-affiliation" placeholder="例：業務部">
-      <label class="field-label" style="margin-top:2px">您的姓名</label>
-      <input type="text" id="input-voter-name" placeholder="例：王小明">
-    </div>
-    <div class="candidates-label">請選擇您支持的候選人</div>
-    <div id="candidate-grid" class="candidates-grid"></div>
-    <p id="no-candidates" class="no-data" style="display:none;margin-bottom:16px">目前尚無候選人</p>
-    <div id="vote-error" class="error-msg" style="display:none"></div>
-    <button id="btn-submit-vote" class="btn-primary">確認送出 ✓</button>
-  </div>
-
-  <!-- ALREADY VOTED -->
-  <div id="screen-already" class="screen center-screen">
-    <div class="big-emoji">🚫</div>
-    <h2 style="font-size:20px;font-weight:900;color:#2D2D3A;margin-bottom:12px">已完成投票</h2>
-    <p style="color:#888;margin-bottom:32px;font-size:14px">此裝置已完成投票，無法重複投票。</p>
-    <button class="btn-ghost" data-to="home">返回首頁</button>
-  </div>
-
-  <!-- DONE -->
-  <div id="screen-done" class="screen center-screen">
-    <div class="big-emoji">🎉</div>
-    <h2 style="font-size:22px;font-weight:900;color:#2D2D3A;margin-bottom:12px">投票完成！</h2>
-    <p class="done-sub">您已投票給 <strong id="done-candidate" style="color:#8B7CF6"></strong></p>
-    <p class="done-thanks">感謝您的參與！</p>
-    <button class="btn-ghost" data-to="home">返回首頁</button>
-  </div>
-
-  <!-- ADMIN LOGIN -->
-  <div id="screen-admin-login" class="screen">
-    <button class="btn-back" data-to="home">← 返回</button>
-    <div style="max-width:320px;margin:0 auto">
-      <h2 class="screen-title" style="text-align:center">管理員登入</h2>
-      <label class="field-label">密碼</label>
-      <input type="password" id="input-admin-pass" placeholder="請輸入密碼">
-      <div id="admin-login-error" class="error-msg" style="display:none"></div>
-      <button id="btn-admin-login" class="btn-primary">登入</button>
+  <div class="qr-section">
+    <div id="qr-wrap" class="qr-svg-wrap"></div>
+    <div id="qr-url-text" class="qr-url-text"></div>
+    <div id="qr-warn" class="qr-local-warn" style="display:none">
+      ⚠️ <b>本機模式</b>：QR Code 需上傳至 GitHub Pages 後才能正常使用。<br>
+      上傳後開啟頁面，QR Code 將自動產生。
     </div>
   </div>
-
-  <!-- ADMIN -->
-  <div id="screen-admin" class="screen">
-    <button class="btn-back" data-to="home">← 登出</button>
-    <h2 class="screen-title">管理後台</h2>
-    <div class="tab-row">
-      <button class="tab-btn active" data-tab="candidates">候選人</button>
-      <button class="tab-btn" data-tab="votes">投票紀錄</button>
-      <button class="tab-btn" data-tab="tally">統計</button>
-      <button class="tab-btn" data-tab="settings">設定</button>
-      <button class="tab-btn" data-tab="qr">QR Code</button>
-    </div>
-
-    <!-- candidates -->
-    <div id="tab-candidates" class="tab-content active">
-      <div class="add-row">
-        <div class="add-fields">
-          <input type="text" id="input-new-name" placeholder="候選人姓名">
-          <input type="url" id="input-new-photo" placeholder="照片 URL（可留空）">
-        </div>
-        <button id="btn-add-candidate" class="btn-add">新增</button>
-      </div>
-      <div id="admin-candidate-list"></div>
-    </div>
-
-    <!-- votes -->
-    <div id="tab-votes" class="tab-content">
-      <div class="log-header">
-        <span id="vote-count-label" class="log-count">共 0 筆</span>
-        <button id="btn-clear-votes" class="btn-danger">全部刪除</button>
-      </div>
-      <div id="admin-vote-list"></div>
-    </div>
-
-    <!-- tally -->
-    <div id="tab-tally" class="tab-content">
-      <p id="tally-total" class="tally-sub"></p>
-      <div id="admin-tally"></div>
-    </div>
-
-    <!-- settings -->
-    <div id="tab-settings" class="tab-content">
-      <p class="section-label">🔑 變更管理員密碼</p>
-      <label class="field-label">新密碼（至少 6 字元）</label>
-      <input type="password" id="input-new-pass1" placeholder="輸入新密碼">
-      <label class="field-label">確認新密碼</label>
-      <input type="password" id="input-new-pass2" placeholder="再次輸入">
-      <div id="pass-change-msg" class="pass-change-msg"></div>
-      <button id="btn-change-pass" class="btn-primary" style="margin-bottom:24px">變更密碼</button>
-      <hr style="border:none;border-top:1px solid #eee;margin-bottom:20px">
-      <p class="section-label" style="color:#e05555">⚠️ 危險操作</p>
-      <button id="btn-reset-voted" class="btn-danger" style="width:100%;padding:10px;font-size:13px">清除投票限制（允許重新投票）</button>
-    </div>
-
-    <!-- qr -->
-    <div id="tab-qr" class="tab-content">
-      <div style="text-align:center">
-        <p style="font-size:13px;color:#888;margin-bottom:16px">列印或展示此 QR Code 讓參與者掃描</p>
-        <div id="admin-qr-div" style="background:#fff;padding:8px;border-radius:8px;display:inline-block;"></div>
-        <p id="admin-qr-url" style="font-size:10px;color:#aaa;margin-top:10px;word-break:break-all;"></p>
-        <div id="admin-qr-warn" style="display:none;font-size:12px;color:#e05555;margin-top:10px;background:#fff5f5;border-radius:10px;padding:12px;">
-          ⚠️ 本機檔案模式では QR Code を生成できません。GitHub Pages にアップロード後に使用してください。
-        </div>
-      </div>
-    </div>
-  </div>
-
+  <div id="voted-badge" class="voted-badge" style="display:none">✅ 您已完成投票，謝謝！</div>
+  <button id="btn-vote" class="btn-primary">開始投票 →</button>
+  <button class="admin-tiny" id="btn-admin-link">⚙</button>
 </div>
+
+<!-- VOTE -->
+<div id="screen-vote" class="screen">
+  <button class="btn-back" data-to="home">← 返回</button>
+  <div class="vote-header">
+    <div class="vote-icon">✏️</div>
+    <div class="vote-title">投票表單</div>
+    <div class="vote-sub">請填寫資料並選擇候選人</div>
+  </div>
+  <div class="form-section">
+    <label class="fl">所屬單位</label>
+    <input type="text" id="inp-aff" placeholder="例：業務部">
+    <label class="fl">您的姓名</label>
+    <input type="text" id="inp-name" placeholder="例：王小明">
+  </div>
+  <div class="candidates-label">請選擇您支持的候選人</div>
+  <div id="cand-grid" class="candidates-grid"></div>
+  <p id="no-cands" class="no-data" style="display:none;margin-bottom:16px">目前尚無候選人</p>
+  <div id="vote-err" class="error-msg" style="display:none"></div>
+  <button id="btn-submit" class="btn-primary">確認送出 ✓</button>
+</div>
+
+<!-- ALREADY -->
+<div id="screen-already" class="screen center-screen">
+  <div class="big-emoji">🚫</div>
+  <h2 style="font-size:20px;font-weight:900;color:#2D2D3A;margin-bottom:12px">已完成投票</h2>
+  <p style="color:#888;margin-bottom:32px;font-size:14px">此裝置已完成投票，無法重複投票。</p>
+  <button class="btn-ghost" data-to="home">返回首頁</button>
+</div>
+
+<!-- DONE -->
+<div id="screen-done" class="screen center-screen">
+  <div class="big-emoji">🎉</div>
+  <h2 style="font-size:22px;font-weight:900;color:#2D2D3A;margin-bottom:12px">投票完成！</h2>
+  <p style="color:#555;margin-bottom:8px">您已投票給 <strong id="done-cand" style="color:#8B7CF6"></strong></p>
+  <p style="color:#aaa;font-size:13px;margin-bottom:32px">感謝您的參與！</p>
+  <button class="btn-ghost" data-to="home">返回首頁</button>
+</div>
+
+<!-- ADMIN LOGIN -->
+<div id="screen-admin-login" class="screen">
+  <button class="btn-back" data-to="home">← 返回</button>
+  <div style="max-width:320px;margin:0 auto">
+    <h2 class="screen-title" style="text-align:center">管理員登入</h2>
+    <label class="fl">密碼</label>
+    <input type="password" id="inp-pass" placeholder="請輸入密碼">
+    <div id="login-err" class="error-msg" style="display:none"></div>
+    <button id="btn-login" class="btn-primary">登入</button>
+  </div>
+</div>
+
+<!-- ADMIN -->
+<div id="screen-admin" class="screen">
+  <button class="btn-back" data-to="home">← ログアウト</button>
+  <h2 class="screen-title">管理画面</h2>
+  <div class="tab-row">
+    <button class="tab-btn active" data-tab="cands">候補者管理</button>
+    <button class="tab-btn" data-tab="votes">投票ログ</button>
+    <button class="tab-btn" data-tab="tally">集計<span class="rt-badge">LIVE</span></button>
+    <button class="tab-btn" data-tab="settings">設定</button>
+    <button class="tab-btn" data-tab="qr">QRコード</button>
+  </div>
+
+  <!-- candidates -->
+  <div id="tab-cands" class="tab-content active">
+    <div class="add-row">
+      <div class="add-fields">
+        <input type="text" id="inp-new-name" placeholder="候補者名前">
+        <div class="upload-area" id="upload-area" onclick="document.getElementById('inp-photo-file').click()">
+          <input type="file" id="inp-photo-file" accept="image/*">
+          <div class="upload-label">📷 写真をアップロード（任意）</div>
+          <img id="upload-preview" class="upload-preview" style="display:none">
+        </div>
+      </div>
+      <button id="btn-add-cand" class="btn-add">追加</button>
+    </div>
+    <div id="admin-cand-list"></div>
+  </div>
+
+  <!-- votes -->
+  <div id="tab-votes" class="tab-content">
+    <div class="log-hdr">
+      <span id="vote-cnt-label" style="font-size:13px;color:#aaa">計 0 件</span>
+      <button id="btn-clear" class="btn-danger">全削除</button>
+    </div>
+    <div id="admin-vote-list"></div>
+  </div>
+
+  <!-- tally -->
+  <div id="tab-tally" class="tab-content">
+    <p id="tally-total" style="font-size:13px;color:#aaa;margin-bottom:12px"></p>
+    <div id="admin-tally"></div>
+  </div>
+
+  <!-- settings -->
+  <div id="tab-settings" class="tab-content">
+    <p class="sec-label">🔑 パスワード変更</p>
+    <label class="fl">新しいパスワード（6文字以上）</label>
+    <input type="password" id="inp-p1" placeholder="新しいパスワード">
+    <label class="fl">確認</label>
+    <input type="password" id="inp-p2" placeholder="もう一度入力">
+    <div id="pass-msg" style="font-size:13px;margin-bottom:12px;display:none"></div>
+    <button id="btn-chpass" class="btn-primary" style="margin-bottom:24px">パスワードを変更</button>
+    <hr style="border:none;border-top:1px solid #eee;margin-bottom:20px">
+    <p class="sec-label" style="color:#e05555">⚠️ 危険な操作</p>
+    <button id="btn-reset-voted" class="btn-danger" style="width:100%;padding:10px;font-size:13px;margin-bottom:8px">投票制限をリセット（再投票を許可）</button>
+    <button id="btn-reset-all" class="btn-danger" style="width:100%;padding:10px;font-size:13px">全データをリセット</button>
+  </div>
+
+  <!-- qr -->
+  <div id="tab-qr" class="tab-content">
+    <div style="text-align:center">
+      <p style="font-size:13px;color:#888;margin-bottom:16px">このQRコードを印刷・表示して配布してください</p>
+      <div id="admin-qr-wrap" class="qr-svg-wrap" style="display:inline-block"></div>
+      <p id="admin-qr-url" style="font-size:10px;color:#aaa;margin-top:10px;word-break:break-all;"></p>
+    </div>
+  </div>
+</div>
+
+</div><!-- #app -->
+
 <script>
-// ── SHA-256 ───────────────────────────────────────────────────────────────
+// ════════════════════════════════════════════════════════════
+//  INLINE QR CODE GENERATOR (pure JS, no external deps)
+// ════════════════════════════════════════════════════════════
+var QRsvg=(function(){
+'use strict';
+var GF_EXP=new Array(512),GF_LOG=new Array(256);
+(function(){var x=1;for(var i=0;i<255;i++){GF_EXP[i]=x;GF_LOG[x]=i;x<<=1;if(x&256)x^=285;}for(var i=255;i<512;i++)GF_EXP[i]=GF_EXP[i-255];GF_EXP[0]=1;})();
+function gfMul(a,b){return(a&&b)?GF_EXP[GF_LOG[a]+GF_LOG[b]]:0;}
+function gfPoly(n){var p=[1];for(var i=0;i<n;i++){var q=new Array(p.length+1).fill(0);for(var j=0;j<p.length;j++){q[j]^=gfMul(p[j],1);q[j+1]^=gfMul(p[j],GF_EXP[i]);}p=q;}return p;}
+function gfRem(data,gen){var r=new Array(gen.length-1).fill(0);for(var i=0;i<data.length;i++){var f=data[i]^r[0];r=r.slice(1);r.push(0);for(var j=0;j<r.length;j++)r[j]^=gfMul(f,gen[j+1]);}return r;}
+// capacity (data CW) for EC level M, byte mode
+var CAP=[0,16,28,44,64,86,108,124,154,182,216];
+// EC spec for level M: {ecb, blocks: [{count,k},...]}
+var SPEC=[null,
+  {e:10,bl:[{n:1,k:16}]},{e:16,bl:[{n:1,k:28}]},{e:26,bl:[{n:1,k:44}]},
+  {e:18,bl:[{n:2,k:32}]},{e:24,bl:[{n:2,k:43}]},{e:16,bl:[{n:4,k:27}]},
+  {e:18,bl:[{n:4,k:31}]},{e:22,bl:[{n:2,k:38},{n:2,k:39}]},
+  {e:22,bl:[{n:3,k:36},{n:2,k:37}]},{e:26,bl:[{n:4,k:43},{n:1,k:44}]}
+];
+function utf8(s){var o=[];for(var i=0;i<s.length;i++){var c=s.charCodeAt(i);if(c<128)o.push(c);else if(c<2048)o.push(192|(c>>6),128|(c&63));else if(c<65536)o.push(224|(c>>12),128|((c>>6)&63),128|(c&63));else o.push(240|(c>>18),128|((c>>12)&63),128|((c>>6)&63),128|(c&63));}return o;}
+function makeMatrix(size){var M=[];for(var i=0;i<size;i++){M.push([]);for(var j=0;j<size;j++)M[i].push(-1);}return M;}
+function genQR(text){
+  var bytes=utf8(text),len=bytes.length,ver=1;
+  for(;ver<=10;ver++)if(CAP[ver]>=len)break;
+  if(ver>10)throw 'Too long';
+  var sp=SPEC[ver],size=ver*4+17;
+  // bitstream
+  var bits=[];
+  function ab(v,n){for(var i=n-1;i>=0;i--)bits.push((v>>i)&1);}
+  ab(4,4);ab(len,8);for(var i=0;i<len;i++)ab(bytes[i],8);ab(0,4);
+  while(bits.length%8)bits.push(0);
+  var dw=[];for(var i=0;i<bits.length;i+=8){var v=0;for(var j=0;j<8;j++)v=(v<<1)|bits[i+j];dw.push(v);}
+  var totalK=sp.bl.reduce(function(s,b){return s+b.n*b.k;},0);
+  var pad=[0xEC,0x11],pi=0;while(dw.length<totalK)dw.push(pad[pi++%2]);
+  // blocks
+  var blocks=[],idx=0;
+  sp.bl.forEach(function(b){for(var i=0;i<b.n;i++){blocks.push(dw.slice(idx,idx+b.k));idx+=b.k;}});
+  var gen=gfPoly(sp.e);
+  var ecb=blocks.map(function(b){return gfRem(b,gen);});
+  // interleave
+  var allD=[],allE=[];
+  var maxD=Math.max.apply(null,blocks.map(function(b){return b.length;}));
+  for(var i=0;i<maxD;i++)blocks.forEach(function(b){if(i<b.length)allD.push(b[i]);});
+  for(var i=0;i<sp.e;i++)ecb.forEach(function(b){if(i<b.length)allE.push(b[i]);});
+  var cw=allD.concat(allE);
+  // matrix
+  var M=makeMatrix(size),R=makeMatrix(size);
+  function sm(r,c,v){if(r>=0&&r<size&&c>=0&&c<size){M[r][c]=v;R[r][c]=1;}}
+  function rv(r,c){if(r>=0&&r<size&&c>=0&&c<size)R[r][c]=1;}
+  // finder
+  function finder(tr,tc){
+    for(var r=0;r<7;r++)for(var c=0;c<7;c++)sm(tr+r,tc+c,(r===0||r===6||c===0||c===6||(r>=2&&r<=4&&c>=2&&c<=4))?1:0);
+    for(var i=-1;i<=7;i++){sm(tr+i,tc-1,0);sm(tr+i,tc+7,0);sm(tr-1,tc+i,0);sm(tr+7,tc+i,0);}
+  }
+  finder(0,0);finder(0,size-7);finder(size-7,0);
+  // alignment
+  var AP={2:[6,18],3:[6,22],4:[6,26],5:[6,30],6:[6,34],7:[6,22,38],8:[6,24,42],9:[6,28,46],10:[6,28,50]};
+  if(AP[ver]){var ps=AP[ver];for(var ri=0;ri<ps.length;ri++)for(var ci=0;ci<ps.length;ci++){var ar=ps[ri],ac=ps[ci];if(R[ar][ac])continue;for(var dr=-2;dr<=2;dr++)for(var dc=-2;dc<=2;dc++)sm(ar+dr,ac+dc,(Math.abs(dr)===2||Math.abs(dc)===2||(dr===0&&dc===0))?1:0);}}
+  // timing
+  for(var i=8;i<size-8;i++){if(!R[6][i])sm(6,i,i%2?0:1);if(!R[i][6])sm(i,6,i%2?0:1);}
+  // dark
+  sm(size-8,8,1);
+  // format reserve
+  var fpos1=[[8,0],[8,1],[8,2],[8,3],[8,4],[8,5],[8,7],[8,8],[7,8],[5,8],[4,8],[3,8],[2,8],[1,8],[0,8]];
+  var fpos2=[[size-1,8],[size-2,8],[size-3,8],[size-4,8],[size-5,8],[size-6,8],[size-7,8],[8,size-8],[8,size-7],[8,size-6],[8,size-5],[8,size-4],[8,size-3],[8,size-2],[8,size-1]];
+  fpos1.forEach(function(p){rv(p[0],p[1]);});fpos2.forEach(function(p){rv(p[0],p[1]);});
+  // place data (mask 0)
+  var dbits=[];cw.forEach(function(c){for(var i=7;i>=0;i--)dbits.push((c>>i)&1);});
+  var bi=0,up=true;
+  for(var col=size-1;col>=0;col-=2){
+    if(col===6)col=5;
+    for(var row=0;row<size;row++){
+      var r2=up?size-1-row:row;
+      for(var dc=0;dc<2;dc++){var c2=col-dc;if(!R[r2][c2]&&bi<dbits.length){M[r2][c2]=dbits[bi++]^(((r2+c2)%2===0)?1:0);}}
+    }
+    up=!up;
+  }
+  // format string (EC=M=01, mask=0=000 => data=01000=8)
+  function bch(d){var x=d<<10,G=0x537;for(var i=14;i>=10;i--)if((x>>i)&1)x^=G<<(i-10);return((d<<10)|x)^0x5412;}
+  var fb=[],fv=bch(8);for(var i=14;i>=0;i--)fb.push((fv>>i)&1);
+  fpos1.forEach(function(p,i){M[p[0]][p[1]]=fb[i];});
+  fpos2.forEach(function(p,i){M[p[0]][p[1]]=fb[i];});
+  return{M:M,size:size};
+}
+return function(text,cellPx){
+  cellPx=cellPx||5;
+  var qr=genQR(text),s=qr.size,q=4,d=(s+q*2)*cellPx;
+  var rects=[];
+  for(var r=0;r<s;r++)for(var c=0;c<s;c++)if(qr.M[r][c]===1)rects.push('<rect x="'+(c+q)*cellPx+'" y="'+(r+q)*cellPx+'" width="'+cellPx+'" height="'+cellPx+'"/>');
+  return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 '+d+' '+d+'" width="'+d+'" height="'+d+'"><rect width="100%" height="100%" fill="#fff"/><g fill="#000">'+rects.join('')+'</g></svg>';
+};
+})();
+
+// ════════════════════════════════════════════════════════════
+//  SHA-256 (Web Crypto API)
+// ════════════════════════════════════════════════════════════
 async function sha256(msg){
   const buf=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(msg));
   return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,"0")).join("");
 }
-// sha256("admin1234") verified:
+// sha256("admin1234")
 const DEFAULT_HASH="ac9689e2272427085e35b9d3e3e8bed88cb3434828b43b86fc0596cad4c6e270";
 
-// ── Storage ───────────────────────────────────────────────────────────────
-const SK={
-  candidates:"sv_cands_v4",
-  votes:"sv_votes_v4",
-  voted:"sv_voted_v4",
-  passHash:"sv_pass_hash",
-};
+// ════════════════════════════════════════════════════════════
+//  STORAGE
+// ════════════════════════════════════════════════════════════
+const SK={c:"sv_c5",v:"sv_v5",voted:"sv_voted5",ph:"sv_ph"};
 function load(k,fb){try{const v=localStorage.getItem(k);return v?JSON.parse(v):fb;}catch{return fb;}}
 function save(k,v){localStorage.setItem(k,JSON.stringify(v));}
 function esc(s){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");}
 
-// ── State ─────────────────────────────────────────────────────────────────
-const state={
-  candidates:load(SK.candidates,[
-    {name:"田中 太郎",photo:""},
-    {name:"鈴木 花子",photo:""},
-    {name:"佐藤 一郎",photo:""},
-  ]),
-  votes:load(SK.votes,[]),
-  hasVoted:!!localStorage.getItem(SK.voted),
-  selected:null,
-  passHash:localStorage.getItem(SK.passHash)||DEFAULT_HASH,
+// ════════════════════════════════════════════════════════════
+//  STATE
+// ════════════════════════════════════════════════════════════
+const st={
+  cands: load(SK.c,[{name:"田中 太郎",photo:""},{name:"鈴木 花子",photo:""},{name:"佐藤 一郎",photo:""}]),
+  votes: load(SK.v,[]),
+  hasVoted: !!localStorage.getItem(SK.voted),
+  sel: null,
+  ph: localStorage.getItem(SK.ph)||DEFAULT_HASH,
+  pendingPhoto: "",   // base64 of photo being added
 };
 
-// ── URL detection ─────────────────────────────────────────────────────────
-function getAppUrl(){
-  const href=window.location.href;
-  // file:// protocol = local file, QR not useful
-  if(href.startsWith("file://")) return null;
-  // Remove any hash/query for cleanliness
-  return href.split("?")[0].split("#")[0];
-}
-
-// ── Navigation ────────────────────────────────────────────────────────────
+// ════════════════════════════════════════════════════════════
+//  NAV
+// ════════════════════════════════════════════════════════════
 function showScreen(id){
   document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));
   document.getElementById("screen-"+id).classList.add("active");
 }
 
-// ── QR ────────────────────────────────────────────────────────────────────
-let qrHomeBuilt=false, qrAdminBuilt=false;
-
-function buildHomeQR(){
-  if(qrHomeBuilt) return;
-  const url=getAppUrl();
-  const qrDiv=document.getElementById("qr-div");
-  const urlText=document.getElementById("qr-url-text");
-  const warn=document.getElementById("qr-local-warn");
-  if(url){
-    warn.style.display="none";
-    urlText.style.display="block";
-    urlText.textContent=url;
-    qrDiv.innerHTML="";
-    new QRCode(qrDiv,{text:url,width:200,height:200,colorDark:"#000000",colorLight:"#ffffff",correctLevel:QRCode.CorrectLevel.M});
-    qrHomeBuilt=true;
+// ════════════════════════════════════════════════════════════
+//  QR (uses inline SVG generator)
+// ════════════════════════════════════════════════════════════
+function buildQR(wrapId,urlTextId,warnId){
+  const url=window.location.href;
+  const isLocal=url.startsWith("file://");
+  const wrap=document.getElementById(wrapId);
+  if(urlTextId)document.getElementById(urlTextId).textContent=isLocal?"":url;
+  if(warnId)document.getElementById(warnId).style.display=isLocal?"block":"none";
+  if(!isLocal){
+    try{
+      wrap.innerHTML=QRsvg(url,5);
+      wrap.style.display="inline-block";
+    }catch(e){
+      wrap.innerHTML='<p style="color:#e05555;font-size:12px;padding:8px">QR生成エラー</p>';
+    }
   } else {
-    qrDiv.innerHTML="";
-    urlText.style.display="none";
-    warn.style.display="block";
+    wrap.innerHTML="";
   }
 }
 
-function buildAdminQR(){
-  if(qrAdminBuilt) return;
-  const url=getAppUrl();
-  const qrDiv=document.getElementById("admin-qr-div");
-  const urlEl=document.getElementById("admin-qr-url");
-  const warn=document.getElementById("admin-qr-warn");
-  if(url){
-    warn.style.display="none";
-    urlEl.textContent=url;
-    qrDiv.innerHTML="";
-    new QRCode(qrDiv,{text:url,width:240,height:240,colorDark:"#000000",colorLight:"#ffffff",correctLevel:QRCode.CorrectLevel.M});
-    qrAdminBuilt=true;
-  } else {
-    urlEl.textContent="（本機檔案模式，無法產生 QR Code）";
-    warn.style.display="block";
-  }
-}
-
-// ── Home ──────────────────────────────────────────────────────────────────
+// ════════════════════════════════════════════════════════════
+//  HOME
+// ════════════════════════════════════════════════════════════
 function renderHome(){
-  document.getElementById("home-voted-badge").style.display=state.hasVoted?"block":"none";
-  document.getElementById("btn-go-vote").style.display=state.hasVoted?"none":"block";
+  document.getElementById("voted-badge").style.display=st.hasVoted?"block":"none";
+  document.getElementById("btn-vote").style.display=st.hasVoted?"none":"block";
+  buildQR("qr-wrap","qr-url-text","qr-warn");
 }
 
-// ── Vote ──────────────────────────────────────────────────────────────────
-function renderCandidateGrid(){
-  const grid=document.getElementById("candidate-grid");
-  const noC=document.getElementById("no-candidates");
-  if(!state.candidates.length){grid.innerHTML="";noC.style.display="block";return;}
-  noC.style.display="none";
-  grid.innerHTML=state.candidates.map((c,i)=>{
-    const sel=state.selected===i;
+// ════════════════════════════════════════════════════════════
+//  VOTE
+// ════════════════════════════════════════════════════════════
+function renderGrid(){
+  const grid=document.getElementById("cand-grid"),nc=document.getElementById("no-cands");
+  if(!st.cands.length){grid.innerHTML="";nc.style.display="block";return;}
+  nc.style.display="none";
+  grid.innerHTML=st.cands.map((c,i)=>{
+    const sel=st.sel===i;
     const photo=c.photo
-      ?`<img class="ccard-photo" src="${esc(c.photo)}" alt="${esc(c.name)}"
-             onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
-        <div class="ccard-photo-placeholder" style="display:none">👤</div>`
-      :`<div class="ccard-photo-placeholder">👤</div>`;
-    return`<div class="ccard${sel?" selected":""}" onclick="selectC(${i})">${photo}<div class="ccard-name">${esc(c.name)}</div></div>`;
+      ?`<img class="ccard-photo" src="${esc(c.photo)}" alt="" onerror="this.style.display='none';this.nextSibling.style.display='flex'"><div class="ccard-ph" style="display:none">👤</div>`
+      :`<div class="ccard-ph">👤</div>`;
+    return`<div class="ccard${sel?" selected":""}" onclick="selC(${i})">${photo}<div class="ccard-name">${esc(c.name)}</div></div>`;
   }).join("");
 }
-window.selectC=function(i){state.selected=i;renderCandidateGrid();};
+window.selC=i=>{st.sel=i;renderGrid();};
 
-function showVoteErr(msg){const e=document.getElementById("vote-error");e.textContent=msg;e.style.display=msg?"block":"none";}
+function voteErr(m){const e=document.getElementById("vote-err");e.textContent=m;e.style.display=m?"block":"none";}
 
 function submitVote(){
-  const aff=document.getElementById("input-affiliation").value.trim();
-  const nm=document.getElementById("input-voter-name").value.trim();
-  if(!aff) return showVoteErr("請輸入所屬單位");
-  if(!nm)  return showVoteErr("請輸入您的姓名");
-  if(state.selected===null) return showVoteErr("請選擇候選人");
-  showVoteErr("");
-  const cand=state.candidates[state.selected];
-  state.votes.push({id:Date.now(),affiliation:aff,voterName:nm,candidate:cand.name,timestamp:new Date().toLocaleString("zh-TW")});
-  save(SK.votes,state.votes);
+  const aff=document.getElementById("inp-aff").value.trim();
+  const nm=document.getElementById("inp-name").value.trim();
+  if(!aff)return voteErr("所屬單位を入力してください");
+  if(!nm)return voteErr("お名前を入力してください");
+  if(st.sel===null)return voteErr("候補者を選んでください");
+  voteErr("");
+  const cand=st.cands[st.sel];
+  st.votes.push({id:Date.now(),aff,nm,cand:cand.name,ts:new Date().toLocaleString("ja-JP")});
+  save(SK.v,st.votes);
   localStorage.setItem(SK.voted,"1");
-  state.hasVoted=true;
-  document.getElementById("done-candidate").textContent=cand.name;
+  st.hasVoted=true;
+  document.getElementById("done-cand").textContent=cand.name;
   showScreen("done");
 }
 
-// ── Admin login ───────────────────────────────────────────────────────────
-async function adminLogin(){
-  const p=document.getElementById("input-admin-pass").value;
-  const e=document.getElementById("admin-login-error");
-  if(!p){e.textContent="請輸入密碼";e.style.display="block";return;}
-  const hash=await sha256(p);
-  if(hash===state.passHash){
+// ════════════════════════════════════════════════════════════
+//  ADMIN LOGIN
+// ════════════════════════════════════════════════════════════
+async function doLogin(){
+  const p=document.getElementById("inp-pass").value;
+  const e=document.getElementById("login-err");
+  if(!p){e.textContent="パスワードを入力してください";e.style.display="block";return;}
+  const h=await sha256(p);
+  if(h===st.ph){
     e.style.display="none";
-    document.getElementById("input-admin-pass").value="";
+    document.getElementById("inp-pass").value="";
     renderAdmin();
     showScreen("admin");
+    startLive();
   } else {
-    e.textContent="密碼錯誤，請重試。";
-    e.style.display="block";
+    e.textContent="パスワードが違います";e.style.display="block";
   }
 }
 
-// ── Admin: candidates ─────────────────────────────────────────────────────
-function renderAdminCandidates(){
-  const el=document.getElementById("admin-candidate-list");
-  if(!state.candidates.length){el.innerHTML='<p class="no-data">尚無候選人</p>';return;}
-  el.innerHTML=state.candidates.map((c,i)=>`
+// ════════════════════════════════════════════════════════════
+//  ADMIN CANDIDATES
+// ════════════════════════════════════════════════════════════
+function renderAdminCands(){
+  const el=document.getElementById("admin-cand-list");
+  if(!st.cands.length){el.innerHTML='<p class="no-data">候補者なし</p>';return;}
+  el.innerHTML=st.cands.map((c,i)=>`
     <div class="list-item">
-      <div class="list-item-left">
-        ${c.photo?`<img class="list-thumb" src="${esc(c.photo)}" onerror="this.style.background='#EDE8FF'">`:`<div class="list-thumb-ph">👤</div>`}
-        <span class="list-item-name">${esc(c.name)}</span>
+      <div class="list-item-l">
+        ${c.photo?`<img class="lthumb" src="${esc(c.photo)}" onerror="this.style.background='#EDE8FF'">`:`<div class="lthumb-ph">👤</div>`}
+        <span class="li-name">${esc(c.name)}</span>
       </div>
-      <button class="btn-danger" onclick="removeC(${i})">刪除</button>
+      <button class="btn-danger" onclick="remC(${i})">削除</button>
     </div>`).join("");
 }
-window.removeC=function(i){state.candidates.splice(i,1);save(SK.candidates,state.candidates);renderAdminCandidates();};
+window.remC=function(i){
+  st.cands.splice(i,1);save(SK.c,st.cands);renderAdminCands();
+};
 
-function addCandidate(){
-  const name=document.getElementById("input-new-name").value.trim();
-  const photo=document.getElementById("input-new-photo").value.trim();
+function addCand(){
+  const name=document.getElementById("inp-new-name").value.trim();
   if(!name)return;
-  if(state.candidates.find(c=>c.name===name))return;
-  state.candidates.push({name,photo});
-  save(SK.candidates,state.candidates);
-  document.getElementById("input-new-name").value="";
-  document.getElementById("input-new-photo").value="";
-  renderAdminCandidates();
+  if(st.cands.find(c=>c.name===name))return;
+  st.cands.push({name,photo:st.pendingPhoto});
+  save(SK.c,st.cands);
+  document.getElementById("inp-new-name").value="";
+  st.pendingPhoto="";
+  document.getElementById("upload-preview").style.display="none";
+  document.getElementById("upload-area").querySelector(".upload-label").textContent="📷 写真をアップロード（任意）";
+  renderAdminCands();
 }
 
-// ── Admin: votes ──────────────────────────────────────────────────────────
+// Image upload → base64
+document.addEventListener("DOMContentLoaded",()=>{
+  document.getElementById("inp-photo-file").addEventListener("change",function(){
+    const file=this.files[0];
+    if(!file)return;
+    const reader=new FileReader();
+    reader.onload=function(e){
+      st.pendingPhoto=e.target.result;
+      const prev=document.getElementById("upload-preview");
+      prev.src=e.target.result;
+      prev.style.display="block";
+      document.querySelector("#upload-area .upload-label").textContent="✅ 写真を選択済み";
+    };
+    reader.readAsDataURL(file);
+  });
+});
+
+// ════════════════════════════════════════════════════════════
+//  ADMIN VOTES
+// ════════════════════════════════════════════════════════════
 function renderAdminVotes(){
   const el=document.getElementById("admin-vote-list");
-  document.getElementById("vote-count-label").textContent="共 "+state.votes.length+" 筆";
-  if(!state.votes.length){el.innerHTML='<p class="no-data">尚無投票紀錄</p>';return;}
-  el.innerHTML=[...state.votes].reverse().map(v=>`
+  document.getElementById("vote-cnt-label").textContent="計 "+st.votes.length+" 件";
+  if(!st.votes.length){el.innerHTML='<p class="no-data">投票データなし</p>';return;}
+  el.innerHTML=[...st.votes].reverse().map(v=>`
     <div class="log-item">
-      <div class="log-top"><span class="log-name">${esc(v.voterName)}</span><span class="log-aff">${esc(v.affiliation)}</span></div>
-      <div class="log-bottom"><span class="log-candidate">→ ${esc(v.candidate)}</span><span class="log-time">${esc(v.timestamp)}</span></div>
+      <div class="log-top"><span class="log-name">${esc(v.nm)}</span><span class="log-aff">${esc(v.aff)}</span></div>
+      <div class="log-bot"><span class="log-cand">→ ${esc(v.cand)}</span><span class="log-time">${esc(v.ts)}</span></div>
     </div>`).join("");
 }
 
-// ── Admin: tally ──────────────────────────────────────────────────────────
+// ════════════════════════════════════════════════════════════
+//  ADMIN TALLY (realtime)
+// ════════════════════════════════════════════════════════════
 function renderAdminTally(){
   const el=document.getElementById("admin-tally");
-  document.getElementById("tally-total").textContent="總投票數："+state.votes.length+" 票";
-  if(!state.candidates.length){el.innerHTML='<p class="no-data">尚無候選人</p>';return;}
-  const rows=[...state.candidates]
-    .map(c=>({name:c.name,cnt:state.votes.filter(v=>v.candidate===c.name).length}))
-    .sort((a,b)=>b.cnt-a.cnt);
+  document.getElementById("tally-total").textContent="総投票数："+st.votes.length+" 票";
+  if(!st.cands.length){el.innerHTML='<p class="no-data">候補者なし</p>';return;}
+  const rows=st.cands.map(c=>({name:c.name,cnt:st.votes.filter(v=>v.cand===c.name).length})).sort((a,b)=>b.cnt-a.cnt);
   el.innerHTML=rows.map(({name,cnt})=>{
-    const pct=state.votes.length?Math.round(cnt/state.votes.length*100):0;
+    const pct=st.votes.length?Math.round(cnt/st.votes.length*100):0;
     return`<div class="tally-row">
-      <div class="tally-header"><span class="tally-name">${esc(name)}</span><span class="tally-count">${cnt} 票 (${pct}%)</span></div>
+      <div class="tally-hdr"><span class="tally-name">${esc(name)}</span><span class="tally-cnt">${cnt} 票 (${pct}%)</span></div>
       <div class="bar-bg"><div class="bar-fill" style="width:${pct}%"></div></div>
     </div>`;
   }).join("");
 }
 
-// ── Admin: password ───────────────────────────────────────────────────────
-async function changePassword(){
-  const p1=document.getElementById("input-new-pass1").value;
-  const p2=document.getElementById("input-new-pass2").value;
-  const msg=document.getElementById("pass-change-msg");
-  if(!p1||p1.length<6){msg.textContent="密碼至少需要 6 個字元。";msg.style.color="#e05555";msg.style.display="block";return;}
-  if(p1!==p2){msg.textContent="兩次輸入的密碼不一致。";msg.style.color="#e05555";msg.style.display="block";return;}
-  const hash=await sha256(p1);
-  state.passHash=hash;
-  localStorage.setItem(SK.passHash,hash);
-  document.getElementById("input-new-pass1").value="";
-  document.getElementById("input-new-pass2").value="";
-  msg.textContent="✅ 密碼已成功變更。";msg.style.color="#1A8A55";msg.style.display="block";
+// ── Realtime polling (every 3 seconds, reads localStorage) ──
+let liveTimer=null;
+function startLive(){
+  if(liveTimer)return;
+  liveTimer=setInterval(()=>{
+    const fresh=load(SK.v,[]);
+    if(JSON.stringify(fresh)!==JSON.stringify(st.votes)){
+      st.votes=fresh;
+      const activeTab=document.querySelector(".tab-btn.active");
+      if(activeTab){
+        const t=activeTab.dataset.tab;
+        if(t==="tally")renderAdminTally();
+        if(t==="votes")renderAdminVotes();
+      }
+    }
+  },3000);
+}
+function stopLive(){if(liveTimer){clearInterval(liveTimer);liveTimer=null;}}
+
+// ════════════════════════════════════════════════════════════
+//  ADMIN SETTINGS
+// ════════════════════════════════════════════════════════════
+async function changePass(){
+  const p1=document.getElementById("inp-p1").value;
+  const p2=document.getElementById("inp-p2").value;
+  const msg=document.getElementById("pass-msg");
+  if(!p1||p1.length<6){msg.textContent="6文字以上で入力してください";msg.style.color="#e05555";msg.style.display="block";return;}
+  if(p1!==p2){msg.textContent="パスワードが一致しません";msg.style.color="#e05555";msg.style.display="block";return;}
+  const h=await sha256(p1);
+  st.ph=h;localStorage.setItem(SK.ph,h);
+  document.getElementById("inp-p1").value="";document.getElementById("inp-p2").value="";
+  msg.textContent="✅ パスワードを変更しました";msg.style.color="#1A8A55";msg.style.display="block";
   setTimeout(()=>msg.style.display="none",3000);
 }
 
-function renderAdmin(){renderAdminCandidates();renderAdminVotes();renderAdminTally();}
+function renderAdmin(){renderAdminCands();renderAdminVotes();renderAdminTally();}
 
-// ── Tabs ──────────────────────────────────────────────────────────────────
+// ════════════════════════════════════════════════════════════
+//  TABS
+// ════════════════════════════════════════════════════════════
 function switchTab(id){
   document.querySelectorAll(".tab-btn").forEach(b=>b.classList.toggle("active",b.dataset.tab===id));
   document.querySelectorAll(".tab-content").forEach(t=>t.classList.toggle("active",t.id==="tab-"+id));
-  if(id==="votes") renderAdminVotes();
-  if(id==="tally") renderAdminTally();
-  if(id==="candidates") renderAdminCandidates();
-  if(id==="qr") buildAdminQR();
+  if(id==="votes")renderAdminVotes();
+  if(id==="tally")renderAdminTally();
+  if(id==="cands")renderAdminCands();
+  if(id==="qr"){
+    buildQR("admin-qr-wrap",null,null);
+    document.getElementById("admin-qr-url").textContent=window.location.href.startsWith("file://")?"（本機ファイルモード）":window.location.href;
+  }
 }
 
-// ── Boot ──────────────────────────────────────────────────────────────────
+// ════════════════════════════════════════════════════════════
+//  BOOT
+// ════════════════════════════════════════════════════════════
 document.addEventListener("DOMContentLoaded",()=>{
-  buildHomeQR();
   renderHome();
 
   document.querySelectorAll("[data-to]").forEach(btn=>btn.addEventListener("click",()=>{
-    if(btn.dataset.to==="home") renderHome();
+    stopLive();
+    if(btn.dataset.to==="home")renderHome();
     showScreen(btn.dataset.to);
   }));
 
-  document.getElementById("btn-go-vote").addEventListener("click",()=>{
-    if(state.hasVoted){showScreen("already");return;}
-    state.selected=null;
-    document.getElementById("input-affiliation").value="";
-    document.getElementById("input-voter-name").value="";
-    showVoteErr("");renderCandidateGrid();showScreen("vote");
+  document.getElementById("btn-vote").addEventListener("click",()=>{
+    if(st.hasVoted){showScreen("already");return;}
+    st.sel=null;
+    document.getElementById("inp-aff").value="";
+    document.getElementById("inp-name").value="";
+    voteErr("");renderGrid();showScreen("vote");
   });
 
-  document.getElementById("btn-go-admin-login").addEventListener("click",()=>{
-    document.getElementById("input-admin-pass").value="";
-    document.getElementById("admin-login-error").style.display="none";
+  document.getElementById("btn-admin-link").addEventListener("click",()=>{
+    document.getElementById("inp-pass").value="";
+    document.getElementById("login-err").style.display="none";
     showScreen("admin-login");
   });
 
-  document.getElementById("btn-submit-vote").addEventListener("click",submitVote);
-  document.getElementById("btn-admin-login").addEventListener("click",adminLogin);
-  document.getElementById("input-admin-pass").addEventListener("keydown",e=>{if(e.key==="Enter")adminLogin();});
-  document.getElementById("btn-add-candidate").addEventListener("click",addCandidate);
-  document.getElementById("input-new-name").addEventListener("keydown",e=>{if(e.key==="Enter")addCandidate();});
-  document.getElementById("btn-change-pass").addEventListener("click",changePassword);
-  document.getElementById("btn-clear-votes").addEventListener("click",()=>{
-    if(confirm("確定要刪除所有投票紀錄嗎？")){state.votes=[];save(SK.votes,state.votes);renderAdminVotes();renderAdminTally();}
+  document.getElementById("btn-submit").addEventListener("click",submitVote);
+  document.getElementById("btn-login").addEventListener("click",doLogin);
+  document.getElementById("inp-pass").addEventListener("keydown",e=>{if(e.key==="Enter")doLogin();});
+  document.getElementById("btn-add-cand").addEventListener("click",addCand);
+  document.getElementById("inp-new-name").addEventListener("keydown",e=>{if(e.key==="Enter")addCand();});
+  document.getElementById("btn-clear").addEventListener("click",()=>{
+    if(confirm("全投票データを削除しますか？")){st.votes=[];save(SK.v,st.votes);renderAdminVotes();renderAdminTally();}
   });
+  document.getElementById("btn-chpass").addEventListener("click",changePass);
   document.getElementById("btn-reset-voted").addEventListener("click",()=>{
-    if(confirm("確定要清除投票限制嗎？所有人將可再次投票。")){
-      localStorage.removeItem(SK.voted);state.hasVoted=false;renderHome();alert("已清除。");
+    if(confirm("投票制限をリセットしますか？")){localStorage.removeItem(SK.voted);st.hasVoted=false;renderHome();alert("リセットしました");showScreen("home");}
+  });
+  document.getElementById("btn-reset-all").addEventListener("click",()=>{
+    if(confirm("全データをリセットしますか？この操作は取り消せません。")){
+      [SK.c,SK.v,SK.voted,SK.ph].forEach(k=>localStorage.removeItem(k));
+      location.reload();
     }
   });
   document.querySelectorAll(".tab-btn").forEach(btn=>btn.addEventListener("click",()=>switchTab(btn.dataset.tab)));
