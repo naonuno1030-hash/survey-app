@@ -130,15 +130,21 @@ input:focus{border-color:#8B7CF6;box-shadow:0 0 0 3px rgba(139,124,246,0.12);}
 
 /* Firebase setup banner */
 .fb-setup{background:#FFF8E1;border:2px solid #FFD54F;border-radius:16px;padding:20px;margin-bottom:20px;}
-.fb-setup h3{font-size:15px;font-weight:800;color:#F57F17;margin-bottom:12px;}
-.fb-setup p{font-size:12px;color:#555;line-height:1.7;margin-bottom:10px;}
-.fb-setup code{background:#fff3cd;padding:2px 6px;border-radius:4px;font-family:monospace;font-size:12px;}
-.fb-setup input{width:100%;padding:10px 12px;border:2px solid #FFD54F;border-radius:10px;font-size:13px;margin-bottom:8px;outline:none;font-family:inherit;background:#fff;}
-.fb-setup input:focus{border-color:#FF8F00;}
-.fb-save-btn{width:100%;padding:10px;background:#FF8F00;color:#fff;border:none;border-radius:10px;font-weight:800;font-size:14px;cursor:pointer;font-family:inherit;}
-.fb-status{font-size:12px;margin-top:8px;font-weight:600;}
-.fb-status.ok{color:#1A8A55;}
-.fb-status.err{color:#e05555;}
+.fb-setup h3{font-size:15px;font-weight:800;color:#F57F17;margin-bottom:16px;}
+.fb-setup code{background:#fff3cd;padding:2px 6px;border-radius:4px;font-family:monospace;font-size:11px;word-break:break-all;}
+.fb-setup input{width:100%;padding:10px 12px;border:2px solid #FFD54F;border-radius:10px;font-size:13px;margin-bottom:10px;outline:none;font-family:inherit;background:#fff;color:#333;}
+.fb-setup input:focus{border-color:#FF8F00;box-shadow:0 0 0 3px rgba(255,143,0,0.15);}
+.fb-save-btn{width:100%;padding:12px;background:linear-gradient(90deg,#FF8F00,#FF6B9D);color:#fff;border:none;border-radius:12px;font-weight:800;font-size:15px;cursor:pointer;font-family:inherit;letter-spacing:.5px;}
+.fb-save-btn:disabled{opacity:.6;cursor:not-allowed;}
+.fb-status{font-size:13px;font-weight:600;padding:8px 12px;border-radius:8px;display:none;}
+.fb-status.ok{color:#1A8A55;background:#EDFFF5;display:block;}
+.fb-status.err{color:#e05555;background:#fff5f5;display:block;}
+.fb-status.loading{color:#FF8F00;background:#FFF8E1;display:block;}
+.fb-link{color:#FF8F00;font-weight:700;font-size:12px;}
+.fb-step{display:flex;gap:12px;margin-bottom:14px;align-items:flex-start;}
+.fb-step-num{width:24px;height:24px;border-radius:50%;background:#FF8F00;color:#fff;font-weight:900;font-size:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;}
+.fb-step-body{font-size:12px;color:#555;line-height:1.7;flex:1;}
+.fb-step-body b{color:#333;display:block;margin-bottom:2px;}
 /* Sync indicator */
 .sync-dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:#ccc;margin-right:6px;vertical-align:middle;}
 .sync-dot.live{background:#6FCF97;box-shadow:0 0 6px #6FCF97;animation:pulse 2s infinite;}
@@ -266,32 +272,80 @@ input:focus{border-color:#8B7CF6;box-shadow:0 0 0 3px rgba(139,124,246,0.12);}
   </div>
 
   <!-- tab: settings -->
-    <div id="tab-settings" class="tab-content">
-      <!-- Firebase config -->
-      <div class="fb-setup" id="fb-setup-box">
-        <h3>🔥 Firebase 設定（複数デバイスでデータ共有）</h3>
-        <p>Firebase Realtime Database を使うとスマホ・PCのデータがリアルタイムで同期されます。<br>
-        <a href="https://console.firebase.google.com/" target="_blank" style="color:#FF8F00">Firebase Console</a> でプロジェクトを作成し、以下の情報を入力してください。</p>
-        <label class="fl">Database URL</label>
-        <input type="text" id="fb-db-url" placeholder="https://your-project-default-rtdb.firebaseio.com">
-        <label class="fl">API Key</label>
-        <input type="text" id="fb-api-key" placeholder="AIzaSy...">
-        <button class="fb-save-btn" onclick="saveFbConfig()">💾 保存して接続</button>
-        <div id="fb-status" class="fb-status"></div>
+  <div id="tab-settings" class="tab-content">
+
+    <!-- Firebase connection status banner -->
+    <div id="fb-connected-banner" style="display:none;background:#EDFFF5;border:2px solid #6FCF97;border-radius:14px;padding:14px 16px;margin-bottom:20px;">
+      <div style="display:flex;align-items:center;gap:10px;">
+        <span style="font-size:22px">🟢</span>
+        <div>
+          <div style="font-weight:800;color:#1A8A55;font-size:14px">Firebase 接続済み・リアルタイム同期中</div>
+          <div id="fb-connected-url" style="font-size:11px;color:#888;margin-top:2px;word-break:break-all"></div>
+        </div>
+      </div>
+      <button onclick="disconnectFb()" style="margin-top:10px;width:100%;padding:8px;background:#fff;color:#e05555;border:1px solid #ffd0d0;border-radius:8px;font-weight:700;font-size:12px;cursor:pointer;font-family:inherit">接続を解除して再設定</button>
+    </div>
+
+    <!-- Firebase setup wizard -->
+    <div id="fb-setup-box" class="fb-setup">
+      <h3>🔥 Firebase 設定（スマホ・PC間でデータ共有）</h3>
+
+      <div class="fb-step">
+        <div class="fb-step-num">1</div>
+        <div class="fb-step-body">
+          <b>Firebase プロジェクトを作成</b><br>
+          <a href="https://console.firebase.google.com/" target="_blank" class="fb-link">console.firebase.google.com</a> を開き、「プロジェクトを追加」→ 名前を入力 → 作成
+        </div>
       </div>
 
-      <p class="sec-label" style="margin-top:8px">🔑 パスワード変更</p>
-      <label class="fl">新しいパスワード（6文字以上）</label>
-      <input type="password" id="inp-p1" placeholder="新しいパスワード">
-      <label class="fl">確認</label>
-      <input type="password" id="inp-p2" placeholder="もう一度入力">
-      <div id="pass-msg" class="pass-change-msg"></div>
-      <button id="btn-chpass" class="btn-primary" style="margin-bottom:24px">パスワードを変更</button>
-      <hr style="border:none;border-top:1px solid #eee;margin-bottom:20px">
-      <p class="sec-label" style="color:#e05555">⚠️ 危険な操作</p>
-      <button id="btn-reset-voted" class="btn-danger" style="width:100%;padding:10px;font-size:13px;margin-bottom:8px">投票制限をリセット（再投票を許可）</button>
-      <button id="btn-reset-all" class="btn-danger" style="width:100%;padding:10px;font-size:13px">全データをリセット</button>
+      <div class="fb-step">
+        <div class="fb-step-num">2</div>
+        <div class="fb-step-body">
+          <b>Realtime Database を有効化</b><br>
+          左メニュー「Realtime Database」→「データベースを作成」→ロケーションはどれでもOK →「テストモードで開始」→「有効にする」
+        </div>
+      </div>
+
+      <div class="fb-step">
+        <div class="fb-step-num">3</div>
+        <div class="fb-step-body">
+          <b>Database URL をコピー</b><br>
+          データベース画面の上部に表示される<br>
+          <code>https://○○-default-rtdb.firebaseio.com</code><br>
+          をコピーして下に貼り付け
+        </div>
+      </div>
+
+      <div class="fb-step">
+        <div class="fb-step-num">4</div>
+        <div class="fb-step-body">
+          <b>API Key をコピー</b><br>
+          左上 ⚙「プロジェクトの設定」→「全般」タブ → 下にスクロール →「ウェブアプリ」がなければ「&lt;/&gt;」ボタンでアプリ追加 → <code>apiKey</code> の値をコピーして下に貼り付け
+        </div>
+      </div>
+
+      <div style="margin-top:16px">
+        <label class="fl">① Database URL</label>
+        <input type="text" id="fb-db-url" placeholder="https://your-app-default-rtdb.firebaseio.com" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+        <label class="fl">② API Key</label>
+        <input type="text" id="fb-api-key" placeholder="AIzaSy..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+        <button class="fb-save-btn" id="btn-fb-save" onclick="saveFbConfig()">🔗 接続する</button>
+        <div id="fb-status" class="fb-status" style="min-height:20px;margin-top:8px"></div>
+      </div>
     </div>
+
+    <p class="sec-label">🔑 パスワード変更</p>
+    <label class="fl">新しいパスワード（6文字以上）</label>
+    <input type="password" id="inp-p1" placeholder="新しいパスワード">
+    <label class="fl">確認</label>
+    <input type="password" id="inp-p2" placeholder="もう一度入力">
+    <div id="pass-msg" class="pass-change-msg"></div>
+    <button id="btn-chpass" class="btn-primary" style="margin-bottom:24px">パスワードを変更</button>
+    <hr style="border:none;border-top:1px solid #eee;margin-bottom:20px">
+    <p class="sec-label" style="color:#e05555">⚠️ 危険な操作</p>
+    <button id="btn-reset-voted" class="btn-danger" style="width:100%;padding:10px;font-size:13px;margin-bottom:8px">投票制限をリセット（再投票を許可）</button>
+    <button id="btn-reset-all" class="btn-danger" style="width:100%;padding:10px;font-size:13px">全データをリセット</button>
+  </div>
 
   <!-- qr -->
   <div id="tab-qr" class="tab-content">
@@ -1383,31 +1437,100 @@ function renderAdminTally(){
 //  FIREBASE CONFIG (from admin settings)
 // ═══════════════════════════════════════════════════════════
 function saveFbConfig(){
-  const dbUrl = document.getElementById("fb-db-url").value.trim();
-  const apiKey = document.getElementById("fb-api-key").value.trim();
+  const dbUrl = (document.getElementById("fb-db-url").value||"").trim();
+  const apiKey = (document.getElementById("fb-api-key").value||"").trim();
   const status = document.getElementById("fb-status");
-  if(!dbUrl || !apiKey){
-    status.textContent="URLとAPI Keyの両方を入力してください"; status.className="fb-status err"; return;
+  const btn = document.getElementById("btn-fb-save");
+
+  if(!dbUrl){
+    status.textContent="① Database URL を入力してください"; status.className="fb-status err"; return;
   }
+  if(!dbUrl.startsWith("https://") || !dbUrl.includes("firebaseio.com")){
+    status.textContent="Database URL の形式が正しくありません（https://...firebaseio.com）"; status.className="fb-status err"; return;
+  }
+  if(!apiKey){
+    status.textContent="② API Key を入力してください"; status.className="fb-status err"; return;
+  }
+  if(!apiKey.startsWith("AIza")){
+    status.textContent="API Key の形式が正しくありません（AIzaSy... で始まる文字列）"; status.className="fb-status err"; return;
+  }
+
+  status.textContent="接続中..."; status.className="fb-status loading";
+  if(btn) btn.disabled = true;
+
   localStorage.setItem(SK.fbUrl, dbUrl);
   localStorage.setItem(SK.fbKey, apiKey);
+
   const ok = initFirebase(dbUrl, apiKey);
   if(ok){
-    status.textContent="✅ 接続しました！データが自動同期されます"; status.className="fb-status ok";
-    setupRealtimeListeners();
+    // Wait a moment to confirm connection
+    setTimeout(()=>{
+      if(fbConnected){
+        status.textContent="✅ 接続成功！全デバイスでリアルタイム同期されます"; status.className="fb-status ok";
+        setupRealtimeListeners();
+        showFbConnectedBanner(dbUrl);
+      } else {
+        status.textContent="⚠️ 接続中...しばらくお待ちください"; status.className="fb-status loading";
+        setTimeout(()=>{
+          if(fbConnected){
+            status.textContent="✅ 接続成功！全デバイスでリアルタイム同期されます"; status.className="fb-status ok";
+            setupRealtimeListeners();
+            showFbConnectedBanner(dbUrl);
+          } else {
+            status.textContent="❌ 接続できませんでした。URLとAPI Keyを再確認してください"; status.className="fb-status err";
+            if(btn) btn.disabled = false;
+          }
+        }, 3000);
+      }
+    }, 1500);
   } else {
-    status.textContent="❌ 接続エラー。URLとAPI Keyを確認してください"; status.className="fb-status err";
+    status.textContent="❌ 設定エラー。URLとAPI Keyを確認してください"; status.className="fb-status err";
+    if(btn) btn.disabled = false;
   }
 }
 
+function showFbConnectedBanner(dbUrl){
+  const banner = document.getElementById("fb-connected-banner");
+  const urlEl  = document.getElementById("fb-connected-url");
+  const box    = document.getElementById("fb-setup-box");
+  if(banner) banner.style.display = "block";
+  if(urlEl)  urlEl.textContent = dbUrl;
+  if(box)    box.style.display = "none";
+}
+
+function showFbSetupBox(){
+  const banner = document.getElementById("fb-connected-banner");
+  const box    = document.getElementById("fb-setup-box");
+  if(banner) banner.style.display = "none";
+  if(box)    box.style.display = "block";
+}
+
+function disconnectFb(){
+  localStorage.removeItem(SK.fbUrl);
+  localStorage.removeItem(SK.fbKey);
+  showFbSetupBox();
+  const status = document.getElementById("fb-status");
+  if(status){ status.textContent=""; status.className="fb-status"; }
+  const btn = document.getElementById("btn-fb-save");
+  if(btn) btn.disabled = false;
+  db = null; fbConnected = false; setSyncStatus(false);
+}
+
 function loadFbConfig(){
-  const dbUrl = localStorage.getItem(SK.fbUrl);
+  const dbUrl  = localStorage.getItem(SK.fbUrl);
   const apiKey = localStorage.getItem(SK.fbKey);
   if(dbUrl && apiKey){
-    if(document.getElementById("fb-db-url")) document.getElementById("fb-db-url").value = dbUrl;
-    if(document.getElementById("fb-api-key")) document.getElementById("fb-api-key").value = apiKey;
     initFirebase(dbUrl, apiKey);
-    setupRealtimeListeners();
+    // Wait for connection confirmation before showing banner
+    db.ref('.info/connected').once('value', snap => {
+      if(snap.val()){
+        fbConnected = true;
+        setSyncStatus(true);
+        setupRealtimeListeners();
+      } else {
+        setSyncStatus(false);
+      }
+    });
   } else {
     setSyncStatus(false);
   }
@@ -1460,16 +1583,21 @@ async function changePass(){
 
 function renderAdmin(){
   renderAdminCands();renderAdminVotes();renderAdminTally();
-  // Populate firebase config fields
   const storedUrl = localStorage.getItem(SK.fbUrl) || "";
   const storedKey = localStorage.getItem(SK.fbKey) || "";
   const urlEl = document.getElementById("fb-db-url");
   const keyEl = document.getElementById("fb-api-key");
   if(urlEl) urlEl.value = storedUrl;
   if(keyEl) keyEl.value = storedKey;
-  if(storedUrl && storedKey && fbConnected){
-    const status=document.getElementById("fb-status");
-    if(status){status.textContent="✅ Firebase接続済み";status.className="fb-status ok";}
+  // Show banner only when truly connected; otherwise always show setup box
+  if(fbConnected && storedUrl){
+    showFbConnectedBanner(storedUrl);
+  } else {
+    showFbSetupBox();
+    if(storedUrl && storedKey){
+      const status=document.getElementById("fb-status");
+      if(status){status.textContent="⚠️ 前回の設定が見つかりました。「接続する」を押して再接続してください";status.className="fb-status loading";}
+    }
   }
 }
 
