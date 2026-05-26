@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>アンケート</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;600;700;900&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+    display: flex; align-items: flex-start; justify-content: center;
+    padding: 32px 16px 48px;
+    font-family: 'Noto Sans JP', 'Hiragino Kaku Gothic ProN', sans-serif;
+  }
+  #app {
+    background: rgba(255,255,255,0.97);
+    border-radius: 24px; width: 100%; max-width: 480px;
+    box-shadow: 0 24px 80px rgba(0,0,0,0.4); overflow: hidden;
+  }
+  .screen { padding: 32px 28px 40px; display: none; }
+  .screen.active { display: block; }
+  .badge {
+    display: inline-block;
+    background: linear-gradient(90deg, #6c63ff, #48cfad);
+    color: #fff; font-size: 11px; font-weight: 900;
+    letter-spacing: 4px; padding: 4px 14px; border-radius: 100px; margin-bottom: 16px;
+  }
+  h1 { font-size: 36px; font-weight: 900; color: #1a1a2e; letter-spacing: -1px; margin-bottom: 6px; }
+  h2 { font-size: 22px; font-weight: 900; color: #1a1a2e; margin-bottom: 24px; }
+  .sub { color: #888; font-size: 14px; margin-bottom: 20px; }
+
+  .qr-wrap {
+    display: flex; flex-direction: column; align-items: center;
+    margin-bottom: 24px; padding: 20px;
+    background: #fff; border-radius: 16px; border: 2px dashed #d4d0ff;
+  }
+  #qr-div, #admin-qr-div {
+    background: white;
+    padding: 8px;
+    border-radius: 8px;
+    display: inline-block;
+  }
+  #qr-div img, #admin-qr-div img { display: block; }
+  .qr-hint { font-size: 11px; color: #aaa; margin-top: 12px; word-break: break-all; text-align: center; }
+
+  .btn-primary {
+    display: block; width: 100%; padding: 14px 0;
+    background: linear-gradient(90deg, #6c63ff, #48cfad);
+    color: #fff; border: none; border-radius: 12px;
+    font-size: 16px; font-weight: 800; cursor: pointer;
+    margin-bottom: 12px; letter-spacing: 1px; font-family: inherit; transition: opacity .2s;
+  }
+  .btn-primary:hover { opacity: .88; }
+  .btn-ghost {
+    display: block; width: 100%; padding: 12px 0;
+    background: transparent; color: #6c63ff; border: 2px solid #6c63ff;
+    border-radius: 12px; font-size: 15px; font-weight: 700; cursor: pointer;
+    margin-bottom: 8px; font-family: inherit; transition: background .2s, color .2s;
+  }
+  .btn-ghost:hover { background: #6c63ff; color: #fff; }
+  .btn-back {
+    background: none; border: none; color: #6c63ff;
+    font-weight: 700; font-size: 14px; cursor: pointer;
+    padding: 0 0 20px 0; font-family: inherit;
+  }
+  .btn-add {
+    padding: 12px 18px; background: #6c63ff; color: #fff;
+    border: none; border-radius: 10px; font-weight: 800;
+    font-size: 14px; cursor: pointer; font-family: inherit; white-space: nowrap; flex-shrink: 0;
+  }
+  .btn-danger {
+    padding: 6px 12px; background: #fff0f0; color: #e74c3c;
+    border: 1px solid #ffd0d0; border-radius: 8px;
+    font-weight: 700; font-size: 13px; cursor: pointer; font-family: inherit;
+  }
+  label.field-label { display: block; font-size: 13px; font-weight: 700; color: #555; margin-bottom: 6px; letter-spacing: 0.5px; }
+  input[type="text"], input[type="password"] {
+    width: 100%; padding: 12px 14px; border: 2px solid #e0deff; border-radius: 10px;
+    font-size: 15px; margin-bottom: 18px; outline: none;
+    font-family: inherit; background: #fafafe; transition: border-color .2s;
+  }
+  input:focus { border-color: #6c63ff; }
+  .error-msg {
+    color: #e74c3c; font-size: 13px; font-weight: 600; margin-bottom: 12px;
+    padding: 8px 12px; background: #fff5f5; border-radius: 8px; border: 1px solid #ffd0d0;
+  }
+  .candidate-list { margin-bottom: 20px; }
+  .candidate-item {
+    display: flex; align-items: center; gap: 12px;
+    padding: 13px 16px; border: 2px solid #e8e8f8; border-radius: 10px;
+    margin-bottom: 8px; cursor: pointer; font-size: 16px; font-weight: 600;
+    color: #333; transition: all .15s; background: #fff; user-select: none;
+  }
+  .candidate-item:hover { border-color: #b0aaff; background: #f5f3ff; }
+  .candidate-item.selected { background: linear-gradient(90deg,#eeeeff,#e6fff8); border-color: #6c63ff; color: #3b35c8; }
+  .radio-icon { font-size: 20px; color: #6c63ff; width: 24px; flex-shrink: 0; }
+  .voted-badge { text-align: center; color: #48cfad; font-weight: 800; font-size: 18px; padding: 14px 0; margin-bottom: 16px; }
+  .center-screen { text-align: center; }
+  .big-emoji { font-size: 64px; margin-bottom: 16px; }
+  .done-sub { color: #555; margin-bottom: 8px; }
+  .done-thanks { color: #aaa; font-size: 13px; margin-bottom: 32px; }
+  .tab-row { display: flex; gap: 6px; margin-bottom: 24px; flex-wrap: wrap; }
+  .tab-btn {
+    padding: 8px 14px; border: 2px solid #e0deff; border-radius: 100px;
+    background: #fff; color: #888; font-weight: 700; font-size: 13px;
+    cursor: pointer; font-family: inherit; transition: all .15s;
+  }
+  .tab-btn.active { background: #6c63ff; color: #fff; border-color: #6c63ff; }
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+  .add-row { display: flex; gap: 10px; margin-bottom: 16px; align-items: center; }
+  .add-row input { margin-bottom: 0; flex: 1; }
+  .list-item {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 12px 14px; border: 1px solid #eee; border-radius: 10px; margin-bottom: 8px; background: #fafafe;
+  }
+  .list-item-name { font-weight: 600; }
+  .log-item { padding: 12px 14px; border: 1px solid #eee; border-radius: 10px; margin-bottom: 8px; background: #fafafe; }
+  .log-top { display: flex; gap: 10px; margin-bottom: 4px; align-items: center; flex-wrap: wrap; }
+  .log-name { font-weight: 800; font-size: 15px; color: #1a1a2e; }
+  .log-aff { font-size: 12px; color: #fff; background: #6c63ff; padding: 2px 8px; border-radius: 100px; font-weight: 600; }
+  .log-bottom { display: flex; justify-content: space-between; align-items: center; }
+  .log-candidate { font-size: 14px; font-weight: 700; color: #48cfad; }
+  .log-time { font-size: 11px; color: #bbb; }
+  .tally-row { margin-bottom: 16px; }
+  .tally-header { display: flex; justify-content: space-between; margin-bottom: 4px; }
+  .tally-name { font-weight: 700; }
+  .tally-count { color: #555; }
+  .bar-bg { background: #eee; border-radius: 100px; height: 10px; overflow: hidden; }
+  .bar-fill { background: linear-gradient(90deg,#6c63ff,#48cfad); height: 100%; border-radius: 100px; transition: width .5s ease; }
+  .log-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+  .log-count { font-size: 13px; color: #888; }
+  .qr-admin-wrap { text-align: center; }
+  .qr-admin-wrap > p { font-size: 13px; color: #888; margin-bottom: 16px; }
+  .qr-url { font-size: 11px; color: #bbb; margin-top: 12px; word-break: break-all; }
+  .hint { font-size: 12px; color: #bbb; margin-top: 12px; text-align: center; }
+  .no-data { color: #aaa; font-size: 14px; margin-top: 8px; }
+  .tally-sub { font-size: 13px; color: #888; margin-bottom: 12px; }
+</style>
+</head>
+<body>
+<div id="app">
+
+  <!-- HOME -->
+  <div id="screen-home" class="screen active">
+    <div class="badge">SURVEY</div>
+    <h1>アンケート</h1>
+    <p class="sub">QRコードをスキャンしてアクセス</p>
+    <div class="qr-wrap">
+      <div id="qr-div"></div>
+      <p class="qr-hint" id="qr-url-text"></p>
+    </div>
+    <div id="home-voted-badge" class="voted-badge" style="display:none">✓ 投票済みです</div>
+    <button id="btn-go-vote" class="btn-primary">投票する</button>
+    <button id="btn-go-admin-login" class="btn-ghost">管理者ログイン</button>
+  </div>
+
+  <!-- VOTE -->
+  <div id="screen-vote" class="screen">
+    <button class="btn-back" data-to="home">← 戻る</button>
+    <h2>投票フォーム</h2>
+    <label class="field-label">所属</label>
+    <input type="text" id="input-affiliation" placeholder="例: 営業部">
+    <label class="field-label">お名前</label>
+    <input type="text" id="input-voter-name" placeholder="例: 山田 次郎">
+    <label class="field-label">投票先を選択</label>
+    <div id="candidate-list" class="candidate-list"></div>
+    <div id="vote-error" class="error-msg" style="display:none"></div>
+    <button id="btn-submit-vote" class="btn-primary">送信する</button>
+  </div>
+
+  <!-- ALREADY VOTED -->
+  <div id="screen-already" class="screen center-screen">
+    <div class="big-emoji">🚫</div>
+    <h2>投票済みです</h2>
+    <p style="color:#888;margin-bottom:32px">このデバイスからはすでに投票が完了しています。</p>
+    <button class="btn-ghost" data-to="home">トップへ戻る</button>
+  </div>
+
+  <!-- DONE -->
+  <div id="screen-done" class="screen center-screen">
+    <div class="big-emoji">✅</div>
+    <h2>投票完了！</h2>
+    <p class="done-sub"><strong id="done-candidate"></strong> に投票しました</p>
+    <p class="done-thanks">ご協力ありがとうございました</p>
+    <button class="btn-ghost" data-to="home">トップへ戻る</button>
+  </div>
+
+  <!-- ADMIN LOGIN -->
+  <div id="screen-admin-login" class="screen">
+    <button class="btn-back" data-to="home">← 戻る</button>
+    <h2>管理者ログイン</h2>
+    <label class="field-label">パスワード</label>
+    <input type="password" id="input-admin-pass" placeholder="パスワードを入力">
+    <div id="admin-login-error" class="error-msg" style="display:none"></div>
+    <button id="btn-admin-login" class="btn-primary">ログイン</button>
+    <p class="hint">※ デフォルトパスワード: admin1234</p>
+  </div>
+
+  <!-- ADMIN -->
+  <div id="screen-admin" class="screen">
+    <button class="btn-back" data-to="home">← ログアウト</button>
+    <h2>管理画面</h2>
+    <div class="tab-row">
+      <button class="tab-btn active" data-tab="candidates">候補者管理</button>
+      <button class="tab-btn" data-tab="votes">投票ログ</button>
+      <button class="tab-btn" data-tab="tally">集計</button>
+      <button class="tab-btn" data-tab="qr">QRコード</button>
+    </div>
+    <div id="tab-candidates" class="tab-content active">
+      <div class="add-row">
+        <input type="text" id="input-new-candidate" placeholder="新しい候補者名">
+        <button id="btn-add-candidate" class="btn-add">追加</button>
+      </div>
+      <div id="admin-candidate-list"></div>
+    </div>
+    <div id="tab-votes" class="tab-content">
+      <div class="log-header">
+        <span id="vote-count-label" class="log-count">計 0 件</span>
+        <button id="btn-clear-votes" class="btn-danger">全削除</button>
+      </div>
+      <div id="admin-vote-list"></div>
+    </div>
+    <div id="tab-tally" class="tab-content">
+      <p id="tally-total" class="tally-sub"></p>
+      <div id="admin-tally"></div>
+    </div>
+    <div id="tab-qr" class="tab-content">
+      <div class="qr-admin-wrap">
+        <p>このQRコードを印刷・表示して配布できます</p>
+        <div id="admin-qr-div"></div>
+        <p id="admin-qr-url" class="qr-url"></p>
+      </div>
+    </div>
+  </div>
+
+</div>
+<script>
+const ADMIN_PASSWORD = "admin1234";
+const SK = { candidates:"survey_candidates", votes:"survey_votes", voted:"survey_voted_flag" };
+
+function load(k,fb){try{const v=localStorage.getItem(k);return v?JSON.parse(v):fb;}catch{return fb;}}
+function save(k,v){localStorage.setItem(k,JSON.stringify(v));}
+function esc(s){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");}
+
+const state = {
+  candidates: load(SK.candidates, ["田中 太郎","鈴木 花子","佐藤 一郎"]),
+  votes: load(SK.votes, []),
+  hasVoted: !!localStorage.getItem(SK.voted),
+  selected: "",
+};
+
+function showScreen(id){
+  document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));
+  document.getElementById("screen-"+id).classList.add("active");
+}
+
+function initQR(){
+  const url = window.location.href;
+  document.getElementById("qr-url-text").textContent = url;
+  document.getElementById("admin-qr-url").textContent = url;
+
+  // home QR (200x200)
+  new QRCode(document.getElementById("qr-div"), {
+    text: url, width: 200, height: 200,
+    colorDark: "#000000", colorLight: "#ffffff",
+    correctLevel: QRCode.CorrectLevel.M
+  });
+
+  // admin QR (240x240)
+  new QRCode(document.getElementById("admin-qr-div"), {
+    text: url, width: 240, height: 240,
+    colorDark: "#000000", colorLight: "#ffffff",
+    correctLevel: QRCode.CorrectLevel.M
+  });
+}
+
+function renderHome(){
+  const vb = document.getElementById("home-voted-badge");
+  const bv = document.getElementById("btn-go-vote");
+  if(state.hasVoted){ vb.style.display="block"; bv.style.display="none"; }
+  else { vb.style.display="none"; bv.style.display="block"; }
+}
+
+function renderCandidates(){
+  const el = document.getElementById("candidate-list");
+  if(!state.candidates.length){ el.innerHTML='<p class="no-data">候補者が登録されていません</p>'; return; }
+  el.innerHTML = state.candidates.map(c=>`
+    <div class="candidate-item${state.selected===c?" selected":""}" onclick="selectC(${JSON.stringify(c)})">
+      <span class="radio-icon">${state.selected===c?"◉":"○"}</span>${esc(c)}
+    </div>`).join("");
+}
+window.selectC = function(n){ state.selected=n; renderCandidates(); };
+
+function showVoteErr(msg){ const e=document.getElementById("vote-error"); e.textContent=msg; e.style.display=msg?"block":"none"; }
+
+function submitVote(){
+  const aff = document.getElementById("input-affiliation").value.trim();
+  const nm  = document.getElementById("input-voter-name").value.trim();
+  if(!aff) return showVoteErr("所属を入力してください");
+  if(!nm)  return showVoteErr("お名前を入力してください");
+  if(!state.selected) return showVoteErr("投票先を選択してください");
+  showVoteErr("");
+  state.votes.push({id:Date.now(), affiliation:aff, voterName:nm, candidate:state.selected, timestamp:new Date().toLocaleString("ja-JP")});
+  save(SK.votes, state.votes);
+  localStorage.setItem(SK.voted, "1");
+  state.hasVoted = true;
+  document.getElementById("done-candidate").textContent = state.selected;
+  showScreen("done");
+}
+
+function adminLogin(){
+  const p = document.getElementById("input-admin-pass").value;
+  const e = document.getElementById("admin-login-error");
+  if(p===ADMIN_PASSWORD){ e.style.display="none"; document.getElementById("input-admin-pass").value=""; renderAdmin(); showScreen("admin"); }
+  else { e.textContent="パスワードが違います"; e.style.display="block"; }
+}
+
+function renderAdminCandidates(){
+  const el = document.getElementById("admin-candidate-list");
+  if(!state.candidates.length){ el.innerHTML='<p class="no-data">候補者なし</p>'; return; }
+  el.innerHTML = state.candidates.map(c=>`
+    <div class="list-item">
+      <span class="list-item-name">${esc(c)}</span>
+      <button class="btn-danger" onclick="removeC(${JSON.stringify(c)})">削除</button>
+    </div>`).join("");
+}
+window.removeC = function(n){ state.candidates=state.candidates.filter(c=>c!==n); save(SK.candidates,state.candidates); renderAdminCandidates(); };
+
+function addCandidate(){
+  const n = document.getElementById("input-new-candidate").value.trim();
+  if(!n || state.candidates.includes(n)) return;
+  state.candidates.push(n); save(SK.candidates, state.candidates);
+  document.getElementById("input-new-candidate").value = "";
+  renderAdminCandidates();
+}
+
+function renderAdminVotes(){
+  const el = document.getElementById("admin-vote-list");
+  document.getElementById("vote-count-label").textContent = "計 "+state.votes.length+" 件";
+  if(!state.votes.length){ el.innerHTML='<p class="no-data">投票データなし</p>'; return; }
+  el.innerHTML = [...state.votes].reverse().map(v=>`
+    <div class="log-item">
+      <div class="log-top"><span class="log-name">${esc(v.voterName)}</span><span class="log-aff">${esc(v.affiliation)}</span></div>
+      <div class="log-bottom"><span class="log-candidate">→ ${esc(v.candidate)}</span><span class="log-time">${esc(v.timestamp)}</span></div>
+    </div>`).join("");
+}
+
+function renderAdminTally(){
+  const el = document.getElementById("admin-tally");
+  document.getElementById("tally-total").textContent = "総投票数: "+state.votes.length;
+  if(!state.candidates.length){ el.innerHTML='<p class="no-data">候補者なし</p>'; return; }
+  el.innerHTML = state.candidates.map(c=>{
+    const cnt = state.votes.filter(v=>v.candidate===c).length;
+    const pct = state.votes.length ? Math.round(cnt/state.votes.length*100) : 0;
+    return `<div class="tally-row">
+      <div class="tally-header"><span class="tally-name">${esc(c)}</span><span class="tally-count">${cnt}票 (${pct}%)</span></div>
+      <div class="bar-bg"><div class="bar-fill" style="width:${pct}%"></div></div>
+    </div>`;
+  }).join("");
+}
+
+function renderAdmin(){ renderAdminCandidates(); renderAdminVotes(); renderAdminTally(); }
+
+function switchTab(id){
+  document.querySelectorAll(".tab-btn").forEach(b=>b.classList.toggle("active", b.dataset.tab===id));
+  document.querySelectorAll(".tab-content").forEach(t=>t.classList.toggle("active", t.id==="tab-"+id));
+  if(id==="votes") renderAdminVotes();
+  if(id==="tally") renderAdminTally();
+  if(id==="candidates") renderAdminCandidates();
+}
+
+document.addEventListener("DOMContentLoaded", ()=>{
+  initQR();
+  renderHome();
+
+  document.querySelectorAll("[data-to]").forEach(btn=>btn.addEventListener("click",()=>{
+    if(btn.dataset.to==="home") renderHome();
+    showScreen(btn.dataset.to);
+  }));
+
+  document.getElementById("btn-go-vote").addEventListener("click",()=>{
+    if(state.hasVoted){ showScreen("already"); return; }
+    state.selected="";
+    document.getElementById("input-affiliation").value="";
+    document.getElementById("input-voter-name").value="";
+    showVoteErr(""); renderCandidates(); showScreen("vote");
+  });
+
+  document.getElementById("btn-go-admin-login").addEventListener("click",()=>{
+    document.getElementById("input-admin-pass").value="";
+    document.getElementById("admin-login-error").style.display="none";
+    showScreen("admin-login");
+  });
+
+  document.getElementById("btn-submit-vote").addEventListener("click", submitVote);
+  document.getElementById("btn-admin-login").addEventListener("click", adminLogin);
+  document.getElementById("input-admin-pass").addEventListener("keydown", e=>{ if(e.key==="Enter") adminLogin(); });
+  document.getElementById("btn-add-candidate").addEventListener("click", addCandidate);
+  document.getElementById("input-new-candidate").addEventListener("keydown", e=>{ if(e.key==="Enter") addCandidate(); });
+  document.getElementById("btn-clear-votes").addEventListener("click",()=>{
+    if(confirm("全投票データを削除しますか？")){ state.votes=[]; save(SK.votes,state.votes); renderAdminVotes(); renderAdminTally(); }
+  });
+  document.querySelectorAll(".tab-btn").forEach(btn=>btn.addEventListener("click",()=>switchTab(btn.dataset.tab)));
+});
+</script>
+</body>
+</html>
