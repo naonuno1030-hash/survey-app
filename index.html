@@ -288,7 +288,6 @@ var SPEC=[null,
   {e:22,bl:[{n:3,k:36},{n:2,k:37}]},{e:26,bl:[{n:4,k:43},{n:1,k:44}]}
 ];
 function utf8(s){var o=[];for(var i=0;i<s.length;i++){var c=s.charCodeAt(i);if(c<128)o.push(c);else if(c<2048)o.push(192|(c>>6),128|(c&63));else if(c<65536)o.push(224|(c>>12),128|((c>>6)&63),128|(c&63));else o.push(240|(c>>18),128|((c>>12)&63),128|((c>>6)&63),128|(c&63));}return o;}
-function makeMatrix(size){var M=[];for(var i=0;i<size;i++){M.push([]);for(var j=0;j<size;j++)M[i].push(-1);}return M;}
 function genQR(text){
   var bytes=utf8(text),len=bytes.length,ver=1;
   for(;ver<=10;ver++)if(CAP[ver]>=len)break;
@@ -313,41 +312,55 @@ function genQR(text){
   for(var i=0;i<maxD;i++)blocks.forEach(function(b){if(i<b.length)allD.push(b[i]);});
   for(var i=0;i<sp.e;i++)ecb.forEach(function(b){if(i<b.length)allE.push(b[i]);});
   var cw=allD.concat(allE);
-  // matrix
-  var M=makeMatrix(size),R=makeMatrix(size);
+  // matrix (-1=unfilled, 0=light, 1=dark)
+  var M=Array.from({length:size},function(){return new Array(size).fill(-1);});
+  var R=Array.from({length:size},function(){return new Array(size).fill(0);});
   function sm(r,c,v){if(r>=0&&r<size&&c>=0&&c<size){M[r][c]=v;R[r][c]=1;}}
-  function rv(r,c){if(r>=0&&r<size&&c>=0&&c<size)R[r][c]=1;}
-  // finder
-  function finder(tr,tc){
-    for(var r=0;r<7;r++)for(var c=0;c<7;c++)sm(tr+r,tc+c,(r===0||r===6||c===0||c===6||(r>=2&&r<=4&&c>=2&&c<=4))?1:0);
-    for(var i=-1;i<=7;i++){sm(tr+i,tc-1,0);sm(tr+i,tc+7,0);sm(tr-1,tc+i,0);sm(tr+7,tc+i,0);}
+  // finder patterns (7x7 core)
+  function finderCore(tr,tc){
+    for(var r=0;r<7;r++)for(var c=0;c<7;c++)
+      sm(tr+r,tc+c,(r===0||r===6||c===0||c===6||(r>=2&&r<=4&&c>=2&&c<=4))?1:0);
   }
-  finder(0,0);finder(0,size-7);finder(size-7,0);
-  // alignment
+  finderCore(0,0);finderCore(0,size-7);finderCore(size-7,0);
+  // separators (white border around finders)
+  for(var i=0;i<8;i++){sm(7,i,0);sm(i,7,0);}           // top-left H/V
+  for(var i=0;i<8;i++){sm(7,size-1-i,0);sm(i,size-8,0);}  // top-right
+  for(var i=0;i<8;i++){sm(size-8,i,0);sm(size-1-i,7,0);}  // bottom-left
+  // alignment patterns (skip if overlaps reserved)
   var AP={2:[6,18],3:[6,22],4:[6,26],5:[6,30],6:[6,34],7:[6,22,38],8:[6,24,42],9:[6,28,46],10:[6,28,50]};
-  if(AP[ver]){var ps=AP[ver];for(var ri=0;ri<ps.length;ri++)for(var ci=0;ci<ps.length;ci++){var ar=ps[ri],ac=ps[ci];if(R[ar][ac])continue;for(var dr=-2;dr<=2;dr++)for(var dc=-2;dc<=2;dc++)sm(ar+dr,ac+dc,(Math.abs(dr)===2||Math.abs(dc)===2||(dr===0&&dc===0))?1:0);}}
-  // timing
-  for(var i=8;i<size-8;i++){if(!R[6][i])sm(6,i,i%2?0:1);if(!R[i][6])sm(i,6,i%2?0:1);}
-  // dark
+  if(ver>=2&&AP[ver]){var ps=AP[ver];for(var ri=0;ri<ps.length;ri++)for(var ci=0;ci<ps.length;ci++){var ar=ps[ri],ac=ps[ci];if(R[ar][ac])continue;for(var dr=-2;dr<=2;dr++)for(var dc2=0-2;dc2<=2;dc2++)sm(ar+dr,ac+dc2,(Math.abs(dr)===2||Math.abs(dc2)===2||(dr===0&&dc2===0))?1:0);}}
+  // timing patterns
+  for(var i=8;i<size-8;i++){if(!R[6][i])sm(6,i,i%2===0?1:0);if(!R[i][6])sm(i,6,i%2===0?1:0);}
+  // dark module
   sm(size-8,8,1);
-  // format reserve
+  // format info positions (reserve)
   var fpos1=[[8,0],[8,1],[8,2],[8,3],[8,4],[8,5],[8,7],[8,8],[7,8],[5,8],[4,8],[3,8],[2,8],[1,8],[0,8]];
   var fpos2=[[size-1,8],[size-2,8],[size-3,8],[size-4,8],[size-5,8],[size-6,8],[size-7,8],[8,size-8],[8,size-7],[8,size-6],[8,size-5],[8,size-4],[8,size-3],[8,size-2],[8,size-1]];
-  fpos1.forEach(function(p){rv(p[0],p[1]);});fpos2.forEach(function(p){rv(p[0],p[1]);});
-  // place data (mask 0)
+  fpos1.forEach(function(p){R[p[0]][p[1]]=1;});
+  fpos2.forEach(function(p){R[p[0]][p[1]]=1;});
+  // place data bits with mask pattern 2 (row%2===0)
   var dbits=[];cw.forEach(function(c){for(var i=7;i>=0;i--)dbits.push((c>>i)&1);});
   var bi=0,up=true;
   for(var col=size-1;col>=0;col-=2){
     if(col===6)col=5;
     for(var row=0;row<size;row++){
       var r2=up?size-1-row:row;
-      for(var dc=0;dc<2;dc++){var c2=col-dc;if(!R[r2][c2]&&bi<dbits.length){M[r2][c2]=dbits[bi++]^(((r2+c2)%2===0)?1:0);}}
+      for(var dcc=0;dcc<2;dcc++){
+        var c2=col-dcc;
+        if(c2>=0&&!R[r2][c2]&&bi<dbits.length){
+          // mask pattern 2: row%2===0
+          M[r2][c2]=dbits[bi++]^(r2%2===0?1:0);
+        }
+      }
     }
     up=!up;
   }
-  // format string (EC=M=01, mask=0=000 => data=01000=8)
-  function bch(d){var x=d<<10,G=0x537;for(var i=14;i>=10;i--)if((x>>i)&1)x^=G<<(i-10);return((d<<10)|x)^0x5412;}
-  var fb=[],fv=bch(8);for(var i=14;i>=0;i--)fb.push((fv>>i)&1);
+  // fill remainder bits (version-specific extra cells) with 0
+  for(var r2=0;r2<size;r2++)for(var c2=0;c2<size;c2++)if(M[r2][c2]===-1&&!R[r2][c2])M[r2][c2]=0;
+  // format string: EC=M=00 (not 01!), mask=2=010 => format data = 00 010 = 2
+  function bch15(d){var x=d<<10,G=0x537;for(var i=14;i>=10;i--)if((x>>i)&1)x^=G<<(i-10);return((d<<10)|(x&0x3FF));}
+  var fmtRaw=bch15(0b00010)^0x5412; // EC=M(00), mask=2(010)
+  var fb=[];for(var i=14;i>=0;i--)fb.push((fmtRaw>>i)&1);
   fpos1.forEach(function(p,i){M[p[0]][p[1]]=fb[i];});
   fpos2.forEach(function(p,i){M[p[0]][p[1]]=fb[i];});
   return{M:M,size:size};
