@@ -3,209 +3,158 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>投票問卷</title>
+<title>線上投票</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <style>
-:root {
-  --bg: #F7F3FF;
-  --card-bg: #FFFFFF;
-  --text: #2D2D3A;
-  --muted: #9B9BAD;
-  --radius: 20px;
+:root { --text:#2D2D3A; --muted:#9B9BAD; }
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{
+  min-height:100vh;
+  background:linear-gradient(160deg,#FFF0FB 0%,#EEF4FF 40%,#F0FFF8 100%);
+  display:flex;align-items:flex-start;justify-content:center;
+  padding:28px 14px 60px;
+  font-family:'Noto Sans TC','PingFang TC','Microsoft JhengHei',sans-serif;
 }
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-body {
-  min-height: 100vh;
-  background: linear-gradient(160deg, #FFF0FB 0%, #EEF4FF 40%, #F0FFF8 100%);
-  display: flex; align-items: flex-start; justify-content: center;
-  padding: 28px 14px 60px;
-  font-family: 'Noto Sans TC', 'PingFang TC', 'Microsoft JhengHei', sans-serif;
+#app{
+  background:#fff;border-radius:28px;width:100%;max-width:500px;
+  box-shadow:0 8px 48px rgba(120,80,200,0.13),0 2px 8px rgba(0,0,0,0.06);
+  overflow:hidden;position:relative;
 }
-#app {
-  background: var(--card-bg);
-  border-radius: 28px; width: 100%; max-width: 500px;
-  box-shadow: 0 8px 48px rgba(120,80,200,0.13), 0 2px 8px rgba(0,0,0,0.06);
-  overflow: hidden; position: relative;
-}
-.screen { padding: 36px 28px 44px; display: none; }
-.screen.active { display: block; }
+.screen{padding:36px 28px 44px;display:none;}
+.screen.active{display:block;animation:fadeUp .28s ease;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
 
 /* HOME */
-.home-header { text-align: center; margin-bottom: 20px; }
-.survey-icon { font-size: 48px; margin-bottom: 8px; }
-.home-title { font-size: 30px; font-weight: 900; color: var(--text); letter-spacing: 1px; margin-bottom: 4px; }
-.home-sub { color: var(--muted); font-size: 13px; }
-.qr-section {
-  margin: 0 auto 24px; padding: 20px 20px 14px;
-  background: #FAFAFE; border-radius: 20px;
-  border: 2px dashed #D8D0FF; text-align: center;
+.home-header{text-align:center;margin-bottom:20px;}
+.survey-icon{font-size:48px;margin-bottom:8px;}
+.home-title{font-size:30px;font-weight:900;color:var(--text);letter-spacing:1px;margin-bottom:4px;}
+.home-sub{color:var(--muted);font-size:13px;}
+.qr-section{
+  margin:0 auto 24px;padding:20px;
+  background:#FAFAFE;border-radius:20px;
+  border:2px dashed #D8D0FF;text-align:center;
 }
-#qr-div, #admin-qr-div { background:#fff; padding:8px; border-radius:8px; display:inline-block; }
-#qr-div img, #admin-qr-div img { display:block; }
-.qr-url-display {
-  font-size: 11px; color: #888; margin-top: 10px;
-  word-break: break-all; text-align: center; line-height: 1.5;
+#qr-div{background:#fff;padding:8px;border-radius:8px;display:inline-block;}
+#qr-div img{display:block;}
+.qr-url-text{font-size:10px;color:#aaa;margin-top:10px;word-break:break-all;line-height:1.5;}
+.qr-local-warn{
+  font-size:12px;color:#e05555;line-height:1.7;
+  background:#fff5f5;border-radius:10px;padding:12px 14px;margin-top:10px;text-align:left;
 }
-.qr-no-url {
-  font-size: 12px; color: #e05555; margin-top: 10px;
-  text-align: center; line-height: 1.6;
-}
-.voted-badge { text-align:center; color:#1A8A55; font-weight:800; font-size:16px; padding:14px 0; margin-bottom:12px; background:#f0fff8; border-radius:14px; }
+.qr-local-warn b{display:block;margin-bottom:4px;}
+.voted-badge{text-align:center;color:#1A8A55;font-weight:800;font-size:16px;padding:14px 0;margin-bottom:12px;background:#f0fff8;border-radius:14px;}
 
 /* Buttons */
-.btn-primary {
-  display: block; width: 100%; padding: 15px 0;
-  background: linear-gradient(90deg, #FF6B9D, #FFB347);
-  color: #fff; border: none; border-radius: 14px;
-  font-size: 17px; font-weight: 800; cursor: pointer;
-  margin-bottom: 12px; font-family: inherit;
-  box-shadow: 0 4px 16px rgba(255,107,157,0.3);
-  transition: transform .15s, box-shadow .15s;
+.btn-primary{
+  display:block;width:100%;padding:15px 0;
+  background:linear-gradient(90deg,#FF6B9D,#FFB347);
+  color:#fff;border:none;border-radius:14px;
+  font-size:17px;font-weight:800;cursor:pointer;
+  margin-bottom:12px;font-family:inherit;
+  box-shadow:0 4px 16px rgba(255,107,157,0.3);
+  transition:transform .15s,box-shadow .15s;
 }
-.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(255,107,157,0.35); }
-.btn-ghost {
-  display: block; width: 100%; padding: 13px 0;
-  background: transparent; color: #8B7CF6; border: 2px solid #C4B5FD;
-  border-radius: 14px; font-size: 15px; font-weight: 700; cursor: pointer;
-  margin-bottom: 8px; font-family: inherit; transition: background .2s;
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(255,107,157,0.35);}
+.btn-ghost{
+  display:block;width:100%;padding:13px 0;
+  background:transparent;color:#8B7CF6;border:2px solid #C4B5FD;
+  border-radius:14px;font-size:15px;font-weight:700;cursor:pointer;
+  margin-bottom:8px;font-family:inherit;transition:background .2s;
 }
-.btn-ghost:hover { background: #F3F0FF; }
-.btn-back {
-  background: none; border: none; color: #8B7CF6; font-weight: 700;
-  font-size: 14px; cursor: pointer; padding: 0 0 18px 0; font-family: inherit;
-}
-.btn-add {
-  padding: 11px 18px; background: linear-gradient(90deg,#6c63ff,#48cfad);
-  color: #fff; border: none; border-radius: 10px; font-weight: 800;
-  font-size: 14px; cursor: pointer; font-family: inherit; white-space: nowrap; flex-shrink: 0;
-}
-.btn-danger {
-  padding: 6px 12px; background: #fff0f0; color: #e05555;
-  border: 1px solid #ffd0d0; border-radius: 8px;
-  font-weight: 700; font-size: 12px; cursor: pointer; font-family: inherit;
-}
-.admin-tiny {
-  position: absolute; bottom: 12px; right: 16px;
-  font-size: 11px; color: #e0e0e0; background: none; border: none;
-  cursor: pointer; font-family: inherit; padding: 4px; user-select: none;
-  transition: color .2s;
-}
-.admin-tiny:hover { color: #aaa; }
+.btn-ghost:hover{background:#F3F0FF;}
+.btn-back{background:none;border:none;color:#8B7CF6;font-weight:700;font-size:14px;cursor:pointer;padding:0 0 18px 0;font-family:inherit;}
+.btn-add{padding:11px 18px;background:linear-gradient(90deg,#6c63ff,#48cfad);color:#fff;border:none;border-radius:10px;font-weight:800;font-size:14px;cursor:pointer;font-family:inherit;white-space:nowrap;flex-shrink:0;}
+.btn-danger{padding:6px 12px;background:#fff0f0;color:#e05555;border:1px solid #ffd0d0;border-radius:8px;font-weight:700;font-size:12px;cursor:pointer;font-family:inherit;}
+.admin-tiny{position:absolute;bottom:12px;right:16px;font-size:11px;color:#e0e0e0;background:none;border:none;cursor:pointer;font-family:inherit;padding:4px;user-select:none;transition:color .2s;}
+.admin-tiny:hover{color:#aaa;}
 
 /* Form */
-.screen-title { font-size: 22px; font-weight: 900; color: var(--text); margin-bottom: 24px; }
-label.field-label { display:block; font-size:12px; font-weight:700; color:var(--muted); margin-bottom:6px; letter-spacing:0.5px; }
-input[type="text"], input[type="password"], input[type="url"] {
-  width:100%; padding:12px 14px; border:2px solid #EDE8FF;
-  border-radius:12px; font-size:15px; margin-bottom:16px; outline:none;
-  font-family:inherit; background:#FAFAFE; transition:border-color .2s, box-shadow .2s; color:var(--text);
+.screen-title{font-size:22px;font-weight:900;color:var(--text);margin-bottom:24px;}
+label.field-label{display:block;font-size:12px;font-weight:700;color:var(--muted);margin-bottom:6px;letter-spacing:0.5px;}
+input[type="text"],input[type="password"],input[type="url"]{
+  width:100%;padding:12px 14px;border:2px solid #EDE8FF;
+  border-radius:12px;font-size:15px;margin-bottom:16px;outline:none;
+  font-family:inherit;background:#FAFAFE;transition:border-color .2s,box-shadow .2s;color:var(--text);
 }
-input:focus { border-color:#8B7CF6; box-shadow:0 0 0 3px rgba(139,124,246,0.12); }
-.error-msg {
-  color:#e05555; font-size:13px; font-weight:600; margin-bottom:12px;
-  padding:10px 14px; background:#fff5f5; border-radius:10px; border:1px solid #ffd0d0;
-}
+input:focus{border-color:#8B7CF6;box-shadow:0 0 0 3px rgba(139,124,246,0.12);}
+.error-msg{color:#e05555;font-size:13px;font-weight:600;margin-bottom:12px;padding:10px 14px;background:#fff5f5;border-radius:10px;border:1px solid #ffd0d0;}
 
-/* Vote screen */
-#screen-vote { background: linear-gradient(160deg,#FFF5FB 0%,#F0F7FF 50%,#F0FFF8 100%); }
-.vote-header { text-align:center; margin-bottom:24px; }
-.vote-icon { font-size:40px; margin-bottom:6px; }
-.vote-title { font-size:22px; font-weight:900; color:var(--text); }
-.vote-sub { font-size:13px; color:var(--muted); margin-top:4px; }
-.form-section {
-  background: rgba(255,255,255,0.85); border-radius: 16px; padding: 16px 18px; margin-bottom: 16px;
-  box-shadow: 0 2px 12px rgba(139,124,246,0.07);
-}
-.form-section label.field-label { margin-bottom: 8px; }
-.form-section input { margin-bottom: 0; }
-.form-section input:first-of-type { margin-bottom: 14px; }
+/* Vote */
+#screen-vote{background:linear-gradient(160deg,#FFF5FB 0%,#F0F7FF 50%,#F0FFF8 100%);}
+.vote-header{text-align:center;margin-bottom:24px;}
+.vote-icon{font-size:40px;margin-bottom:6px;}
+.vote-title{font-size:22px;font-weight:900;color:var(--text);}
+.vote-sub{font-size:13px;color:var(--muted);margin-top:4px;}
+.form-section{background:rgba(255,255,255,0.85);border-radius:16px;padding:16px 18px;margin-bottom:16px;box-shadow:0 2px 12px rgba(139,124,246,0.07);}
+.form-section label.field-label{margin-bottom:8px;}
+.form-section input{margin-bottom:0;}
+.form-section input:first-of-type{margin-bottom:14px;}
 
 /* Candidate cards */
-.candidates-section { margin-bottom: 16px; }
-.candidates-label { font-size:12px; font-weight:700; color:var(--muted); letter-spacing:0.5px; margin-bottom:12px; }
-.candidates-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
-.ccard {
-  border-radius: 18px; padding: 16px 12px 14px; cursor: pointer;
-  border: 3px solid transparent; text-align: center;
-  transition: transform .18s, box-shadow .18s, border-color .18s;
-  position: relative; overflow: hidden; background: #fff;
-}
-.ccard:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,0,0,0.1); }
-.ccard.selected { box-shadow: 0 8px 28px rgba(0,0,0,0.15); transform: translateY(-3px); }
-.ccard.selected::after { content:'✓'; position:absolute; top:8px; right:10px; font-size:16px; font-weight:900; }
-.ccard:nth-child(6n+1) { background:linear-gradient(145deg,#FFF0F7,#FFE0F0); color:#D63B82; }
-.ccard:nth-child(6n+1).selected { border-color:#D63B82; }
-.ccard:nth-child(6n+2) { background:linear-gradient(145deg,#FFF7E6,#FFECC7); color:#C47A00; }
-.ccard:nth-child(6n+2).selected { border-color:#C47A00; }
-.ccard:nth-child(6n+3) { background:linear-gradient(145deg,#E8F7FF,#C9EDFF); color:#1A7DB8; }
-.ccard:nth-child(6n+3).selected { border-color:#1A7DB8; }
-.ccard:nth-child(6n+4) { background:linear-gradient(145deg,#EDFFF5,#C8F7E0); color:#1A8A55; }
-.ccard:nth-child(6n+4).selected { border-color:#1A8A55; }
-.ccard:nth-child(6n+5) { background:linear-gradient(145deg,#F3EEFF,#E2D4FF); color:#6B36CC; }
-.ccard:nth-child(6n+5).selected { border-color:#6B36CC; }
-.ccard:nth-child(6n+6) { background:linear-gradient(145deg,#FFF3E8,#FFE0C5); color:#C05A00; }
-.ccard:nth-child(6n+6).selected { border-color:#C05A00; }
-.ccard-photo { width:72px; height:72px; border-radius:50%; margin:0 auto 10px; object-fit:cover; display:block; border:3px solid rgba(255,255,255,0.8); box-shadow:0 3px 10px rgba(0,0,0,0.12); }
-.ccard-photo-placeholder { width:72px; height:72px; border-radius:50%; margin:0 auto 10px; display:flex; align-items:center; justify-content:center; font-size:30px; background:rgba(255,255,255,0.5); border:3px solid rgba(255,255,255,0.8); box-shadow:0 3px 10px rgba(0,0,0,0.1); }
-.ccard-name { font-size:14px; font-weight:800; line-height:1.3; }
+.candidates-label{font-size:12px;font-weight:700;color:var(--muted);letter-spacing:0.5px;margin-bottom:12px;}
+.candidates-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;}
+.ccard{border-radius:18px;padding:16px 12px 14px;cursor:pointer;border:3px solid transparent;text-align:center;transition:transform .18s,box-shadow .18s,border-color .18s;position:relative;overflow:hidden;}
+.ccard:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(0,0,0,0.1);}
+.ccard.selected{box-shadow:0 8px 28px rgba(0,0,0,0.15);transform:translateY(-3px);}
+.ccard.selected::after{content:'✓';position:absolute;top:8px;right:10px;font-size:16px;font-weight:900;}
+.ccard:nth-child(6n+1){background:linear-gradient(145deg,#FFF0F7,#FFE0F0);color:#D63B82;}
+.ccard:nth-child(6n+1).selected{border-color:#D63B82;}
+.ccard:nth-child(6n+2){background:linear-gradient(145deg,#FFF7E6,#FFECC7);color:#C47A00;}
+.ccard:nth-child(6n+2).selected{border-color:#C47A00;}
+.ccard:nth-child(6n+3){background:linear-gradient(145deg,#E8F7FF,#C9EDFF);color:#1A7DB8;}
+.ccard:nth-child(6n+3).selected{border-color:#1A7DB8;}
+.ccard:nth-child(6n+4){background:linear-gradient(145deg,#EDFFF5,#C8F7E0);color:#1A8A55;}
+.ccard:nth-child(6n+4).selected{border-color:#1A8A55;}
+.ccard:nth-child(6n+5){background:linear-gradient(145deg,#F3EEFF,#E2D4FF);color:#6B36CC;}
+.ccard:nth-child(6n+5).selected{border-color:#6B36CC;}
+.ccard:nth-child(6n+6){background:linear-gradient(145deg,#FFF3E8,#FFE0C5);color:#C05A00;}
+.ccard:nth-child(6n+6).selected{border-color:#C05A00;}
+.ccard-photo{width:72px;height:72px;border-radius:50%;margin:0 auto 10px;object-fit:cover;display:block;border:3px solid rgba(255,255,255,0.8);box-shadow:0 3px 10px rgba(0,0,0,0.12);}
+.ccard-photo-placeholder{width:72px;height:72px;border-radius:50%;margin:0 auto 10px;display:flex;align-items:center;justify-content:center;font-size:30px;background:rgba(255,255,255,0.5);border:3px solid rgba(255,255,255,0.8);box-shadow:0 3px 10px rgba(0,0,0,0.1);}
+.ccard-name{font-size:14px;font-weight:800;line-height:1.3;}
 
 /* Done/Already */
-.center-screen { text-align:center; }
-.big-emoji { font-size:64px; margin-bottom:16px; }
-.done-sub { color:#555; margin-bottom:8px; }
-.done-thanks { color:#aaa; font-size:13px; margin-bottom:32px; }
-#screen-already { background:linear-gradient(160deg,#FFF5FB,#F0F7FF); }
+.center-screen{text-align:center;}
+.big-emoji{font-size:64px;margin-bottom:16px;}
+.done-sub{color:#555;margin-bottom:8px;}
+.done-thanks{color:#aaa;font-size:13px;margin-bottom:32px;}
+#screen-already{background:linear-gradient(160deg,#FFF5FB,#F0F7FF);}
 
 /* Admin */
-.tab-row { display:flex; gap:6px; margin-bottom:24px; flex-wrap:wrap; }
-.tab-btn { padding:8px 14px; border:2px solid #EDE8FF; border-radius:100px; background:#fff; color:#aaa; font-weight:700; font-size:12px; cursor:pointer; font-family:inherit; transition:all .15s; }
-.tab-btn.active { background:#6c63ff; color:#fff; border-color:#6c63ff; }
-.tab-content { display:none; }
-.tab-content.active { display:block; }
-.add-row { display:flex; gap:8px; margin-bottom:14px; align-items:flex-end; flex-wrap:wrap; }
-.add-fields { flex:1; min-width:200px; }
-.add-fields input { margin-bottom:8px; }
-.add-fields input:last-child { margin-bottom:0; }
-.list-item { display:flex; justify-content:space-between; align-items:center; padding:10px 14px; border:1px solid #EDE8FF; border-radius:12px; margin-bottom:8px; background:#FAFAFE; gap:8px; }
-.list-item-left { display:flex; align-items:center; gap:10px; }
-.list-thumb { width:38px; height:38px; border-radius:50%; object-fit:cover; flex-shrink:0; background:#eee; }
-.list-thumb-ph { width:38px; height:38px; border-radius:50%; background:#EDE8FF; display:flex; align-items:center; justify-content:center; font-size:18px; flex-shrink:0; }
-.list-item-name { font-weight:700; font-size:14px; }
-.log-item { padding:12px 14px; border:1px solid #EDE8FF; border-radius:12px; margin-bottom:8px; background:#FAFAFE; }
-.log-top { display:flex; gap:8px; margin-bottom:4px; align-items:center; flex-wrap:wrap; }
-.log-name { font-weight:800; font-size:14px; color:var(--text); }
-.log-aff { font-size:11px; color:#fff; background:#8B7CF6; padding:2px 8px; border-radius:100px; font-weight:600; }
-.log-bottom { display:flex; justify-content:space-between; align-items:center; }
-.log-candidate { font-size:13px; font-weight:700; color:#48cfad; }
-.log-time { font-size:10px; color:#bbb; }
-.tally-row { margin-bottom:16px; }
-.tally-header { display:flex; justify-content:space-between; margin-bottom:4px; align-items:center; gap:8px; }
-.tally-name { font-weight:700; font-size:14px; }
-.tally-count { color:#555; font-size:13px; white-space:nowrap; }
-.bar-bg { background:#eee; border-radius:100px; height:10px; overflow:hidden; }
-.bar-fill { background:linear-gradient(90deg,#8B7CF6,#48cfad); height:100%; border-radius:100px; transition:width .6s ease; }
-.log-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; }
-.log-count { font-size:13px; color:#aaa; }
-.no-data { color:#ccc; font-size:13px; margin-top:8px; }
-.tally-sub { font-size:13px; color:#aaa; margin-bottom:12px; }
-
-/* URL setting box */
-.url-setting-box {
-  background:#FAFAFE; border:2px solid #EDE8FF; border-radius:14px;
-  padding:16px; margin-bottom:20px;
-}
-.url-setting-box p { font-size:12px; color:#888; margin-bottom:10px; line-height:1.6; }
-.url-setting-row { display:flex; gap:8px; align-items:center; }
-.url-setting-row input { margin-bottom:0; flex:1; font-size:13px; }
-.btn-save-url {
-  padding:10px 14px; background:#6c63ff; color:#fff; border:none;
-  border-radius:10px; font-weight:800; font-size:13px; cursor:pointer;
-  font-family:inherit; white-space:nowrap;
-}
-
-@keyframes fadeUp { from{opacity:0;transform:translateY(14px)} to{opacity:1;transform:translateY(0)} }
-.screen.active { animation: fadeUp .28s ease; }
+.tab-row{display:flex;gap:6px;margin-bottom:24px;flex-wrap:wrap;}
+.tab-btn{padding:8px 14px;border:2px solid #EDE8FF;border-radius:100px;background:#fff;color:#aaa;font-weight:700;font-size:12px;cursor:pointer;font-family:inherit;transition:all .15s;}
+.tab-btn.active{background:#6c63ff;color:#fff;border-color:#6c63ff;}
+.tab-content{display:none;}
+.tab-content.active{display:block;}
+.add-row{display:flex;gap:8px;margin-bottom:14px;align-items:flex-end;flex-wrap:wrap;}
+.add-fields{flex:1;min-width:200px;}
+.add-fields input{margin-bottom:8px;}
+.add-fields input:last-child{margin-bottom:0;}
+.list-item{display:flex;justify-content:space-between;align-items:center;padding:10px 14px;border:1px solid #EDE8FF;border-radius:12px;margin-bottom:8px;background:#FAFAFE;gap:8px;}
+.list-item-left{display:flex;align-items:center;gap:10px;}
+.list-thumb{width:38px;height:38px;border-radius:50%;object-fit:cover;flex-shrink:0;background:#eee;}
+.list-thumb-ph{width:38px;height:38px;border-radius:50%;background:#EDE8FF;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+.list-item-name{font-weight:700;font-size:14px;}
+.log-item{padding:12px 14px;border:1px solid #EDE8FF;border-radius:12px;margin-bottom:8px;background:#FAFAFE;}
+.log-top{display:flex;gap:8px;margin-bottom:4px;align-items:center;flex-wrap:wrap;}
+.log-name{font-weight:800;font-size:14px;color:var(--text);}
+.log-aff{font-size:11px;color:#fff;background:#8B7CF6;padding:2px 8px;border-radius:100px;font-weight:600;}
+.log-bottom{display:flex;justify-content:space-between;align-items:center;}
+.log-candidate{font-size:13px;font-weight:700;color:#48cfad;}
+.log-time{font-size:10px;color:#bbb;}
+.tally-row{margin-bottom:16px;}
+.tally-header{display:flex;justify-content:space-between;margin-bottom:4px;align-items:center;}
+.tally-name{font-weight:700;font-size:14px;}
+.tally-count{color:#555;font-size:13px;white-space:nowrap;}
+.bar-bg{background:#eee;border-radius:100px;height:10px;overflow:hidden;}
+.bar-fill{background:linear-gradient(90deg,#8B7CF6,#48cfad);height:100%;border-radius:100px;transition:width .6s ease;}
+.log-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;}
+.log-count{font-size:13px;color:#aaa;}
+.no-data{color:#ccc;font-size:13px;margin-top:8px;}
+.tally-sub{font-size:13px;color:#aaa;margin-bottom:12px;}
+.section-label{font-size:13px;font-weight:700;color:#888;margin-bottom:12px;}
+.pass-change-msg{font-size:13px;margin-bottom:12px;display:none;}
 </style>
 </head>
 <body>
@@ -220,9 +169,10 @@ input:focus { border-color:#8B7CF6; box-shadow:0 0 0 3px rgba(139,124,246,0.12);
     </div>
     <div class="qr-section">
       <div id="qr-div"></div>
-      <div id="qr-url-display" class="qr-url-display"></div>
-      <div id="qr-no-url" class="qr-no-url" style="display:none">
-        ⚠️ 尚未設定公開網址<br>請由管理後台 → 設定 → 輸入 GitHub Pages 網址
+      <div id="qr-url-text" class="qr-url-text"></div>
+      <div id="qr-local-warn" class="qr-local-warn" style="display:none">
+        <b>⚠️ 目前為本機檔案模式，QR Code 無法使用</b>
+        請將此檔案上傳至 GitHub Pages 後，QR Code 將自動顯示正確網址。
       </div>
     </div>
     <div id="home-voted-badge" class="voted-badge" style="display:none">✅ 您已完成投票，謝謝！</div>
@@ -244,11 +194,9 @@ input:focus { border-color:#8B7CF6; box-shadow:0 0 0 3px rgba(139,124,246,0.12);
       <label class="field-label" style="margin-top:2px">您的姓名</label>
       <input type="text" id="input-voter-name" placeholder="例：王小明">
     </div>
-    <div class="candidates-section">
-      <div class="candidates-label">請選擇您支持的候選人</div>
-      <div id="candidate-grid" class="candidates-grid"></div>
-      <p id="no-candidates" class="no-data" style="display:none">目前尚無候選人</p>
-    </div>
+    <div class="candidates-label">請選擇您支持的候選人</div>
+    <div id="candidate-grid" class="candidates-grid"></div>
+    <p id="no-candidates" class="no-data" style="display:none;margin-bottom:16px">目前尚無候選人</p>
     <div id="vote-error" class="error-msg" style="display:none"></div>
     <button id="btn-submit-vote" class="btn-primary">確認送出 ✓</button>
   </div>
@@ -323,26 +271,15 @@ input:focus { border-color:#8B7CF6; box-shadow:0 0 0 3px rgba(139,124,246,0.12);
 
     <!-- settings -->
     <div id="tab-settings" class="tab-content">
-      <p style="font-size:13px;color:#888;margin-bottom:16px;font-weight:700">📡 QR Code 網址設定</p>
-      <div class="url-setting-box">
-        <p>請輸入您的 GitHub Pages 網址（例：<code>https://yourname.github.io/survey-app/</code>）。QR Code 將指向此網址。</p>
-        <div class="url-setting-row">
-          <input type="text" id="input-site-url" placeholder="https://yourname.github.io/survey-app/">
-          <button class="btn-save-url" id="btn-save-url">儲存</button>
-        </div>
-        <div id="url-save-msg" style="font-size:12px;margin-top:8px;display:none"></div>
-      </div>
-
-      <p style="font-size:13px;color:#888;margin-bottom:12px;font-weight:700">🔑 變更密碼</p>
+      <p class="section-label">🔑 變更管理員密碼</p>
       <label class="field-label">新密碼（至少 6 字元）</label>
       <input type="password" id="input-new-pass1" placeholder="輸入新密碼">
       <label class="field-label">確認新密碼</label>
-      <input type="password" id="input-new-pass2" placeholder="再次輸入新密碼">
-      <div id="pass-change-msg" style="font-size:13px;margin-bottom:12px;display:none"></div>
+      <input type="password" id="input-new-pass2" placeholder="再次輸入">
+      <div id="pass-change-msg" class="pass-change-msg"></div>
       <button id="btn-change-pass" class="btn-primary" style="margin-bottom:24px">變更密碼</button>
-
       <hr style="border:none;border-top:1px solid #eee;margin-bottom:20px">
-      <p style="font-size:13px;color:#e05555;margin-bottom:10px;font-weight:700">⚠️ 危險操作</p>
+      <p class="section-label" style="color:#e05555">⚠️ 危險操作</p>
       <button id="btn-reset-voted" class="btn-danger" style="width:100%;padding:10px;font-size:13px">清除投票限制（允許重新投票）</button>
     </div>
 
@@ -350,197 +287,197 @@ input:focus { border-color:#8B7CF6; box-shadow:0 0 0 3px rgba(139,124,246,0.12);
     <div id="tab-qr" class="tab-content">
       <div style="text-align:center">
         <p style="font-size:13px;color:#888;margin-bottom:16px">列印或展示此 QR Code 讓參與者掃描</p>
-        <div id="admin-qr-div"></div>
-        <p id="admin-qr-url" style="font-size:10px;color:#ccc;margin-top:10px;word-break:break-all"></p>
+        <div id="admin-qr-div" style="background:#fff;padding:8px;border-radius:8px;display:inline-block;"></div>
+        <p id="admin-qr-url" style="font-size:10px;color:#aaa;margin-top:10px;word-break:break-all;"></p>
+        <div id="admin-qr-warn" style="display:none;font-size:12px;color:#e05555;margin-top:10px;background:#fff5f5;border-radius:10px;padding:12px;">
+          ⚠️ 本機檔案模式では QR Code を生成できません。GitHub Pages にアップロード後に使用してください。
+        </div>
       </div>
     </div>
   </div>
 
 </div>
 <script>
-// ── SHA-256 via SubtleCrypto (async) ──────────────────────────────────────
-async function sha256(msg) {
-  const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(msg));
-  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,"0")).join("");
+// ── SHA-256 ───────────────────────────────────────────────────────────────
+async function sha256(msg){
+  const buf=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(msg));
+  return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,"0")).join("");
 }
-// sha256("admin1234") = ac9689e2272427085e35b9d3e3e8bed88cb3434828b43b86fc0596cad4c6e270
-const DEFAULT_HASH = "ac9689e2272427085e35b9d3e3e8bed88cb3434828b43b86fc0596cad4c6e270";
+// sha256("admin1234") verified:
+const DEFAULT_HASH="ac9689e2272427085e35b9d3e3e8bed88cb3434828b43b86fc0596cad4c6e270";
 
-// ── Storage keys ──────────────────────────────────────────────────────────
-const SK = {
-  candidates: "survey_cands_v3",
-  votes:      "survey_votes_v3",
-  voted:      "survey_voted_v3",
-  passHash:   "survey_pass_hash",
-  siteUrl:    "survey_site_url",
+// ── Storage ───────────────────────────────────────────────────────────────
+const SK={
+  candidates:"sv_cands_v4",
+  votes:"sv_votes_v4",
+  voted:"sv_voted_v4",
+  passHash:"sv_pass_hash",
 };
-function load(k, fb) { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : fb; } catch { return fb; } }
-function save(k, v)  { localStorage.setItem(k, JSON.stringify(v)); }
-function esc(s)      { return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
+function load(k,fb){try{const v=localStorage.getItem(k);return v?JSON.parse(v):fb;}catch{return fb;}}
+function save(k,v){localStorage.setItem(k,JSON.stringify(v));}
+function esc(s){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");}
 
-// ── App state ─────────────────────────────────────────────────────────────
-const state = {
-  candidates: load(SK.candidates, [
-    { name: "田中 太郎", photo: "" },
-    { name: "鈴木 花子", photo: "" },
-    { name: "佐藤 一郎", photo: "" },
+// ── State ─────────────────────────────────────────────────────────────────
+const state={
+  candidates:load(SK.candidates,[
+    {name:"田中 太郎",photo:""},
+    {name:"鈴木 花子",photo:""},
+    {name:"佐藤 一郎",photo:""},
   ]),
-  votes:    load(SK.votes, []),
-  hasVoted: !!localStorage.getItem(SK.voted),
-  selected: null,
-  passHash: localStorage.getItem(SK.passHash) || DEFAULT_HASH,
-  siteUrl:  localStorage.getItem(SK.siteUrl)  || "",
+  votes:load(SK.votes,[]),
+  hasVoted:!!localStorage.getItem(SK.voted),
+  selected:null,
+  passHash:localStorage.getItem(SK.passHash)||DEFAULT_HASH,
 };
+
+// ── URL detection ─────────────────────────────────────────────────────────
+function getAppUrl(){
+  const href=window.location.href;
+  // file:// protocol = local file, QR not useful
+  if(href.startsWith("file://")) return null;
+  // Remove any hash/query for cleanliness
+  return href.split("?")[0].split("#")[0];
+}
 
 // ── Navigation ────────────────────────────────────────────────────────────
-function showScreen(id) {
-  document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
-  document.getElementById("screen-" + id).classList.add("active");
+function showScreen(id){
+  document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));
+  document.getElementById("screen-"+id).classList.add("active");
 }
 
-// ── QR helpers ────────────────────────────────────────────────────────────
-let qrHomeObj = null, qrAdminObj = null;
+// ── QR ────────────────────────────────────────────────────────────────────
+let qrHomeBuilt=false, qrAdminBuilt=false;
 
-function buildQR(divId, url, size) {
-  const el = document.getElementById(divId);
-  el.innerHTML = "";
-  return new QRCode(el, {
-    text: url, width: size, height: size,
-    colorDark: "#000000", colorLight: "#ffffff",
-    correctLevel: QRCode.CorrectLevel.M
-  });
-}
-
-function refreshHomeQR() {
-  const url = state.siteUrl.trim();
-  const displayEl  = document.getElementById("qr-url-display");
-  const noUrlEl    = document.getElementById("qr-no-url");
-  if (url) {
-    noUrlEl.style.display    = "none";
-    displayEl.style.display  = "block";
-    displayEl.textContent    = url;
-    buildQR("qr-div", url, 200);
+function buildHomeQR(){
+  if(qrHomeBuilt) return;
+  const url=getAppUrl();
+  const qrDiv=document.getElementById("qr-div");
+  const urlText=document.getElementById("qr-url-text");
+  const warn=document.getElementById("qr-local-warn");
+  if(url){
+    warn.style.display="none";
+    urlText.style.display="block";
+    urlText.textContent=url;
+    qrDiv.innerHTML="";
+    new QRCode(qrDiv,{text:url,width:200,height:200,colorDark:"#000000",colorLight:"#ffffff",correctLevel:QRCode.CorrectLevel.M});
+    qrHomeBuilt=true;
   } else {
-    noUrlEl.style.display    = "block";
-    displayEl.style.display  = "none";
-    document.getElementById("qr-div").innerHTML = "";
+    qrDiv.innerHTML="";
+    urlText.style.display="none";
+    warn.style.display="block";
   }
 }
 
-function refreshAdminQR() {
-  const url = state.siteUrl.trim();
-  const el  = document.getElementById("admin-qr-url");
-  el.textContent = url || "（尚未設定網址）";
-  if (url) buildQR("admin-qr-div", url, 240);
-  else document.getElementById("admin-qr-div").innerHTML = "";
+function buildAdminQR(){
+  if(qrAdminBuilt) return;
+  const url=getAppUrl();
+  const qrDiv=document.getElementById("admin-qr-div");
+  const urlEl=document.getElementById("admin-qr-url");
+  const warn=document.getElementById("admin-qr-warn");
+  if(url){
+    warn.style.display="none";
+    urlEl.textContent=url;
+    qrDiv.innerHTML="";
+    new QRCode(qrDiv,{text:url,width:240,height:240,colorDark:"#000000",colorLight:"#ffffff",correctLevel:QRCode.CorrectLevel.M});
+    qrAdminBuilt=true;
+  } else {
+    urlEl.textContent="（本機檔案模式，無法產生 QR Code）";
+    warn.style.display="block";
+  }
 }
 
 // ── Home ──────────────────────────────────────────────────────────────────
-function renderHome() {
-  document.getElementById("home-voted-badge").style.display = state.hasVoted ? "block" : "none";
-  document.getElementById("btn-go-vote").style.display      = state.hasVoted ? "none"  : "block";
-  // populate URL input in settings
-  document.getElementById("input-site-url").value = state.siteUrl;
+function renderHome(){
+  document.getElementById("home-voted-badge").style.display=state.hasVoted?"block":"none";
+  document.getElementById("btn-go-vote").style.display=state.hasVoted?"none":"block";
 }
 
-// ── Vote: candidate cards ─────────────────────────────────────────────────
-function renderCandidateGrid() {
-  const grid = document.getElementById("candidate-grid");
-  const noC  = document.getElementById("no-candidates");
-  if (!state.candidates.length) { grid.innerHTML = ""; noC.style.display = "block"; return; }
-  noC.style.display = "none";
-  grid.innerHTML = state.candidates.map((c, i) => {
-    const sel = state.selected === i;
-    const photoHtml = c.photo
-      ? `<img class="ccard-photo" src="${esc(c.photo)}" alt="${esc(c.name)}"
-              onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
-         <div class="ccard-photo-placeholder" style="display:none">👤</div>`
-      : `<div class="ccard-photo-placeholder">👤</div>`;
-    return `<div class="ccard${sel ? " selected" : ""}" onclick="selectC(${i})">
-      ${photoHtml}
-      <div class="ccard-name">${esc(c.name)}</div>
-    </div>`;
+// ── Vote ──────────────────────────────────────────────────────────────────
+function renderCandidateGrid(){
+  const grid=document.getElementById("candidate-grid");
+  const noC=document.getElementById("no-candidates");
+  if(!state.candidates.length){grid.innerHTML="";noC.style.display="block";return;}
+  noC.style.display="none";
+  grid.innerHTML=state.candidates.map((c,i)=>{
+    const sel=state.selected===i;
+    const photo=c.photo
+      ?`<img class="ccard-photo" src="${esc(c.photo)}" alt="${esc(c.name)}"
+             onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+        <div class="ccard-photo-placeholder" style="display:none">👤</div>`
+      :`<div class="ccard-photo-placeholder">👤</div>`;
+    return`<div class="ccard${sel?" selected":""}" onclick="selectC(${i})">${photo}<div class="ccard-name">${esc(c.name)}</div></div>`;
   }).join("");
 }
-window.selectC = function(i) { state.selected = i; renderCandidateGrid(); };
+window.selectC=function(i){state.selected=i;renderCandidateGrid();};
 
-function showVoteErr(msg) {
-  const e = document.getElementById("vote-error");
-  e.textContent = msg; e.style.display = msg ? "block" : "none";
-}
+function showVoteErr(msg){const e=document.getElementById("vote-error");e.textContent=msg;e.style.display=msg?"block":"none";}
 
-function submitVote() {
-  const aff = document.getElementById("input-affiliation").value.trim();
-  const nm  = document.getElementById("input-voter-name").value.trim();
-  if (!aff) return showVoteErr("請輸入所屬單位");
-  if (!nm)  return showVoteErr("請輸入您的姓名");
-  if (state.selected === null) return showVoteErr("請選擇候選人");
+function submitVote(){
+  const aff=document.getElementById("input-affiliation").value.trim();
+  const nm=document.getElementById("input-voter-name").value.trim();
+  if(!aff) return showVoteErr("請輸入所屬單位");
+  if(!nm)  return showVoteErr("請輸入您的姓名");
+  if(state.selected===null) return showVoteErr("請選擇候選人");
   showVoteErr("");
-  const cand = state.candidates[state.selected];
-  state.votes.push({ id: Date.now(), affiliation: aff, voterName: nm, candidate: cand.name, timestamp: new Date().toLocaleString("zh-TW") });
-  save(SK.votes, state.votes);
-  localStorage.setItem(SK.voted, "1");
-  state.hasVoted = true;
-  document.getElementById("done-candidate").textContent = cand.name;
+  const cand=state.candidates[state.selected];
+  state.votes.push({id:Date.now(),affiliation:aff,voterName:nm,candidate:cand.name,timestamp:new Date().toLocaleString("zh-TW")});
+  save(SK.votes,state.votes);
+  localStorage.setItem(SK.voted,"1");
+  state.hasVoted=true;
+  document.getElementById("done-candidate").textContent=cand.name;
   showScreen("done");
 }
 
 // ── Admin login ───────────────────────────────────────────────────────────
-async function adminLogin() {
-  const p = document.getElementById("input-admin-pass").value;
-  const e = document.getElementById("admin-login-error");
-  if (!p) { e.textContent = "請輸入密碼"; e.style.display = "block"; return; }
-  const hash = await sha256(p);
-  if (hash === state.passHash) {
-    e.style.display = "none";
-    document.getElementById("input-admin-pass").value = "";
+async function adminLogin(){
+  const p=document.getElementById("input-admin-pass").value;
+  const e=document.getElementById("admin-login-error");
+  if(!p){e.textContent="請輸入密碼";e.style.display="block";return;}
+  const hash=await sha256(p);
+  if(hash===state.passHash){
+    e.style.display="none";
+    document.getElementById("input-admin-pass").value="";
     renderAdmin();
     showScreen("admin");
   } else {
-    e.textContent = "密碼錯誤，請重試。";
-    e.style.display = "block";
+    e.textContent="密碼錯誤，請重試。";
+    e.style.display="block";
   }
 }
 
 // ── Admin: candidates ─────────────────────────────────────────────────────
-function renderAdminCandidates() {
-  const el = document.getElementById("admin-candidate-list");
-  if (!state.candidates.length) { el.innerHTML = '<p class="no-data">尚無候選人</p>'; return; }
-  el.innerHTML = state.candidates.map((c, i) => `
+function renderAdminCandidates(){
+  const el=document.getElementById("admin-candidate-list");
+  if(!state.candidates.length){el.innerHTML='<p class="no-data">尚無候選人</p>';return;}
+  el.innerHTML=state.candidates.map((c,i)=>`
     <div class="list-item">
       <div class="list-item-left">
-        ${c.photo
-          ? `<img class="list-thumb" src="${esc(c.photo)}" onerror="this.style.background='#EDE8FF'">`
-          : `<div class="list-thumb-ph">👤</div>`}
+        ${c.photo?`<img class="list-thumb" src="${esc(c.photo)}" onerror="this.style.background='#EDE8FF'">`:`<div class="list-thumb-ph">👤</div>`}
         <span class="list-item-name">${esc(c.name)}</span>
       </div>
       <button class="btn-danger" onclick="removeC(${i})">刪除</button>
     </div>`).join("");
 }
-window.removeC = function(i) {
-  state.candidates.splice(i, 1);
-  save(SK.candidates, state.candidates);
-  renderAdminCandidates();
-};
+window.removeC=function(i){state.candidates.splice(i,1);save(SK.candidates,state.candidates);renderAdminCandidates();};
 
-function addCandidate() {
-  const name  = document.getElementById("input-new-name").value.trim();
-  const photo = document.getElementById("input-new-photo").value.trim();
-  if (!name) return;
-  if (state.candidates.find(c => c.name === name)) return;
-  state.candidates.push({ name, photo });
-  save(SK.candidates, state.candidates);
-  document.getElementById("input-new-name").value  = "";
-  document.getElementById("input-new-photo").value = "";
+function addCandidate(){
+  const name=document.getElementById("input-new-name").value.trim();
+  const photo=document.getElementById("input-new-photo").value.trim();
+  if(!name)return;
+  if(state.candidates.find(c=>c.name===name))return;
+  state.candidates.push({name,photo});
+  save(SK.candidates,state.candidates);
+  document.getElementById("input-new-name").value="";
+  document.getElementById("input-new-photo").value="";
   renderAdminCandidates();
 }
 
 // ── Admin: votes ──────────────────────────────────────────────────────────
-function renderAdminVotes() {
-  const el = document.getElementById("admin-vote-list");
-  document.getElementById("vote-count-label").textContent = "共 " + state.votes.length + " 筆";
-  if (!state.votes.length) { el.innerHTML = '<p class="no-data">尚無投票紀錄</p>'; return; }
-  el.innerHTML = [...state.votes].reverse().map(v => `
+function renderAdminVotes(){
+  const el=document.getElementById("admin-vote-list");
+  document.getElementById("vote-count-label").textContent="共 "+state.votes.length+" 筆";
+  if(!state.votes.length){el.innerHTML='<p class="no-data">尚無投票紀錄</p>';return;}
+  el.innerHTML=[...state.votes].reverse().map(v=>`
     <div class="log-item">
       <div class="log-top"><span class="log-name">${esc(v.voterName)}</span><span class="log-aff">${esc(v.affiliation)}</span></div>
       <div class="log-bottom"><span class="log-candidate">→ ${esc(v.candidate)}</span><span class="log-time">${esc(v.timestamp)}</span></div>
@@ -548,109 +485,89 @@ function renderAdminVotes() {
 }
 
 // ── Admin: tally ──────────────────────────────────────────────────────────
-function renderAdminTally() {
-  const el = document.getElementById("admin-tally");
-  document.getElementById("tally-total").textContent = "總投票數：" + state.votes.length + " 票";
-  if (!state.candidates.length) { el.innerHTML = '<p class="no-data">尚無候選人</p>'; return; }
-  const rows = [...state.candidates]
-    .map(c => ({ name: c.name, cnt: state.votes.filter(v => v.candidate === c.name).length }))
-    .sort((a, b) => b.cnt - a.cnt);
-  el.innerHTML = rows.map(({ name, cnt }) => {
-    const pct = state.votes.length ? Math.round(cnt / state.votes.length * 100) : 0;
-    return `<div class="tally-row">
+function renderAdminTally(){
+  const el=document.getElementById("admin-tally");
+  document.getElementById("tally-total").textContent="總投票數："+state.votes.length+" 票";
+  if(!state.candidates.length){el.innerHTML='<p class="no-data">尚無候選人</p>';return;}
+  const rows=[...state.candidates]
+    .map(c=>({name:c.name,cnt:state.votes.filter(v=>v.candidate===c.name).length}))
+    .sort((a,b)=>b.cnt-a.cnt);
+  el.innerHTML=rows.map(({name,cnt})=>{
+    const pct=state.votes.length?Math.round(cnt/state.votes.length*100):0;
+    return`<div class="tally-row">
       <div class="tally-header"><span class="tally-name">${esc(name)}</span><span class="tally-count">${cnt} 票 (${pct}%)</span></div>
       <div class="bar-bg"><div class="bar-fill" style="width:${pct}%"></div></div>
     </div>`;
   }).join("");
 }
 
-// ── Admin: save URL ───────────────────────────────────────────────────────
-function saveSiteUrl() {
-  const url = document.getElementById("input-site-url").value.trim();
-  const msg = document.getElementById("url-save-msg");
-  state.siteUrl = url;
-  localStorage.setItem(SK.siteUrl, url);
-  refreshHomeQR();
-  refreshAdminQR();
-  msg.textContent = url ? "✅ 網址已儲存，QR Code 已更新。" : "已清除網址。";
-  msg.style.color = "#1A8A55";
-  msg.style.display = "block";
-  setTimeout(() => msg.style.display = "none", 3000);
+// ── Admin: password ───────────────────────────────────────────────────────
+async function changePassword(){
+  const p1=document.getElementById("input-new-pass1").value;
+  const p2=document.getElementById("input-new-pass2").value;
+  const msg=document.getElementById("pass-change-msg");
+  if(!p1||p1.length<6){msg.textContent="密碼至少需要 6 個字元。";msg.style.color="#e05555";msg.style.display="block";return;}
+  if(p1!==p2){msg.textContent="兩次輸入的密碼不一致。";msg.style.color="#e05555";msg.style.display="block";return;}
+  const hash=await sha256(p1);
+  state.passHash=hash;
+  localStorage.setItem(SK.passHash,hash);
+  document.getElementById("input-new-pass1").value="";
+  document.getElementById("input-new-pass2").value="";
+  msg.textContent="✅ 密碼已成功變更。";msg.style.color="#1A8A55";msg.style.display="block";
+  setTimeout(()=>msg.style.display="none",3000);
 }
 
-// ── Admin: change password ────────────────────────────────────────────────
-async function changePassword() {
-  const p1  = document.getElementById("input-new-pass1").value;
-  const p2  = document.getElementById("input-new-pass2").value;
-  const msg = document.getElementById("pass-change-msg");
-  if (!p1 || p1.length < 6) { msg.textContent = "密碼至少需要 6 個字元。"; msg.style.color = "#e05555"; msg.style.display = "block"; return; }
-  if (p1 !== p2)             { msg.textContent = "兩次輸入的密碼不一致。";   msg.style.color = "#e05555"; msg.style.display = "block"; return; }
-  const hash = await sha256(p1);
-  state.passHash = hash;
-  localStorage.setItem(SK.passHash, hash);
-  document.getElementById("input-new-pass1").value = "";
-  document.getElementById("input-new-pass2").value = "";
-  msg.textContent = "✅ 密碼已成功變更。"; msg.style.color = "#1A8A55"; msg.style.display = "block";
-  setTimeout(() => msg.style.display = "none", 3000);
-}
+function renderAdmin(){renderAdminCandidates();renderAdminVotes();renderAdminTally();}
 
-function renderAdmin() { renderAdminCandidates(); renderAdminVotes(); renderAdminTally(); }
-
-// ── Tab switch ────────────────────────────────────────────────────────────
-function switchTab(id) {
-  document.querySelectorAll(".tab-btn").forEach(b => b.classList.toggle("active", b.dataset.tab === id));
-  document.querySelectorAll(".tab-content").forEach(t => t.classList.toggle("active", t.id === "tab-" + id));
-  if (id === "votes")     renderAdminVotes();
-  if (id === "tally")     renderAdminTally();
-  if (id === "candidates")renderAdminCandidates();
-  if (id === "qr")        refreshAdminQR();
-  if (id === "settings")  document.getElementById("input-site-url").value = state.siteUrl;
+// ── Tabs ──────────────────────────────────────────────────────────────────
+function switchTab(id){
+  document.querySelectorAll(".tab-btn").forEach(b=>b.classList.toggle("active",b.dataset.tab===id));
+  document.querySelectorAll(".tab-content").forEach(t=>t.classList.toggle("active",t.id==="tab-"+id));
+  if(id==="votes") renderAdminVotes();
+  if(id==="tally") renderAdminTally();
+  if(id==="candidates") renderAdminCandidates();
+  if(id==="qr") buildAdminQR();
 }
 
 // ── Boot ──────────────────────────────────────────────────────────────────
-document.addEventListener("DOMContentLoaded", () => {
-  refreshHomeQR();
+document.addEventListener("DOMContentLoaded",()=>{
+  buildHomeQR();
   renderHome();
 
-  document.querySelectorAll("[data-to]").forEach(btn => btn.addEventListener("click", () => {
-    if (btn.dataset.to === "home") renderHome();
+  document.querySelectorAll("[data-to]").forEach(btn=>btn.addEventListener("click",()=>{
+    if(btn.dataset.to==="home") renderHome();
     showScreen(btn.dataset.to);
   }));
 
-  document.getElementById("btn-go-vote").addEventListener("click", () => {
-    if (state.hasVoted) { showScreen("already"); return; }
-    state.selected = null;
-    document.getElementById("input-affiliation").value = "";
-    document.getElementById("input-voter-name").value  = "";
-    showVoteErr(""); renderCandidateGrid(); showScreen("vote");
+  document.getElementById("btn-go-vote").addEventListener("click",()=>{
+    if(state.hasVoted){showScreen("already");return;}
+    state.selected=null;
+    document.getElementById("input-affiliation").value="";
+    document.getElementById("input-voter-name").value="";
+    showVoteErr("");renderCandidateGrid();showScreen("vote");
   });
 
-  document.getElementById("btn-go-admin-login").addEventListener("click", () => {
-    document.getElementById("input-admin-pass").value = "";
-    document.getElementById("admin-login-error").style.display = "none";
+  document.getElementById("btn-go-admin-login").addEventListener("click",()=>{
+    document.getElementById("input-admin-pass").value="";
+    document.getElementById("admin-login-error").style.display="none";
     showScreen("admin-login");
   });
 
-  document.getElementById("btn-submit-vote").addEventListener("click", submitVote);
-  document.getElementById("btn-admin-login").addEventListener("click", adminLogin);
-  document.getElementById("input-admin-pass").addEventListener("keydown", e => { if (e.key === "Enter") adminLogin(); });
-  document.getElementById("btn-add-candidate").addEventListener("click", addCandidate);
-  document.getElementById("input-new-name").addEventListener("keydown", e => { if (e.key === "Enter") addCandidate(); });
-  document.getElementById("btn-save-url").addEventListener("click", saveSiteUrl);
-  document.getElementById("input-site-url").addEventListener("keydown", e => { if (e.key === "Enter") saveSiteUrl(); });
-  document.getElementById("btn-change-pass").addEventListener("click", changePassword);
-  document.getElementById("btn-clear-votes").addEventListener("click", () => {
-    if (confirm("確定要刪除所有投票紀錄嗎？")) {
-      state.votes = []; save(SK.votes, state.votes); renderAdminVotes(); renderAdminTally();
+  document.getElementById("btn-submit-vote").addEventListener("click",submitVote);
+  document.getElementById("btn-admin-login").addEventListener("click",adminLogin);
+  document.getElementById("input-admin-pass").addEventListener("keydown",e=>{if(e.key==="Enter")adminLogin();});
+  document.getElementById("btn-add-candidate").addEventListener("click",addCandidate);
+  document.getElementById("input-new-name").addEventListener("keydown",e=>{if(e.key==="Enter")addCandidate();});
+  document.getElementById("btn-change-pass").addEventListener("click",changePassword);
+  document.getElementById("btn-clear-votes").addEventListener("click",()=>{
+    if(confirm("確定要刪除所有投票紀錄嗎？")){state.votes=[];save(SK.votes,state.votes);renderAdminVotes();renderAdminTally();}
+  });
+  document.getElementById("btn-reset-voted").addEventListener("click",()=>{
+    if(confirm("確定要清除投票限制嗎？所有人將可再次投票。")){
+      localStorage.removeItem(SK.voted);state.hasVoted=false;renderHome();alert("已清除。");
     }
   });
-  document.getElementById("btn-reset-voted").addEventListener("click", () => {
-    if (confirm("確定要清除投票限制嗎？所有人將可再次投票。")) {
-      localStorage.removeItem(SK.voted); state.hasVoted = false; renderHome();
-      alert("已清除。");
-    }
-  });
-  document.querySelectorAll(".tab-btn").forEach(btn => btn.addEventListener("click", () => switchTab(btn.dataset.tab)));
+  document.querySelectorAll(".tab-btn").forEach(btn=>btn.addEventListener("click",()=>switchTab(btn.dataset.tab)));
 });
 </script>
 </body>
