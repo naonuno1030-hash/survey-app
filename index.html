@@ -247,6 +247,7 @@ input:focus{border-color:#8B7CF6;box-shadow:0 0 0 3px rgba(139,124,246,0.12);}
           <div id="fb-conn-url" style="font-size:11px;color:#888;word-break:break-all"></div>
         </div>
       </div>
+      <button onclick="generateUpdatedHtml(fbBase)" style="width:100%;padding:8px;background:#1A8A55;color:#fff;border:none;border-radius:8px;font-weight:700;font-size:12px;cursor:pointer;font-family:inherit;margin-bottom:6px">📥 最新index.htmlをダウンロード（GitHub更新用）</button>
       <button onclick="fbDisconnect()" style="width:100%;padding:8px;background:#fff;color:#e05555;border:1px solid #ffd0d0;border-radius:8px;font-weight:700;font-size:12px;cursor:pointer;font-family:inherit">再設定する</button>
     </div>
 
@@ -2920,12 +2921,13 @@ async function fbConnect() {
       fbBase = url;
       localStorage.setItem(SK.fbUrl, fbBase);
       if (key) localStorage.setItem(SK.fbKey, key);
-      fbShowMsg('ok','✅ 接続成功！全デバイスでリアルタイム同期されます');
+      fbShowMsg('ok','✅ 接続成功！新しいindex.htmlを生成中...');
       setTimeout(()=>{
         document.getElementById('fb-setup-box').style.display='none';
         document.getElementById('fb-connected-box').style.display='block';
         document.getElementById('fb-conn-url').textContent = fbBase;
         setSyncUI();
+        generateUpdatedHtml(fbBase);
       }, 600);
     } else if (r.status === 401 || r.status === 403) {
       fbShowMsg('err','❌ アクセス拒否 ('+r.status+')。Firebaseコンソールで「Realtime Database」→「ルール」を開き、readとwriteを両方 true に変更して「公開」してください');
@@ -2939,6 +2941,37 @@ async function fbConnect() {
     btn.disabled = false;
   }
 }
+// Firebase URLを埋め込んだ新しいHTMLを生成してダウンロード
+function generateUpdatedHtml(firebaseUrl) {
+  try {
+    // 現在のページのHTMLを取得し、%%FIREBASE_URL%% を実際のURLに置換
+    const currentHtml = document.documentElement.outerHTML;
+    const updatedHtml = currentHtml.replace(
+      "const FIREBASE_URL = '%%FIREBASE_URL%%';",
+      "const FIREBASE_URL = '" + firebaseUrl + "';"
+    );
+    const blob = new Blob([updatedHtml], {type: 'text/html'});
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'index.html';
+    a.click();
+    URL.revokeObjectURL(a.href);
+    // Show instruction
+    const msgEl = document.getElementById('fb-msg');
+    if (msgEl) {
+      msgEl.innerHTML = '<div class="fb-status-ok" style="margin-top:8px">'
+        + '✅ <b>index.html をダウンロードしました！</b><br><br>'
+        + '📤 このファイルを GitHub にアップロードし直すと、<br>'
+        + '<b>全デバイスで自動的に Firebase に接続</b>されます。<br><br>'
+        + 'アップロード手順：GitHub → リポジトリ → index.html をクリック → ✏️鉛筆アイコン → Upload files'
+        + '</div>';
+      msgEl.style.display = 'block';
+    }
+  } catch(e) {
+    console.error('HTML generation error:', e);
+  }
+}
+
 function fbDisconnect() {
   fbBase='';
   localStorage.removeItem(SK.fbUrl); localStorage.removeItem(SK.fbKey);
@@ -2998,10 +3031,19 @@ function switchTab(id) {
 }
 
 // ═══════════════════════════════════════
-//  INIT: try to restore Firebase config
+//  FIREBASE 設定（ここに直接書き込む）
+//  管理画面で設定すると自動でここに反映されます
 // ═══════════════════════════════════════
+const FIREBASE_URL = '%%FIREBASE_URL%%';  // ← 設定済みなら自動入力されます
+
 (function initFb() {
   try {
+    // 1. HTMLに直書きされた値を優先
+    if (FIREBASE_URL && FIREBASE_URL !== '%%FIREBASE_URL%%' && FIREBASE_URL.includes('firebaseio.com')) {
+      fbBase = FIREBASE_URL;
+      return;
+    }
+    // 2. localStorageのフォールバック
     const url = localStorage.getItem(SK.fbUrl);
     if (url) { fbBase = url; }
   } catch(e) {}
