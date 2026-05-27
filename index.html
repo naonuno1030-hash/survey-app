@@ -5,11 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>線上投票</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
-<!-- Firebase SDK -->
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 <style>
-
 :root{--text:#2D2D3A;--muted:#9B9BAD;}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 body{min-height:100vh;background:linear-gradient(160deg,#FFF0FB 0%,#EEF4FF 40%,#F0FFF8 100%);display:flex;align-items:flex-start;justify-content:center;padding:28px 14px 60px;font-family:'Noto Sans TC','PingFang TC','Microsoft JhengHei',sans-serif;}
@@ -17,20 +13,15 @@ body{min-height:100vh;background:linear-gradient(160deg,#FFF0FB 0%,#EEF4FF 40%,#
 .screen{padding:36px 28px 44px;display:none;}
 .screen.active{display:block;animation:fadeUp .28s ease;}
 @keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
-
-/* HOME */
 .home-header{text-align:center;margin-bottom:20px;}
 .survey-icon{font-size:48px;margin-bottom:8px;}
 .home-title{font-size:30px;font-weight:900;color:var(--text);letter-spacing:1px;margin-bottom:4px;}
-.home-sub{color:var(--muted);font-size:13px;}
+.home-sub{color:var(--muted);font-size:13px;margin-bottom:4px;}
 .qr-section{margin:0 auto 24px;padding:20px;background:#FAFAFE;border-radius:20px;border:2px dashed #D8D0FF;text-align:center;}
-.qr-svg-wrap{display:inline-block;background:#fff;padding:8px;border-radius:8px;}
 .qr-svg-wrap svg{display:block;}
 .qr-url-text{font-size:10px;color:#aaa;margin-top:10px;word-break:break-all;line-height:1.5;}
 .qr-local-warn{font-size:12px;color:#e05555;line-height:1.7;background:#fff5f5;border-radius:10px;padding:12px 14px;margin-top:10px;text-align:left;}
 .voted-badge{text-align:center;color:#1A8A55;font-weight:800;font-size:16px;padding:14px 0;margin-bottom:12px;background:#f0fff8;border-radius:14px;}
-
-/* Buttons */
 .btn-primary{display:block;width:100%;padding:15px 0;background:linear-gradient(90deg,#FF6B9D,#FFB347);color:#fff;border:none;border-radius:14px;font-size:17px;font-weight:800;cursor:pointer;margin-bottom:12px;font-family:inherit;box-shadow:0 4px 16px rgba(255,107,157,0.3);transition:transform .15s,box-shadow .15s;}
 .btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(255,107,157,0.35);}
 .btn-ghost{display:block;width:100%;padding:13px 0;background:transparent;color:#8B7CF6;border:2px solid #C4B5FD;border-radius:14px;font-size:15px;font-weight:700;cursor:pointer;margin-bottom:8px;font-family:inherit;transition:background .2s;}
@@ -38,17 +29,12 @@ body{min-height:100vh;background:linear-gradient(160deg,#FFF0FB 0%,#EEF4FF 40%,#
 .btn-back{background:none;border:none;color:#8B7CF6;font-weight:700;font-size:14px;cursor:pointer;padding:0 0 18px 0;font-family:inherit;}
 .btn-add{padding:11px 18px;background:linear-gradient(90deg,#6c63ff,#48cfad);color:#fff;border:none;border-radius:10px;font-weight:800;font-size:14px;cursor:pointer;font-family:inherit;white-space:nowrap;flex-shrink:0;}
 .btn-danger{padding:6px 12px;background:#fff0f0;color:#e05555;border:1px solid #ffd0d0;border-radius:8px;font-weight:700;font-size:12px;cursor:pointer;font-family:inherit;}
-.admin-tiny{position:absolute;bottom:12px;right:16px;font-size:11px;color:#e0e0e0;background:none;border:none;cursor:pointer;font-family:inherit;padding:4px;user-select:none;transition:color .2s;}
+.admin-tiny{position:absolute;bottom:12px;right:16px;font-size:11px;color:#e0e0e0;background:none;border:none;cursor:pointer;font-family:inherit;padding:4px;user-select:none;transition:color .2s;z-index:10;}
 .admin-tiny:hover{color:#aaa;}
-
-/* Form */
-.screen-title{font-size:22px;font-weight:900;color:var(--text);margin-bottom:24px;}
-label.fl{display:block;font-size:12px;font-weight:700;color:var(--muted);margin-bottom:6px;letter-spacing:0.5px;}
+label.fl{display:block;font-size:12px;font-weight:700;color:var(--muted);margin-bottom:6px;letter-spacing:.5px;}
 input[type=text],input[type=password],input[type=url]{width:100%;padding:12px 14px;border:2px solid #EDE8FF;border-radius:12px;font-size:15px;margin-bottom:16px;outline:none;font-family:inherit;background:#FAFAFE;transition:border-color .2s,box-shadow .2s;color:var(--text);}
 input:focus{border-color:#8B7CF6;box-shadow:0 0 0 3px rgba(139,124,246,0.12);}
 .error-msg{color:#e05555;font-size:13px;font-weight:600;margin-bottom:12px;padding:10px 14px;background:#fff5f5;border-radius:10px;border:1px solid #ffd0d0;}
-
-/* Vote */
 #screen-vote{background:linear-gradient(160deg,#FFF5FB 0%,#F0F7FF 50%,#F0FFF8 100%);}
 .vote-header{text-align:center;margin-bottom:24px;}
 .vote-icon{font-size:40px;margin-bottom:6px;}
@@ -58,13 +44,11 @@ input:focus{border-color:#8B7CF6;box-shadow:0 0 0 3px rgba(139,124,246,0.12);}
 .form-section label.fl{margin-bottom:8px;}
 .form-section input{margin-bottom:0;}
 .form-section input+label{margin-top:12px;}
-
-/* Candidate cards */
-.candidates-label{font-size:12px;font-weight:700;color:var(--muted);letter-spacing:0.5px;margin-bottom:12px;}
+.candidates-label{font-size:12px;font-weight:700;color:var(--muted);letter-spacing:.5px;margin-bottom:12px;}
 .candidates-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;}
 .ccard{border-radius:18px;padding:16px 12px 14px;cursor:pointer;border:3px solid transparent;text-align:center;transition:transform .18s,box-shadow .18s,border-color .18s;position:relative;overflow:hidden;}
-.ccard:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(0,0,0,0.1);}
-.ccard.selected{box-shadow:0 8px 28px rgba(0,0,0,0.15);transform:translateY(-3px);}
+.ccard:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(0,0,0,.1);}
+.ccard.selected{box-shadow:0 8px 28px rgba(0,0,0,.15);transform:translateY(-3px);}
 .ccard.selected::after{content:'✓';position:absolute;top:8px;right:10px;font-size:16px;font-weight:900;}
 .ccard:nth-child(6n+1){background:linear-gradient(145deg,#FFF0F7,#FFE0F0);color:#D63B82;}.ccard:nth-child(6n+1).selected{border-color:#D63B82;}
 .ccard:nth-child(6n+2){background:linear-gradient(145deg,#FFF7E6,#FFECC7);color:#C47A00;}.ccard:nth-child(6n+2).selected{border-color:#C47A00;}
@@ -72,16 +56,13 @@ input:focus{border-color:#8B7CF6;box-shadow:0 0 0 3px rgba(139,124,246,0.12);}
 .ccard:nth-child(6n+4){background:linear-gradient(145deg,#EDFFF5,#C8F7E0);color:#1A8A55;}.ccard:nth-child(6n+4).selected{border-color:#1A8A55;}
 .ccard:nth-child(6n+5){background:linear-gradient(145deg,#F3EEFF,#E2D4FF);color:#6B36CC;}.ccard:nth-child(6n+5).selected{border-color:#6B36CC;}
 .ccard:nth-child(6n+6){background:linear-gradient(145deg,#FFF3E8,#FFE0C5);color:#C05A00;}.ccard:nth-child(6n+6).selected{border-color:#C05A00;}
-.ccard-photo{width:72px;height:72px;border-radius:50%;margin:0 auto 10px;object-fit:cover;display:block;border:3px solid rgba(255,255,255,0.8);box-shadow:0 3px 10px rgba(0,0,0,0.12);}
-.ccard-ph{width:72px;height:72px;border-radius:50%;margin:0 auto 10px;display:flex;align-items:center;justify-content:center;font-size:30px;background:rgba(255,255,255,0.5);border:3px solid rgba(255,255,255,0.8);box-shadow:0 3px 10px rgba(0,0,0,0.1);}
+.ccard-photo{width:72px;height:72px;border-radius:50%;margin:0 auto 10px;object-fit:cover;display:block;border:3px solid rgba(255,255,255,.8);box-shadow:0 3px 10px rgba(0,0,0,.12);}
+.ccard-ph{width:72px;height:72px;border-radius:50%;margin:0 auto 10px;display:flex;align-items:center;justify-content:center;font-size:30px;background:rgba(255,255,255,.5);border:3px solid rgba(255,255,255,.8);box-shadow:0 3px 10px rgba(0,0,0,.1);}
 .ccard-name{font-size:14px;font-weight:800;line-height:1.3;}
-
-/* Done/Already */
 .center-screen{text-align:center;}
 .big-emoji{font-size:64px;margin-bottom:16px;}
 #screen-already{background:linear-gradient(160deg,#FFF5FB,#F0F7FF);}
-
-/* Admin */
+.screen-title{font-size:22px;font-weight:900;color:var(--text);margin-bottom:24px;}
 .tab-row{display:flex;gap:6px;margin-bottom:24px;flex-wrap:wrap;}
 .tab-btn{padding:8px 14px;border:2px solid #EDE8FF;border-radius:100px;background:#fff;color:#aaa;font-weight:700;font-size:12px;cursor:pointer;font-family:inherit;transition:all .15s;}
 .tab-btn.active{background:#6c63ff;color:#fff;border-color:#6c63ff;}
@@ -112,45 +93,33 @@ input:focus{border-color:#8B7CF6;box-shadow:0 0 0 3px rgba(139,124,246,0.12);}
 .log-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;}
 .no-data{color:#ccc;font-size:13px;margin-top:8px;}
 .sec-label{font-size:13px;font-weight:700;color:#888;margin-bottom:12px;}
-
-/* image upload */
+.rt-badge{display:inline-block;background:#e8fff4;color:#1A8A55;font-size:11px;font-weight:700;padding:3px 10px;border-radius:100px;margin-left:8px;vertical-align:middle;}
 .upload-area{border:2px dashed #C4B5FD;border-radius:12px;padding:16px;text-align:center;cursor:pointer;background:#FAFAFE;margin-bottom:12px;transition:border-color .2s;}
 .upload-area:hover{border-color:#8B7CF6;}
 .upload-area input{display:none;}
 .upload-preview{width:72px;height:72px;border-radius:50%;object-fit:cover;display:block;margin:8px auto 0;}
 .upload-label{font-size:13px;color:#8B7CF6;font-weight:600;}
-
-/* realtime badge */
-.rt-badge{display:inline-block;background:#e8fff4;color:#1A8A55;font-size:11px;font-weight:700;padding:3px 10px;border-radius:100px;margin-left:8px;vertical-align:middle;}
-
-/* info box */
-.info-box{background:#F3F0FF;border-radius:12px;padding:12px 14px;font-size:12px;color:#555;line-height:1.7;margin-bottom:16px;}
-.info-box b{color:#6c63ff;}
-
-
-/* Firebase setup banner */
+.pass-change-msg{font-size:13px;margin-bottom:12px;display:none;}
+/* Firebase setup */
 .fb-setup{background:#FFF8E1;border:2px solid #FFD54F;border-radius:16px;padding:20px;margin-bottom:20px;}
 .fb-setup h3{font-size:15px;font-weight:800;color:#F57F17;margin-bottom:16px;}
 .fb-setup code{background:#fff3cd;padding:2px 6px;border-radius:4px;font-family:monospace;font-size:11px;word-break:break-all;}
-.fb-setup input{width:100%;padding:10px 12px;border:2px solid #FFD54F;border-radius:10px;font-size:13px;margin-bottom:10px;outline:none;font-family:inherit;background:#fff;color:#333;}
-.fb-setup input:focus{border-color:#FF8F00;box-shadow:0 0 0 3px rgba(255,143,0,0.15);}
-.fb-save-btn{width:100%;padding:12px;background:linear-gradient(90deg,#FF8F00,#FF6B9D);color:#fff;border:none;border-radius:12px;font-weight:800;font-size:15px;cursor:pointer;font-family:inherit;letter-spacing:.5px;}
+.fb-input{width:100%;padding:11px 13px;border:2px solid #FFD54F;border-radius:10px;font-size:13px;margin-bottom:10px;outline:none;font-family:inherit;background:#fff;color:#333;display:block;}
+.fb-input:focus{border-color:#FF8F00;box-shadow:0 0 0 3px rgba(255,143,0,.15);}
+.fb-save-btn{width:100%;padding:13px;background:linear-gradient(90deg,#FF8F00,#FF6B9D);color:#fff;border:none;border-radius:12px;font-weight:800;font-size:15px;cursor:pointer;font-family:inherit;}
 .fb-save-btn:disabled{opacity:.6;cursor:not-allowed;}
-.fb-status{font-size:13px;font-weight:600;padding:8px 12px;border-radius:8px;display:none;}
-.fb-status.ok{color:#1A8A55;background:#EDFFF5;display:block;}
-.fb-status.err{color:#e05555;background:#fff5f5;display:block;}
-.fb-status.loading{color:#FF8F00;background:#FFF8E1;display:block;}
-.fb-link{color:#FF8F00;font-weight:700;font-size:12px;}
-.fb-step{display:flex;gap:12px;margin-bottom:14px;align-items:flex-start;}
-.fb-step-num{width:24px;height:24px;border-radius:50%;background:#FF8F00;color:#fff;font-weight:900;font-size:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;}
+.fb-status-ok{color:#1A8A55;background:#EDFFF5;border-radius:8px;padding:10px 14px;font-size:13px;font-weight:600;margin-top:8px;}
+.fb-status-err{color:#e05555;background:#fff5f5;border-radius:8px;padding:10px 14px;font-size:13px;font-weight:600;margin-top:8px;border:1px solid #ffd0d0;}
+.fb-status-loading{color:#FF8F00;background:#FFF8E1;border-radius:8px;padding:10px 14px;font-size:13px;font-weight:600;margin-top:8px;}
+.fb-step{display:flex;gap:10px;margin-bottom:12px;align-items:flex-start;}
+.fb-step-num{width:22px;height:22px;border-radius:50%;background:#FF8F00;color:#fff;font-weight:900;font-size:11px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px;}
 .fb-step-body{font-size:12px;color:#555;line-height:1.7;flex:1;}
-.fb-step-body b{color:#333;display:block;margin-bottom:2px;}
-/* Sync indicator */
-.sync-dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:#ccc;margin-right:6px;vertical-align:middle;}
+.fb-step-body b{color:#333;}
+.fb-connected-box{background:#EDFFF5;border:2px solid #6FCF97;border-radius:14px;padding:16px;margin-bottom:20px;}
+/* sync dot */
+.sync-dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:#ccc;margin-right:5px;vertical-align:middle;}
 .sync-dot.live{background:#6FCF97;box-shadow:0 0 6px #6FCF97;animation:pulse 2s infinite;}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
-.sync-label{font-size:11px;color:#888;vertical-align:middle;}
-
 </style>
 </head>
 <body>
@@ -161,16 +130,16 @@ input:focus{border-color:#8B7CF6;box-shadow:0 0 0 3px rgba(139,124,246,0.12);}
   <div class="home-header">
     <div class="survey-icon">🗳️</div>
     <div class="home-title">線上投票</div>
-    <div class="home-sub" id="sync-status-home">
+    <div class="home-sub">
       <span class="sync-dot" id="sync-dot"></span>
-      <span class="sync-label" id="sync-label">接続中...</span>
+      <span id="sync-label" style="font-size:11px;color:#aaa;vertical-align:middle">起動中...</span>
     </div>
   </div>
   <div class="qr-section">
-    <div id="qr-wrap" class="qr-svg-wrap"></div>
-    <div id="qr-url-text" class="qr-url-text"></div>
-    <div id="qr-warn" class="qr-local-warn" style="display:none">
-      ⚠️ <b>本機模式</b>：QR Code 需上傳至 GitHub Pages 後才能正常使用。
+    <div id="qr-wrap" style="display:inline-block;background:#fff;padding:8px;border-radius:8px;"></div>
+    <div id="qr-url-text" style="font-size:10px;color:#aaa;margin-top:10px;word-break:break-all;line-height:1.5;"></div>
+    <div id="qr-warn" style="display:none;font-size:12px;color:#e05555;line-height:1.7;background:#fff5f5;border-radius:10px;padding:12px 14px;margin-top:10px;text-align:left;">
+      ⚠️ <b>本機ファイルモード</b>：GitHub Pages にアップロード後 QR コードが表示されます。
     </div>
   </div>
   <div id="voted-badge" class="voted-badge" style="display:none">✅ 您已完成投票，謝謝！</div>
@@ -189,7 +158,7 @@ input:focus{border-color:#8B7CF6;box-shadow:0 0 0 3px rgba(139,124,246,0.12);}
   <div class="form-section">
     <label class="fl">所屬單位</label>
     <input type="text" id="inp-aff" placeholder="例：業務部">
-    <label class="fl" style="margin-top:2px">您的姓名</label>
+    <label class="fl">您的姓名</label>
     <input type="text" id="inp-name" placeholder="例：王小明">
   </div>
   <div class="candidates-label">請選擇您支持的候選人</div>
@@ -200,7 +169,7 @@ input:focus{border-color:#8B7CF6;box-shadow:0 0 0 3px rgba(139,124,246,0.12);}
 </div>
 
 <!-- ALREADY -->
-<div id="screen-already" class="screen center-screen">
+<div id="screen-already" class="screen center-screen" style="background:linear-gradient(160deg,#FFF5FB,#F0F7FF)">
   <div class="big-emoji">🚫</div>
   <h2 style="font-size:20px;font-weight:900;color:#2D2D3A;margin-bottom:12px">已完成投票</h2>
   <p style="color:#888;margin-bottom:32px;font-size:14px">此裝置已完成投票，無法重複投票。</p>
@@ -240,7 +209,6 @@ input:focus{border-color:#8B7CF6;box-shadow:0 0 0 3px rgba(139,124,246,0.12);}
     <button class="tab-btn" data-tab="qr">QRコード</button>
   </div>
 
-  <!-- candidates -->
   <div id="tab-cands" class="tab-content active">
     <div class="add-row">
       <div class="add-fields">
@@ -256,7 +224,6 @@ input:focus{border-color:#8B7CF6;box-shadow:0 0 0 3px rgba(139,124,246,0.12);}
     <div id="admin-cand-list"></div>
   </div>
 
-  <!-- votes -->
   <div id="tab-votes" class="tab-content">
     <div class="log-hdr">
       <span id="vote-cnt-label" style="font-size:13px;color:#aaa">計 0 件</span>
@@ -265,72 +232,38 @@ input:focus{border-color:#8B7CF6;box-shadow:0 0 0 3px rgba(139,124,246,0.12);}
     <div id="admin-vote-list"></div>
   </div>
 
-  <!-- tally -->
   <div id="tab-tally" class="tab-content">
     <p id="tally-total" style="font-size:13px;color:#aaa;margin-bottom:12px"></p>
     <div id="admin-tally"></div>
   </div>
 
-  <!-- tab: settings -->
   <div id="tab-settings" class="tab-content">
-
-    <!-- Firebase connection status banner -->
-    <div id="fb-connected-banner" style="display:none;background:#EDFFF5;border:2px solid #6FCF97;border-radius:14px;padding:14px 16px;margin-bottom:20px;">
-      <div style="display:flex;align-items:center;gap:10px;">
-        <span style="font-size:22px">🟢</span>
+    <!-- Firebase connected banner -->
+    <div id="fb-connected-box" class="fb-connected-box" style="display:none">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+        <span style="font-size:20px">🟢</span>
         <div>
-          <div style="font-weight:800;color:#1A8A55;font-size:14px">Firebase 接続済み・リアルタイム同期中</div>
-          <div id="fb-connected-url" style="font-size:11px;color:#888;margin-top:2px;word-break:break-all"></div>
+          <div style="font-weight:800;color:#1A8A55;font-size:14px">Firebase 接続済み</div>
+          <div id="fb-conn-url" style="font-size:11px;color:#888;word-break:break-all"></div>
         </div>
       </div>
-      <button onclick="disconnectFb()" style="margin-top:10px;width:100%;padding:8px;background:#fff;color:#e05555;border:1px solid #ffd0d0;border-radius:8px;font-weight:700;font-size:12px;cursor:pointer;font-family:inherit">接続を解除して再設定</button>
+      <button onclick="fbDisconnect()" style="width:100%;padding:8px;background:#fff;color:#e05555;border:1px solid #ffd0d0;border-radius:8px;font-weight:700;font-size:12px;cursor:pointer;font-family:inherit">再設定する</button>
     </div>
 
-    <!-- Firebase setup wizard -->
+    <!-- Firebase setup -->
     <div id="fb-setup-box" class="fb-setup">
-      <h3>🔥 Firebase 設定（スマホ・PC間でデータ共有）</h3>
-
-      <div class="fb-step">
-        <div class="fb-step-num">1</div>
-        <div class="fb-step-body">
-          <b>Firebase プロジェクトを作成</b><br>
-          <a href="https://console.firebase.google.com/" target="_blank" class="fb-link">console.firebase.google.com</a> を開き、「プロジェクトを追加」→ 名前を入力 → 作成
-        </div>
-      </div>
-
-      <div class="fb-step">
-        <div class="fb-step-num">2</div>
-        <div class="fb-step-body">
-          <b>Realtime Database を有効化</b><br>
-          左メニュー「Realtime Database」→「データベースを作成」→ロケーションはどれでもOK →「テストモードで開始」→「有効にする」
-        </div>
-      </div>
-
-      <div class="fb-step">
-        <div class="fb-step-num">3</div>
-        <div class="fb-step-body">
-          <b>Database URL をコピー</b><br>
-          データベース画面の上部に表示される<br>
-          <code>https://○○-default-rtdb.firebaseio.com</code><br>
-          をコピーして下に貼り付け
-        </div>
-      </div>
-
-      <div class="fb-step">
-        <div class="fb-step-num">4</div>
-        <div class="fb-step-body">
-          <b>API Key をコピー</b><br>
-          左上 ⚙「プロジェクトの設定」→「全般」タブ → 下にスクロール →「ウェブアプリ」がなければ「&lt;/&gt;」ボタンでアプリ追加 → <code>apiKey</code> の値をコピーして下に貼り付け
-        </div>
-      </div>
-
+      <h3>🔥 Firebase 設定（複数デバイスでデータ共有）</h3>
+      <div class="fb-step"><div class="fb-step-num">1</div><div class="fb-step-body"><b>Firebase Console でプロジェクト作成</b><br><a href="https://console.firebase.google.com/" target="_blank" style="color:#FF8F00;font-weight:700">console.firebase.google.com</a> を開き「プロジェクトを追加」</div></div>
+      <div class="fb-step"><div class="fb-step-num">2</div><div class="fb-step-body"><b>Realtime Database を有効化</b><br>左メニュー「Realtime Database」→「データベースを作成」→ロケーション選択 →「テストモードで開始」→「有効にする」</div></div>
+      <div class="fb-step"><div class="fb-step-num">3</div><div class="fb-step-body"><b>Database URL をコピー</b><br>データベース画面上部の <code>https://○○-default-rtdb.firebaseio.com</code> をコピー</div></div>
+      <div class="fb-step"><div class="fb-step-num">4</div><div class="fb-step-body"><b>API Key をコピー</b><br>⚙「プロジェクトの設定」→「全般」→ウェブアプリ追加（<code>&lt;/&gt;</code>）→ <code>apiKey</code> をコピー</div></div>
       <div style="margin-top:16px">
         <label class="fl">① Database URL</label>
-        <input type="text" id="fb-db-url" placeholder="https://your-app-default-rtdb.firebaseio.com" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+        <input class="fb-input" type="text" id="fb-url" placeholder="https://your-app-default-rtdb.firebaseio.com" autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false">
         <label class="fl">② API Key</label>
-        <input type="text" id="fb-api-key" placeholder="AIzaSy..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
-        <button class="fb-save-btn" id="btn-fb-save" onclick="saveFbConfig()">🔗 接続する</button>
-        <div id="fb-status" class="fb-status" style="min-height:20px;margin-top:8px"></div>
+        <input class="fb-input" type="text" id="fb-key" placeholder="AIzaSy..." autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false">
+        <button class="fb-save-btn" id="btn-fb-connect" onclick="fbConnect()">🔗 接続する</button>
+        <div id="fb-msg" style="margin-top:8px;display:none"></div>
       </div>
     </div>
 
@@ -347,22 +280,20 @@ input:focus{border-color:#8B7CF6;box-shadow:0 0 0 3px rgba(139,124,246,0.12);}
     <button id="btn-reset-all" class="btn-danger" style="width:100%;padding:10px;font-size:13px">全データをリセット</button>
   </div>
 
-  <!-- qr -->
   <div id="tab-qr" class="tab-content">
     <div style="text-align:center">
       <p style="font-size:13px;color:#888;margin-bottom:16px">このQRコードを印刷・表示して配布してください</p>
-      <div id="admin-qr-wrap" class="qr-svg-wrap" style="display:inline-block"></div>
+      <div id="admin-qr-wrap" style="display:inline-block;background:#fff;padding:8px;border-radius:8px;"></div>
       <p id="admin-qr-url" style="font-size:10px;color:#aaa;margin-top:10px;word-break:break-all;"></p>
     </div>
   </div>
 </div>
 
 </div><!-- #app -->
-
 <script>
-// ═══════════════════════════════════════════════════════════
-//  QR CODE GENERATOR (Kazuhiko Arase, MIT License, embedded)
-// ═══════════════════════════════════════════════════════════
+// ═══════════════════════════════════════
+//  QR CODE GENERATOR (Kazuhiko Arase)
+// ═══════════════════════════════════════
 var qrcode = function() {
 
   //---------------------------------------------------------------------
@@ -1137,560 +1068,469 @@ var qrcode = function() {
       return unicodeMap;
     }();
 
-// Wrapper: generate responsive SVG QR
 function QRsvg(text, cssSize) {
   cssSize = cssSize || '220px';
   var qr = qrcode(0, 'M');
   qr.addData(text);
   qr.make();
-  var size = qr.getModuleCount();
-  var margin = 4;
-  var total = size + margin * 2;
-  var d = '';
-  for (var r = 0; r < size; r++) {
-    for (var c = 0; c < size; c++) {
-      if (qr.isDark(r, c)) {
-        d += 'M' + (c + margin) + ',' + (r + margin) + 'h1v1h-1z';
-      }
-    }
-  }
-  return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ' + total + ' ' + total + '" style="width:' + cssSize + ';height:' + cssSize + ';display:block">'
-    + '<rect width="' + total + '" height="' + total + '" fill="white"/>'
-    + '<path fill="black" d="' + d + '"/>'
-    + '</svg>';
+  var size = qr.getModuleCount(), margin = 4, total = size + margin * 2, d = '';
+  for (var r = 0; r < size; r++)
+    for (var c = 0; c < size; c++)
+      if (qr.isDark(r, c)) d += 'M'+(c+margin)+','+(r+margin)+'h1v1h-1z';
+  return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 '+total+' '+total+'" style="width:'+cssSize+';height:'+cssSize+';display:block">'
+    +'<rect width="'+total+'" height="'+total+'" fill="white"/><path fill="black" d="'+d+'"/></svg>';
 }
 
-// ═══════════════════════════════════════════════════════════
+// ═══════════════════════════════════════
 //  SHA-256
-// ═══════════════════════════════════════════════════════════
-async function sha256(msg){
-  const buf=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(msg));
-  return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,"0")).join("");
+// ═══════════════════════════════════════
+async function sha256(msg) {
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(msg));
+  return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
 }
-const DEFAULT_HASH="ac9689e2272427085e35b9d3e3e8bed88cb3434828b43b86fc0596cad4c6e270";
+const DEFAULT_HASH = 'ac9689e2272427085e35b9d3e3e8bed88cb3434828b43b86fc0596cad4c6e270';
 
-// ═══════════════════════════════════════════════════════════
-//  LOCAL STORAGE (fallback + settings)
-// ═══════════════════════════════════════════════════════════
-const SK={c:"sv_c6",v:"sv_v6",voted:"sv_voted6",ph:"sv_ph",fbUrl:"sv_fb_url",fbKey:"sv_fb_key"};
+// ═══════════════════════════════════════
+//  LOCAL STORAGE
+// ═══════════════════════════════════════
+const SK = {c:'sv_c7',v:'sv_v7',voted:'sv_voted7',ph:'sv_ph2',fbUrl:'sv_fb_url2',fbKey:'sv_fb_key2'};
 function lsGet(k,fb){try{const v=localStorage.getItem(k);return v?JSON.parse(v):fb;}catch{return fb;}}
 function lsSet(k,v){localStorage.setItem(k,JSON.stringify(v));}
-function esc(s){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");}
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 
-// ═══════════════════════════════════════════════════════════
-//  FIREBASE
-// ═══════════════════════════════════════════════════════════
-let db = null;   // Firebase Database instance
-let fbConnected = false;
+// ═══════════════════════════════════════
+//  FIREBASE REST API (no SDK needed!)
+//  Uses fetch() directly to Firebase REST
+// ═══════════════════════════════════════
+let fbBase = '';   // e.g. https://xxx-default-rtdb.firebaseio.com
+let fbAuth = '';   // apiKey (used as ?auth= for open rules)
+let fbLiveTimer = null;
 
-function initFirebase(dbUrl, apiKey){
-  try {
-    // If already initialized, delete and re-init
-    if (firebase.apps.length) {
-      firebase.apps.forEach(app => app.delete());
-    }
-    firebase.initializeApp({ apiKey, databaseURL: dbUrl });
-    db = firebase.database();
-    // Test connection
-    db.ref('.info/connected').on('value', snap => {
-      fbConnected = !!snap.val();
-      setSyncStatus(fbConnected);
-    });
-    return true;
-  } catch(e) {
-    console.error('Firebase init error:', e);
-    db = null;
-    fbConnected = false;
-    setSyncStatus(false);
-    return false;
-  }
+function fbUrl(path) {
+  return fbBase + path + '.json' + (fbAuth ? '?auth=' + fbAuth : '');
 }
 
-function setSyncStatus(connected){
-  const dot = document.getElementById('sync-dot');
-  const lbl = document.getElementById('sync-label');
-  if(dot) dot.className = 'sync-dot' + (connected?' live':'');
-  if(lbl) lbl.textContent = connected ? 'リアルタイム同期中' : 'ローカルモード';
+async function fbGet(path) {
+  const r = await fetch(fbUrl(path));
+  if (!r.ok) throw new Error('GET ' + r.status);
+  return r.json();
+}
+async function fbSet(path, data) {
+  const r = await fetch(fbUrl(path), {method:'PUT', body:JSON.stringify(data), headers:{'Content-Type':'application/json'}});
+  if (!r.ok) throw new Error('SET ' + r.status);
+  return r.json();
+}
+async function fbPush(path, data) {
+  const r = await fetch(fbUrl(path), {method:'POST', body:JSON.stringify(data), headers:{'Content-Type':'application/json'}});
+  if (!r.ok) throw new Error('PUSH ' + r.status);
+  return r.json();
+}
+async function fbDelete(path) {
+  const r = await fetch(fbUrl(path), {method:'DELETE'});
+  if (!r.ok) throw new Error('DELETE ' + r.status);
 }
 
-// DB helpers
-function dbRef(path){ return db ? db.ref(path) : null; }
-
-// ─ write vote to Firebase (or localStorage fallback)
-function writeVote(vote){
-  if(db){
-    dbRef('votes/' + vote.id).set(vote);
-  } else {
-    const votes = lsGet(SK.v, []);
-    votes.push(vote);
-    lsSet(SK.v, votes);
-  }
+async function fbTestConnection() {
+  const r = await fetch(fbBase + '/.json?shallow=true' + (fbAuth ? '&auth='+fbAuth : ''));
+  return r.ok || r.status === 200 || r.status === 404; // 404 = empty db, that's OK
 }
 
-// ─ write candidates to Firebase
-function writeCands(cands){
-  if(db){
-    dbRef('candidates').set(cands);
-  } else {
-    lsSet(SK.c, cands);
-  }
+// Poll for live updates every 4 seconds
+function startLivePoll() {
+  if (fbLiveTimer) clearInterval(fbLiveTimer);
+  fbLiveTimer = setInterval(async () => {
+    try {
+      const data = await fbGet('/votes');
+      const votes = data ? Object.values(data).sort((a,b)=>a.id-b.id) : [];
+      if (JSON.stringify(votes) !== JSON.stringify(st.votes)) {
+        st.votes = votes;
+        const tab = document.querySelector('.tab-btn.active');
+        if (tab) {
+          if (tab.dataset.tab === 'tally') renderAdminTally();
+          if (tab.dataset.tab === 'votes') renderAdminVotes();
+        }
+        const lbl = document.getElementById('vote-cnt-label');
+        if (lbl) lbl.textContent = '計 ' + st.votes.length + ' 件';
+      }
+    } catch(e) {}
+  }, 4000);
+}
+function stopLivePoll() {
+  if (fbLiveTimer) { clearInterval(fbLiveTimer); fbLiveTimer = null; }
 }
 
-// ─ delete all votes
-function clearAllVotes(){
-  if(db){
-    dbRef('votes').remove();
-  } else {
-    lsSet(SK.v, []);
-  }
-}
-
-// ─ listen to votes realtime
-function listenVotes(callback){
-  if(db){
-    dbRef('votes').on('value', snap => {
-      const data = snap.val() || {};
-      const votes = Object.values(data).sort((a,b)=>a.id-b.id);
-      callback(votes);
-    });
-  }
-}
-
-// ─ listen to candidates realtime
-function listenCands(callback){
-  if(db){
-    dbRef('candidates').on('value', snap => {
-      const data = snap.val();
-      if(data !== null) callback(data);
-    });
-  }
-}
-
-// ═══════════════════════════════════════════════════════════
+// ═══════════════════════════════════════
 //  STATE
-// ═══════════════════════════════════════════════════════════
-const st={
-  cands: lsGet(SK.c,[{name:"田中 太郎",photo:""},{name:"鈴木 花子",photo:""},{name:"佐藤 一郎",photo:""}]),
+// ═══════════════════════════════════════
+const st = {
+  cands: lsGet(SK.c, [{name:'田中 太郎',photo:''},{name:'鈴木 花子',photo:''},{name:'佐藤 一郎',photo:''}]),
   votes: [],
   hasVoted: !!localStorage.getItem(SK.voted),
   sel: null,
-  ph: localStorage.getItem(SK.ph)||DEFAULT_HASH,
-  pendingPhoto: "",
+  ph: localStorage.getItem(SK.ph) || DEFAULT_HASH,
+  pendingPhoto: '',
 };
 
-// ═══════════════════════════════════════════════════════════
+// ═══════════════════════════════════════
 //  NAV
-// ═══════════════════════════════════════════════════════════
-function showScreen(id){
-  document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));
-  document.getElementById("screen-"+id).classList.add("active");
+// ═══════════════════════════════════════
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('screen-' + id).classList.add('active');
 }
 
-// ═══════════════════════════════════════════════════════════
+// ═══════════════════════════════════════
 //  QR
-// ═══════════════════════════════════════════════════════════
-function buildQR(wrapId,urlTextId,warnId){
-  const url=window.location.href;
-  const isLocal=url.startsWith("file://");
-  const wrap=document.getElementById(wrapId);
-  if(urlTextId)document.getElementById(urlTextId).textContent=isLocal?"":url;
-  if(warnId)document.getElementById(warnId).style.display=isLocal?"block":"none";
-  if(!isLocal){
-    try{ wrap.innerHTML=QRsvg(url,'220px'); wrap.style.display="inline-block"; }
-    catch(e){ wrap.innerHTML='<p style="color:#e05555;font-size:12px;padding:8px">QR生成エラー</p>'; }
-  } else { wrap.innerHTML=""; }
+// ═══════════════════════════════════════
+function buildQR(wrapId, urlId, warnId) {
+  const url = window.location.href;
+  const isLocal = url.startsWith('file://');
+  if (urlId) document.getElementById(urlId).textContent = isLocal ? '' : url;
+  if (warnId) document.getElementById(warnId).style.display = isLocal ? 'block' : 'none';
+  const wrap = document.getElementById(wrapId);
+  if (!isLocal) {
+    try { wrap.innerHTML = QRsvg(url, '220px'); }
+    catch(e) { wrap.innerHTML = '<p style="color:#e05555;font-size:12px">QRエラー</p>'; }
+  } else { wrap.innerHTML = ''; }
 }
 
-// ═══════════════════════════════════════════════════════════
+// ═══════════════════════════════════════
 //  HOME
-// ═══════════════════════════════════════════════════════════
-function renderHome(){
-  document.getElementById("voted-badge").style.display=st.hasVoted?"block":"none";
-  document.getElementById("btn-vote").style.display=st.hasVoted?"none":"block";
-  buildQR("qr-wrap","qr-url-text","qr-warn");
+// ═══════════════════════════════════════
+function renderHome() {
+  document.getElementById('voted-badge').style.display = st.hasVoted ? 'block' : 'none';
+  document.getElementById('btn-vote').style.display = st.hasVoted ? 'none' : 'block';
+  buildQR('qr-wrap','qr-url-text','qr-warn');
+  setSyncUI();
+}
+function setSyncUI() {
+  const dot = document.getElementById('sync-dot');
+  const lbl = document.getElementById('sync-label');
+  const connected = !!fbBase;
+  dot.className = 'sync-dot' + (connected ? ' live' : '');
+  lbl.textContent = connected ? 'リアルタイム同期中' : 'ローカルモード';
 }
 
-// ═══════════════════════════════════════════════════════════
+// ═══════════════════════════════════════
 //  VOTE
-// ═══════════════════════════════════════════════════════════
-function renderGrid(){
-  const grid=document.getElementById("cand-grid"),nc=document.getElementById("no-cands");
-  if(!st.cands.length){grid.innerHTML="";nc.style.display="block";return;}
-  nc.style.display="none";
-  grid.innerHTML=st.cands.map((c,i)=>{
-    const sel=st.sel===i;
-    const photo=c.photo
-      ?`<img class="ccard-photo" src="${esc(c.photo)}" alt="" onerror="this.style.display='none';this.nextSibling.style.display='flex'"><div class="ccard-ph" style="display:none">👤</div>`
-      :`<div class="ccard-ph">👤</div>`;
-    return`<div class="ccard${sel?" selected":""}" onclick="selC(${i})">${photo}<div class="ccard-name">${esc(c.name)}</div></div>`;
-  }).join("");
+// ═══════════════════════════════════════
+function renderGrid() {
+  const grid = document.getElementById('cand-grid');
+  const nc = document.getElementById('no-cands');
+  if (!st.cands.length) { grid.innerHTML=''; nc.style.display='block'; return; }
+  nc.style.display = 'none';
+  grid.innerHTML = st.cands.map((c,i) => {
+    const sel = st.sel === i;
+    const photo = c.photo
+      ? `<img class="ccard-photo" src="${esc(c.photo)}" alt="" onerror="this.style.display='none';this.nextSibling.style.display='flex'"><div class="ccard-ph" style="display:none">👤</div>`
+      : `<div class="ccard-ph">👤</div>`;
+    return `<div class="ccard${sel?' selected':''}" onclick="selC(${i})">${photo}<div class="ccard-name">${esc(c.name)}</div></div>`;
+  }).join('');
 }
-window.selC=i=>{st.sel=i;renderGrid();};
+window.selC = i => { st.sel = i; renderGrid(); };
 
-function voteErr(m){const e=document.getElementById("vote-err");e.textContent=m;e.style.display=m?"block":"none";}
+function voteErr(m) { const e=document.getElementById('vote-err'); e.textContent=m; e.style.display=m?'block':'none'; }
 
-function submitVote(){
-  const aff=document.getElementById("inp-aff").value.trim();
-  const nm=document.getElementById("inp-name").value.trim();
-  if(!aff)return voteErr("所屬單位を入力してください");
-  if(!nm)return voteErr("お名前を入力してください");
-  if(st.sel===null)return voteErr("候補者を選んでください");
-  voteErr("");
-  const cand=st.cands[st.sel];
-  const vote={id:Date.now(),aff,nm,cand:cand.name,ts:new Date().toLocaleString("ja-JP")};
-  writeVote(vote);
-  // voted flag: store device-specific in localStorage
-  localStorage.setItem(SK.voted,"1");
-  st.hasVoted=true;
-  document.getElementById("done-cand").textContent=cand.name;
-  showScreen("done");
-}
-
-// ═══════════════════════════════════════════════════════════
-//  ADMIN LOGIN
-// ═══════════════════════════════════════════════════════════
-async function doLogin(){
-  const p=document.getElementById("inp-pass").value;
-  const e=document.getElementById("login-err");
-  if(!p){e.textContent="パスワードを入力してください";e.style.display="block";return;}
-  const h=await sha256(p);
-  if(h===st.ph){
-    e.style.display="none";
-    document.getElementById("inp-pass").value="";
-    renderAdmin();
-    showScreen("admin");
+async function submitVote() {
+  const aff = document.getElementById('inp-aff').value.trim();
+  const nm  = document.getElementById('inp-name').value.trim();
+  if (!aff) return voteErr('所屬單位を入力してください');
+  if (!nm)  return voteErr('お名前を入力してください');
+  if (st.sel === null) return voteErr('候補者を選んでください');
+  voteErr('');
+  const vote = {id: Date.now(), aff, nm, cand: st.cands[st.sel].name, ts: new Date().toLocaleString('ja-JP')};
+  // Save to Firebase or localStorage
+  if (fbBase) {
+    try { await fbPush('/votes', vote); }
+    catch(e) { const v=lsGet(SK.v,[]); v.push(vote); lsSet(SK.v,v); }
   } else {
-    e.textContent="パスワードが違います";e.style.display="block";
+    const v = lsGet(SK.v,[]); v.push(vote); lsSet(SK.v,v);
+  }
+  localStorage.setItem(SK.voted,'1');
+  st.hasVoted = true;
+  document.getElementById('done-cand').textContent = vote.cand;
+  showScreen('done');
+}
+
+// ═══════════════════════════════════════
+//  ADMIN LOGIN
+// ═══════════════════════════════════════
+async function doLogin() {
+  const p = document.getElementById('inp-pass').value;
+  const e = document.getElementById('login-err');
+  if (!p) { e.textContent='パスワードを入力してください'; e.style.display='block'; return; }
+  const h = await sha256(p);
+  if (h === st.ph) {
+    e.style.display='none';
+    document.getElementById('inp-pass').value='';
+    await loadVotesForAdmin();
+    renderAdmin();
+    showScreen('admin');
+    startLivePoll();
+  } else {
+    e.textContent='パスワードが違います'; e.style.display='block';
+  }
+}
+async function loadVotesForAdmin() {
+  if (fbBase) {
+    try {
+      const data = await fbGet('/votes');
+      st.votes = data ? Object.values(data).sort((a,b)=>a.id-b.id) : [];
+      // Also sync candidates from Firebase
+      const cdata = await fbGet('/candidates');
+      if (cdata && Array.isArray(cdata)) { st.cands = cdata; lsSet(SK.c, cdata); }
+    } catch(e) { st.votes = lsGet(SK.v,[]); }
+  } else {
+    st.votes = lsGet(SK.v,[]);
   }
 }
 
-// ═══════════════════════════════════════════════════════════
+// ═══════════════════════════════════════
 //  ADMIN: CANDIDATES
-// ═══════════════════════════════════════════════════════════
-function renderAdminCands(){
-  const el=document.getElementById("admin-cand-list");
-  if(!st.cands.length){el.innerHTML='<p class="no-data">候補者なし</p>';return;}
-  el.innerHTML=st.cands.map((c,i)=>`
+// ═══════════════════════════════════════
+function renderAdminCands() {
+  const el = document.getElementById('admin-cand-list');
+  if (!st.cands.length) { el.innerHTML='<p class="no-data">候補者なし</p>'; return; }
+  el.innerHTML = st.cands.map((c,i) => `
     <div class="list-item">
       <div class="list-item-l">
         ${c.photo?`<img class="lthumb" src="${esc(c.photo)}" onerror="this.style.background='#EDE8FF'">`:`<div class="lthumb-ph">👤</div>`}
         <span class="li-name">${esc(c.name)}</span>
       </div>
       <button class="btn-danger" onclick="remC(${i})">削除</button>
-    </div>`).join("");
+    </div>`).join('');
 }
-window.remC=function(i){
+window.remC = async function(i) {
   st.cands.splice(i,1);
-  writeCands(st.cands);
-  if(!db) lsSet(SK.c,st.cands);
-  renderAdminCands();
-  renderGrid();
+  lsSet(SK.c, st.cands);
+  if (fbBase) { try { await fbSet('/candidates', st.cands); } catch(e){} }
+  renderAdminCands(); renderGrid();
 };
-
-function addCand(){
-  const name=document.getElementById("inp-new-name").value.trim();
-  if(!name)return;
-  if(st.cands.find(c=>c.name===name))return;
-  st.cands.push({name,photo:st.pendingPhoto});
-  writeCands(st.cands);
-  if(!db) lsSet(SK.c,st.cands);
-  document.getElementById("inp-new-name").value="";
-  st.pendingPhoto="";
-  document.getElementById("upload-preview").style.display="none";
-  document.getElementById("upload-area").querySelector(".upload-label").textContent="📷 写真をアップロード（任意）";
-  renderAdminCands();
-  renderGrid();
+async function addCand() {
+  const name = document.getElementById('inp-new-name').value.trim();
+  if (!name || st.cands.find(c=>c.name===name)) return;
+  st.cands.push({name, photo: st.pendingPhoto});
+  lsSet(SK.c, st.cands);
+  if (fbBase) { try { await fbSet('/candidates', st.cands); } catch(e){} }
+  document.getElementById('inp-new-name').value='';
+  st.pendingPhoto='';
+  document.getElementById('upload-preview').style.display='none';
+  document.querySelector('#upload-area .upload-label').textContent='📷 写真をアップロード（任意）';
+  renderAdminCands(); renderGrid();
 }
 
-// ═══════════════════════════════════════════════════════════
-//  ADMIN: VOTES
-// ═══════════════════════════════════════════════════════════
-function renderAdminVotes(){
-  const el=document.getElementById("admin-vote-list");
-  document.getElementById("vote-cnt-label").textContent="計 "+st.votes.length+" 件";
-  if(!st.votes.length){el.innerHTML='<p class="no-data">投票データなし</p>';return;}
-  el.innerHTML=[...st.votes].reverse().map(v=>`
+// ═══════════════════════════════════════
+//  ADMIN: VOTES / TALLY
+// ═══════════════════════════════════════
+function renderAdminVotes() {
+  const el = document.getElementById('admin-vote-list');
+  document.getElementById('vote-cnt-label').textContent = '計 '+st.votes.length+' 件';
+  if (!st.votes.length) { el.innerHTML='<p class="no-data">投票データなし</p>'; return; }
+  el.innerHTML = [...st.votes].reverse().map(v=>`
     <div class="log-item">
       <div class="log-top"><span class="log-name">${esc(v.nm)}</span><span class="log-aff">${esc(v.aff)}</span></div>
       <div class="log-bot"><span class="log-cand">→ ${esc(v.cand)}</span><span class="log-time">${esc(v.ts)}</span></div>
-    </div>`).join("");
+    </div>`).join('');
 }
-
-// ═══════════════════════════════════════════════════════════
-//  ADMIN: TALLY
-// ═══════════════════════════════════════════════════════════
-function renderAdminTally(){
-  const el=document.getElementById("admin-tally");
-  document.getElementById("tally-total").textContent="総投票数："+st.votes.length+" 票";
-  if(!st.cands.length){el.innerHTML='<p class="no-data">候補者なし</p>';return;}
-  const rows=st.cands.map(c=>({name:c.name,cnt:st.votes.filter(v=>v.cand===c.name).length})).sort((a,b)=>b.cnt-a.cnt);
-  el.innerHTML=rows.map(({name,cnt})=>{
-    const pct=st.votes.length?Math.round(cnt/st.votes.length*100):0;
-    return`<div class="tally-row">
+function renderAdminTally() {
+  const el = document.getElementById('admin-tally');
+  document.getElementById('tally-total').textContent = '総投票数：'+st.votes.length+' 票';
+  if (!st.cands.length) { el.innerHTML='<p class="no-data">候補者なし</p>'; return; }
+  const rows = st.cands.map(c=>({name:c.name,cnt:st.votes.filter(v=>v.cand===c.name).length})).sort((a,b)=>b.cnt-a.cnt);
+  el.innerHTML = rows.map(({name,cnt})=>{
+    const pct = st.votes.length ? Math.round(cnt/st.votes.length*100) : 0;
+    return `<div class="tally-row">
       <div class="tally-hdr"><span class="tally-name">${esc(name)}</span><span class="tally-cnt">${cnt} 票 (${pct}%)</span></div>
       <div class="bar-bg"><div class="bar-fill" style="width:${pct}%"></div></div>
     </div>`;
-  }).join("");
+  }).join('');
 }
 
-// ═══════════════════════════════════════════════════════════
-//  FIREBASE CONFIG (from admin settings)
-// ═══════════════════════════════════════════════════════════
-function saveFbConfig(){
-  const dbUrl = (document.getElementById("fb-db-url").value||"").trim();
-  const apiKey = (document.getElementById("fb-api-key").value||"").trim();
-  const status = document.getElementById("fb-status");
-  const btn = document.getElementById("btn-fb-save");
-
-  if(!dbUrl){
-    status.textContent="① Database URL を入力してください"; status.className="fb-status err"; return;
-  }
-  if(!dbUrl.startsWith("https://") || !dbUrl.includes("firebaseio.com")){
-    status.textContent="Database URL の形式が正しくありません（https://...firebaseio.com）"; status.className="fb-status err"; return;
-  }
-  if(!apiKey){
-    status.textContent="② API Key を入力してください"; status.className="fb-status err"; return;
-  }
-  if(!apiKey.startsWith("AIza")){
-    status.textContent="API Key の形式が正しくありません（AIzaSy... で始まる文字列）"; status.className="fb-status err"; return;
-  }
-
-  status.textContent="接続中..."; status.className="fb-status loading";
-  if(btn) btn.disabled = true;
-
-  localStorage.setItem(SK.fbUrl, dbUrl);
-  localStorage.setItem(SK.fbKey, apiKey);
-
-  const ok = initFirebase(dbUrl, apiKey);
-  if(ok){
-    // Wait a moment to confirm connection
-    setTimeout(()=>{
-      if(fbConnected){
-        status.textContent="✅ 接続成功！全デバイスでリアルタイム同期されます"; status.className="fb-status ok";
-        setupRealtimeListeners();
-        showFbConnectedBanner(dbUrl);
-      } else {
-        status.textContent="⚠️ 接続中...しばらくお待ちください"; status.className="fb-status loading";
-        setTimeout(()=>{
-          if(fbConnected){
-            status.textContent="✅ 接続成功！全デバイスでリアルタイム同期されます"; status.className="fb-status ok";
-            setupRealtimeListeners();
-            showFbConnectedBanner(dbUrl);
-          } else {
-            status.textContent="❌ 接続できませんでした。URLとAPI Keyを再確認してください"; status.className="fb-status err";
-            if(btn) btn.disabled = false;
-          }
-        }, 3000);
-      }
-    }, 1500);
-  } else {
-    status.textContent="❌ 設定エラー。URLとAPI Keyを確認してください"; status.className="fb-status err";
-    if(btn) btn.disabled = false;
-  }
+// ═══════════════════════════════════════
+//  FIREBASE CONNECT (settings tab)
+// ═══════════════════════════════════════
+function fbShowMsg(type, text) {
+  const el = document.getElementById('fb-msg');
+  el.className = type === 'ok' ? 'fb-status-ok' : type === 'err' ? 'fb-status-err' : 'fb-status-loading';
+  el.textContent = text;
+  el.style.display = 'block';
 }
-
-function showFbConnectedBanner(dbUrl){
-  const banner = document.getElementById("fb-connected-banner");
-  const urlEl  = document.getElementById("fb-connected-url");
-  const box    = document.getElementById("fb-setup-box");
-  if(banner) banner.style.display = "block";
-  if(urlEl)  urlEl.textContent = dbUrl;
-  if(box)    box.style.display = "none";
-}
-
-function showFbSetupBox(){
-  const banner = document.getElementById("fb-connected-banner");
-  const box    = document.getElementById("fb-setup-box");
-  if(banner) banner.style.display = "none";
-  if(box)    box.style.display = "block";
-}
-
-function disconnectFb(){
-  localStorage.removeItem(SK.fbUrl);
-  localStorage.removeItem(SK.fbKey);
-  showFbSetupBox();
-  const status = document.getElementById("fb-status");
-  if(status){ status.textContent=""; status.className="fb-status"; }
-  const btn = document.getElementById("btn-fb-save");
-  if(btn) btn.disabled = false;
-  db = null; fbConnected = false; setSyncStatus(false);
-}
-
-function loadFbConfig(){
-  const dbUrl  = localStorage.getItem(SK.fbUrl);
-  const apiKey = localStorage.getItem(SK.fbKey);
-  if(dbUrl && apiKey){
-    initFirebase(dbUrl, apiKey);
-    // Wait for connection confirmation before showing banner
-    db.ref('.info/connected').once('value', snap => {
-      if(snap.val()){
-        fbConnected = true;
-        setSyncStatus(true);
-        setupRealtimeListeners();
-      } else {
-        setSyncStatus(false);
-      }
-    });
-  } else {
-    setSyncStatus(false);
+async function fbConnect() {
+  const url = (document.getElementById('fb-url').value||'').trim();
+  const key = (document.getElementById('fb-key').value||'').trim();
+  if (!url) { fbShowMsg('err','① Database URL を入力してください'); return; }
+  if (!url.startsWith('https://') || !url.includes('firebaseio.com')) {
+    fbShowMsg('err','Database URL の形式が正しくありません（https://...firebaseio.com）'); return;
   }
-}
+  if (!key) { fbShowMsg('err','② API Key を入力してください'); return; }
+  if (!key.startsWith('AIza')) { fbShowMsg('err','API Key は AIzaSy... で始まる文字列です'); return; }
 
-// ─ Subscribe to Firebase realtime updates
-function setupRealtimeListeners(){
-  if(!db) return;
-  // Votes: realtime sync
-  db.ref('votes').on('value', snap => {
-    const data = snap.val() || {};
-    st.votes = Object.values(data).sort((a,b)=>a.id-b.id);
-    // Update UI if admin screens visible
-    const activeTab = document.querySelector(".tab-btn.active");
-    if(activeTab){
-      if(activeTab.dataset.tab==="tally") renderAdminTally();
-      if(activeTab.dataset.tab==="votes") renderAdminVotes();
+  const btn = document.getElementById('btn-fb-connect');
+  btn.disabled = true;
+  fbShowMsg('loading','接続テスト中...');
+
+  // Test without SDK: just fetch the DB root
+  const testUrl = url.replace(/\/$/, '') + '/.json?shallow=true&auth=' + key;
+  try {
+    const r = await fetch(testUrl);
+    if (r.ok || r.status === 404 || r.status === 200) {
+      // Success
+      fbBase = url.replace(/\/$/, '');
+      fbAuth = key;
+      localStorage.setItem(SK.fbUrl, fbBase);
+      localStorage.setItem(SK.fbKey, fbAuth);
+      fbShowMsg('ok','✅ 接続成功！全デバイスでリアルタイム同期されます');
+      setTimeout(()=>{
+        document.getElementById('fb-setup-box').style.display='none';
+        document.getElementById('fb-connected-box').style.display='block';
+        document.getElementById('fb-conn-url').textContent = fbBase;
+        setSyncUI();
+      }, 800);
+    } else if (r.status === 401 || r.status === 403) {
+      fbShowMsg('err','❌ 認証エラー。API Key またはデータベースのルール設定を確認してください');
+      btn.disabled = false;
+    } else {
+      fbShowMsg('err','❌ 接続エラー ('+r.status+')。Database URL を確認してください');
+      btn.disabled = false;
     }
-    // Update vote count label
-    const lbl = document.getElementById("vote-cnt-label");
-    if(lbl) lbl.textContent = "計 "+st.votes.length+" 件";
-  });
-  // Candidates: realtime sync
-  db.ref('candidates').on('value', snap => {
-    const data = snap.val();
-    if(data !== null && Array.isArray(data)){
-      st.cands = data;
-      lsSet(SK.c, data);
-      renderAdminCands();
-      renderGrid();
-    }
-  });
+  } catch(e) {
+    fbShowMsg('err','❌ ネットワークエラー。Database URL を確認してください');
+    btn.disabled = false;
+  }
+}
+function fbDisconnect() {
+  fbBase=''; fbAuth='';
+  localStorage.removeItem(SK.fbUrl); localStorage.removeItem(SK.fbKey);
+  document.getElementById('fb-connected-box').style.display='none';
+  document.getElementById('fb-setup-box').style.display='block';
+  document.getElementById('fb-msg').style.display='none';
+  document.getElementById('btn-fb-connect').disabled=false;
+  setSyncUI();
 }
 
-// ═══════════════════════════════════════════════════════════
+// ═══════════════════════════════════════
 //  ADMIN: SETTINGS
-// ═══════════════════════════════════════════════════════════
-async function changePass(){
-  const p1=document.getElementById("inp-p1").value;
-  const p2=document.getElementById("inp-p2").value;
-  const msg=document.getElementById("pass-msg");
-  if(!p1||p1.length<6){msg.textContent="6文字以上で入力してください";msg.style.color="#e05555";msg.style.display="block";return;}
-  if(p1!==p2){msg.textContent="パスワードが一致しません";msg.style.color="#e05555";msg.style.display="block";return;}
-  const h=await sha256(p1);
-  st.ph=h;localStorage.setItem(SK.ph,h);
-  document.getElementById("inp-p1").value="";document.getElementById("inp-p2").value="";
-  msg.textContent="✅ パスワードを変更しました";msg.style.color="#1A8A55";msg.style.display="block";
-  setTimeout(()=>msg.style.display="none",3000);
+// ═══════════════════════════════════════
+async function changePass() {
+  const p1=document.getElementById('inp-p1').value, p2=document.getElementById('inp-p2').value;
+  const msg=document.getElementById('pass-msg');
+  if (!p1||p1.length<6){msg.textContent='6文字以上で入力してください';msg.style.color='#e05555';msg.style.display='block';return;}
+  if (p1!==p2){msg.textContent='パスワードが一致しません';msg.style.color='#e05555';msg.style.display='block';return;}
+  const h=await sha256(p1); st.ph=h; localStorage.setItem(SK.ph,h);
+  document.getElementById('inp-p1').value=''; document.getElementById('inp-p2').value='';
+  msg.textContent='✅ パスワードを変更しました'; msg.style.color='#1A8A55'; msg.style.display='block';
+  setTimeout(()=>msg.style.display='none',3000);
 }
 
-function renderAdmin(){
-  renderAdminCands();renderAdminVotes();renderAdminTally();
-  const storedUrl = localStorage.getItem(SK.fbUrl) || "";
-  const storedKey = localStorage.getItem(SK.fbKey) || "";
-  const urlEl = document.getElementById("fb-db-url");
-  const keyEl = document.getElementById("fb-api-key");
-  if(urlEl) urlEl.value = storedUrl;
-  if(keyEl) keyEl.value = storedKey;
-  // Show banner only when truly connected; otherwise always show setup box
-  if(fbConnected && storedUrl){
-    showFbConnectedBanner(storedUrl);
+function renderAdmin() {
+  renderAdminCands(); renderAdminVotes(); renderAdminTally();
+  // Settings tab: restore saved values & show correct panel
+  const savedUrl = localStorage.getItem(SK.fbUrl)||'';
+  const savedKey = localStorage.getItem(SK.fbKey)||'';
+  document.getElementById('fb-url').value = savedUrl;
+  document.getElementById('fb-key').value = savedKey;
+  if (fbBase) {
+    document.getElementById('fb-setup-box').style.display='none';
+    document.getElementById('fb-connected-box').style.display='block';
+    document.getElementById('fb-conn-url').textContent = fbBase;
   } else {
-    showFbSetupBox();
-    if(storedUrl && storedKey){
-      const status=document.getElementById("fb-status");
-      if(status){status.textContent="⚠️ 前回の設定が見つかりました。「接続する」を押して再接続してください";status.className="fb-status loading";}
-    }
+    document.getElementById('fb-setup-box').style.display='block';
+    document.getElementById('fb-connected-box').style.display='none';
   }
 }
 
-// ═══════════════════════════════════════════════════════════
+// ═══════════════════════════════════════
 //  TABS
-// ═══════════════════════════════════════════════════════════
-function switchTab(id){
-  document.querySelectorAll(".tab-btn").forEach(b=>b.classList.toggle("active",b.dataset.tab===id));
-  document.querySelectorAll(".tab-content").forEach(t=>t.classList.toggle("active",t.id==="tab-"+id));
-  if(id==="votes")renderAdminVotes();
-  if(id==="tally")renderAdminTally();
-  if(id==="cands")renderAdminCands();
-  if(id==="qr"){
-    buildQR("admin-qr-wrap",null,null);
-    document.getElementById("admin-qr-url").textContent=window.location.href.startsWith("file://")?"（本機ファイルモード）":window.location.href;
+// ═══════════════════════════════════════
+function switchTab(id) {
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.toggle('active',b.dataset.tab===id));
+  document.querySelectorAll('.tab-content').forEach(t=>t.classList.toggle('active',t.id==='tab-'+id));
+  if (id==='votes') renderAdminVotes();
+  if (id==='tally') renderAdminTally();
+  if (id==='cands') renderAdminCands();
+  if (id==='qr') {
+    buildQR('admin-qr-wrap',null,null);
+    document.getElementById('admin-qr-url').textContent = window.location.href;
   }
 }
 
-// ═══════════════════════════════════════════════════════════
-//  BOOT
-// ═══════════════════════════════════════════════════════════
-document.addEventListener("DOMContentLoaded",()=>{
-
-  // Init Firebase if config stored
-  loadFbConfig();
-
-  // If no Firebase, fall back to localStorage votes
-  if(!db){
-    st.votes = lsGet(SK.v, []);
+// ═══════════════════════════════════════
+//  INIT: try to restore Firebase config
+// ═══════════════════════════════════════
+(function initFb() {
+  const url = localStorage.getItem(SK.fbUrl);
+  const key = localStorage.getItem(SK.fbKey);
+  if (url && key) {
+    fbBase = url;
+    fbAuth = key;
+    // Silently verify in background
+    fetch(url + '/.json?shallow=true&auth=' + key)
+      .then(r => { if (!r.ok && r.status!==404) { fbBase=''; fbAuth=''; setSyncUI(); } else { setSyncUI(); } })
+      .catch(() => { fbBase=''; fbAuth=''; setSyncUI(); });
   }
+})();
 
+// ═══════════════════════════════════════
+//  BOOT
+// ═══════════════════════════════════════
+document.addEventListener('DOMContentLoaded', () => {
   renderHome();
 
-  // Photo upload
-  document.getElementById("inp-photo-file").addEventListener("change",function(){
-    const file=this.files[0]; if(!file)return;
-    const reader=new FileReader();
-    reader.onload=function(e){
-      st.pendingPhoto=e.target.result;
-      const prev=document.getElementById("upload-preview");
-      prev.src=e.target.result; prev.style.display="block";
-      document.querySelector("#upload-area .upload-label").textContent="✅ 写真を選択済み";
-    };
-    reader.readAsDataURL(file);
-  });
-
-  document.querySelectorAll("[data-to]").forEach(btn=>btn.addEventListener("click",()=>{
-    if(btn.dataset.to==="home")renderHome();
+  document.querySelectorAll('[data-to]').forEach(btn => btn.addEventListener('click', () => {
+    stopLivePoll();
+    if (btn.dataset.to==='home') renderHome();
     showScreen(btn.dataset.to);
   }));
 
-  document.getElementById("btn-vote").addEventListener("click",()=>{
-    if(st.hasVoted){showScreen("already");return;}
+  document.getElementById('btn-vote').addEventListener('click', () => {
+    if (st.hasVoted) { showScreen('already'); return; }
     st.sel=null;
-    document.getElementById("inp-aff").value="";
-    document.getElementById("inp-name").value="";
-    voteErr("");renderGrid();showScreen("vote");
+    document.getElementById('inp-aff').value='';
+    document.getElementById('inp-name').value='';
+    voteErr(''); renderGrid(); showScreen('vote');
   });
 
-  document.getElementById("btn-admin-link").addEventListener("click",()=>{
-    document.getElementById("inp-pass").value="";
-    document.getElementById("login-err").style.display="none";
-    showScreen("admin-login");
+  document.getElementById('btn-admin-link').addEventListener('click', () => {
+    document.getElementById('inp-pass').value='';
+    document.getElementById('login-err').style.display='none';
+    showScreen('admin-login');
   });
 
-  document.getElementById("btn-submit").addEventListener("click",submitVote);
-  document.getElementById("btn-login").addEventListener("click",doLogin);
-  document.getElementById("inp-pass").addEventListener("keydown",e=>{if(e.key==="Enter")doLogin();});
-  document.getElementById("btn-add-cand").addEventListener("click",addCand);
-  document.getElementById("inp-new-name").addEventListener("keydown",e=>{if(e.key==="Enter")addCand();});
-  document.getElementById("btn-clear").addEventListener("click",()=>{
-    if(confirm("全投票データを削除しますか？")){
-      clearAllVotes();
-      st.votes=[];
-      renderAdminVotes();renderAdminTally();
+  document.getElementById('btn-submit').addEventListener('click', submitVote);
+  document.getElementById('btn-login').addEventListener('click', doLogin);
+  document.getElementById('inp-pass').addEventListener('keydown', e=>{if(e.key==='Enter')doLogin();});
+  document.getElementById('btn-add-cand').addEventListener('click', addCand);
+  document.getElementById('inp-new-name').addEventListener('keydown', e=>{if(e.key==='Enter')addCand();});
+  document.getElementById('btn-chpass').addEventListener('click', changePass);
+  document.getElementById('btn-clear').addEventListener('click', async () => {
+    if (!confirm('全投票データを削除しますか？')) return;
+    if (fbBase) { try { await fbDelete('/votes'); } catch(e){} }
+    st.votes=[]; lsSet(SK.v,[]); renderAdminVotes(); renderAdminTally();
+  });
+  document.getElementById('btn-reset-voted').addEventListener('click', () => {
+    if (confirm('投票制限をリセットしますか？')) {
+      localStorage.removeItem(SK.voted); st.hasVoted=false; renderHome();
+      alert('リセットしました'); showScreen('home');
     }
   });
-  document.getElementById("btn-chpass").addEventListener("click",changePass);
-  document.getElementById("btn-reset-voted").addEventListener("click",()=>{
-    if(confirm("投票制限をリセットしますか？")){
-      localStorage.removeItem(SK.voted);st.hasVoted=false;renderHome();
-      alert("リセットしました");showScreen("home");
-    }
+  document.getElementById('btn-reset-all').addEventListener('click', async () => {
+    if (!confirm('全データをリセットしますか？この操作は取り消せません。')) return;
+    if (fbBase) { try { await fbDelete('/votes'); await fbDelete('/candidates'); } catch(e){} }
+    [SK.c,SK.v,SK.voted,SK.ph,SK.fbUrl,SK.fbKey].forEach(k=>localStorage.removeItem(k));
+    location.reload();
   });
-  document.getElementById("btn-reset-all").addEventListener("click",()=>{
-    if(confirm("全データをリセットしますか？この操作は取り消せません。")){
-      clearAllVotes();
-      if(db) db.ref('candidates').remove();
-      [SK.c,SK.v,SK.voted,SK.ph,SK.fbUrl,SK.fbKey].forEach(k=>localStorage.removeItem(k));
-      location.reload();
-    }
+  document.getElementById('inp-photo-file').addEventListener('change', function(){
+    const file=this.files[0]; if(!file)return;
+    const reader=new FileReader();
+    reader.onload=e=>{
+      st.pendingPhoto=e.target.result;
+      const prev=document.getElementById('upload-preview');
+      prev.src=e.target.result; prev.style.display='block';
+      document.querySelector('#upload-area .upload-label').textContent='✅ 写真を選択済み';
+    };
+    reader.readAsDataURL(file);
   });
-  document.querySelectorAll(".tab-btn").forEach(btn=>btn.addEventListener("click",()=>switchTab(btn.dataset.tab)));
+  document.querySelectorAll('.tab-btn').forEach(btn=>btn.addEventListener('click',()=>switchTab(btn.dataset.tab)));
 });
 </script>
 </body>
