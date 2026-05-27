@@ -256,7 +256,8 @@ input:focus{border-color:#8B7CF6;box-shadow:0 0 0 3px rgba(139,124,246,0.12);}
       <div class="fb-step"><div class="fb-step-num">1</div><div class="fb-step-body"><b>Firebase Console でプロジェクト作成</b><br><a href="https://console.firebase.google.com/" target="_blank" style="color:#FF8F00;font-weight:700">console.firebase.google.com</a> を開き「プロジェクトを追加」</div></div>
       <div class="fb-step"><div class="fb-step-num">2</div><div class="fb-step-body"><b>Realtime Database を有効化</b><br>左メニュー「Realtime Database」→「データベースを作成」→ロケーション選択 →「テストモードで開始」→「有効にする」</div></div>
       <div class="fb-step"><div class="fb-step-num">3</div><div class="fb-step-body"><b>Database URL をコピー</b><br>データベース画面上部の <code>https://○○-default-rtdb.firebaseio.com</code> をコピー</div></div>
-      <div class="fb-step"><div class="fb-step-num">4</div><div class="fb-step-body"><b>API Key をコピー</b><br>⚙「プロジェクトの設定」→「全般」→ウェブアプリ追加（<code>&lt;/&gt;</code>）→ <code>apiKey</code> をコピー</div></div>
+      <div class="fb-step"><div class="fb-step-num">4</div><div class="fb-step-body"><b>データベースのルールを公開設定に</b><br>「Realtime Database」→「ルール」タブ →<br><code>".read": true, ".write": true</code> に変更 →「公開」</div></div>
+      <div class="fb-step"><div class="fb-step-num">5</div><div class="fb-step-body"><b>API Key をコピー（任意）</b><br>⚙「プロジェクトの設定」→「全般」→ウェブアプリ追加（<code>&lt;/&gt;</code>）→ <code>apiKey</code> をコピー</div></div>
       <div style="margin-top:16px">
         <label class="fl">① Database URL</label>
         <input class="fb-input" type="text" id="fb-url" placeholder="https://your-app-default-rtdb.firebaseio.com" autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false">
@@ -2614,36 +2615,46 @@ function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').repl
 //  Uses fetch() directly to Firebase REST
 // ═══════════════════════════════════════
 let fbBase = '';   // e.g. https://xxx-default-rtdb.firebaseio.com
-let fbAuth = '';   // apiKey (used as ?auth= for open rules)
 let fbLiveTimer = null;
 
+// Firebase REST API - テストモード(認証不要)で動作
 function fbUrl(path) {
-  return fbBase + path + '.json' + (fbAuth ? '?auth=' + fbAuth : '');
+  return fbBase + path + '.json';
 }
 
 async function fbGet(path) {
-  const r = await fetch(fbUrl(path));
-  if (!r.ok) throw new Error('GET ' + r.status);
+  const r = await fetch(fbUrl(path), {cache: 'no-store'});
+  if (!r.ok) throw new Error('FB GET ' + r.status);
   return r.json();
 }
 async function fbSet(path, data) {
-  const r = await fetch(fbUrl(path), {method:'PUT', body:JSON.stringify(data), headers:{'Content-Type':'application/json'}});
-  if (!r.ok) throw new Error('SET ' + r.status);
+  const r = await fetch(fbUrl(path), {
+    method: 'PUT',
+    body: JSON.stringify(data),
+    headers: {'Content-Type': 'application/json'}
+  });
+  if (!r.ok) throw new Error('FB SET ' + r.status);
   return r.json();
 }
 async function fbPush(path, data) {
-  const r = await fetch(fbUrl(path), {method:'POST', body:JSON.stringify(data), headers:{'Content-Type':'application/json'}});
-  if (!r.ok) throw new Error('PUSH ' + r.status);
+  const r = await fetch(fbUrl(path), {
+    method: 'POST',
+    body: JSON.stringify(data),
+    headers: {'Content-Type': 'application/json'}
+  });
+  if (!r.ok) throw new Error('FB PUSH ' + r.status);
   return r.json();
 }
 async function fbDelete(path) {
-  const r = await fetch(fbUrl(path), {method:'DELETE'});
-  if (!r.ok) throw new Error('DELETE ' + r.status);
+  const r = await fetch(fbUrl(path), {method: 'DELETE'});
+  if (!r.ok) throw new Error('FB DELETE ' + r.status);
 }
 
 async function fbTestConnection() {
-  const r = await fetch(fbBase + '/.json?shallow=true' + (fbAuth ? '&auth='+fbAuth : ''));
-  return r.ok || r.status === 200 || r.status === 404; // 404 = empty db, that's OK
+  try {
+    const r = await fetch(fbBase + '/.json?shallow=true', {cache: 'no-store'});
+    return r.status === 200 || r.status === 404;
+  } catch(e) { return false; }
 }
 
 // Poll for live updates every 4 seconds
@@ -2767,9 +2778,15 @@ async function submitVote() {
   const vote = {id: Date.now(), aff, nm, cand: st.cands[st.sel].name, ts: new Date().toLocaleString('ja-JP')};
   // Save to Firebase or localStorage
   if (fbBase) {
-    try { await fbPush('/votes', vote); }
-    catch(e) { const v=lsGet(SK.v,[]); v.push(vote); lsSet(SK.v,v); }
+    try {
+      await fbPush('/votes', vote);
+      console.log('✅ Vote saved to Firebase');
+    } catch(e) {
+      console.error('❌ Firebase write failed:', e.message, '- saving locally');
+      const v=lsGet(SK.v,[]); v.push(vote); lsSet(SK.v,v);
+    }
   } else {
+    console.log('Firebase not configured - saving locally');
     const v = lsGet(SK.v,[]); v.push(vote); lsSet(SK.v,v);
   }
   localStorage.setItem(SK.voted,'1');
@@ -2882,50 +2899,48 @@ function fbShowMsg(type, text) {
   el.style.display = 'block';
 }
 async function fbConnect() {
-  const url = (document.getElementById('fb-url').value||'').trim();
+  const url = (document.getElementById('fb-url').value||'').trim().replace(/\/+$/, '');
   const key = (document.getElementById('fb-key').value||'').trim();
   if (!url) { fbShowMsg('err','① Database URL を入力してください'); return; }
   if (!url.startsWith('https://') || !url.includes('firebaseio.com')) {
-    fbShowMsg('err','Database URL の形式が正しくありません（https://...firebaseio.com）'); return;
+    fbShowMsg('err','Database URL の形式: https://○○-default-rtdb.firebaseio.com'); return;
   }
-  if (!key) { fbShowMsg('err','② API Key を入力してください'); return; }
-  if (!key.startsWith('AIza')) { fbShowMsg('err','API Key は AIzaSy... で始まる文字列です'); return; }
 
   const btn = document.getElementById('btn-fb-connect');
   btn.disabled = true;
   fbShowMsg('loading','接続テスト中...');
 
-  // Test without SDK: just fetch the DB root
-  const testUrl = url.replace(/\/$/, '') + '/.json?shallow=true&auth=' + key;
   try {
-    const r = await fetch(testUrl);
-    if (r.ok || r.status === 404 || r.status === 200) {
-      // Success
-      fbBase = url.replace(/\/$/, '');
-      fbAuth = key;
+    // テストモードのDBには認証不要でアクセスできる
+    const testUrl = url + '/.json?shallow=true';
+    const r = await fetch(testUrl, {cache: 'no-store'});
+
+    if (r.status === 200 || r.status === 404) {
+      // 成功
+      fbBase = url;
       localStorage.setItem(SK.fbUrl, fbBase);
-      localStorage.setItem(SK.fbKey, fbAuth);
+      if (key) localStorage.setItem(SK.fbKey, key);
       fbShowMsg('ok','✅ 接続成功！全デバイスでリアルタイム同期されます');
       setTimeout(()=>{
         document.getElementById('fb-setup-box').style.display='none';
         document.getElementById('fb-connected-box').style.display='block';
         document.getElementById('fb-conn-url').textContent = fbBase;
         setSyncUI();
-      }, 800);
+      }, 600);
     } else if (r.status === 401 || r.status === 403) {
-      fbShowMsg('err','❌ 認証エラー。API Key またはデータベースのルール設定を確認してください');
+      fbShowMsg('err','❌ アクセス拒否 ('+r.status+')。Firebaseコンソールで「Realtime Database」→「ルール」を開き、readとwriteを両方 true に変更して「公開」してください');
       btn.disabled = false;
     } else {
-      fbShowMsg('err','❌ 接続エラー ('+r.status+')。Database URL を確認してください');
+      fbShowMsg('err','❌ 接続エラー (HTTP '+r.status+')。Database URL を確認してください');
       btn.disabled = false;
     }
   } catch(e) {
-    fbShowMsg('err','❌ ネットワークエラー。Database URL を確認してください');
+    fbShowMsg('err','❌ 接続できませんでした。Database URL が正しいか確認してください: ' + e.message);
     btn.disabled = false;
   }
 }
 function fbDisconnect() {
-  fbBase=''; fbAuth='';
+  fbBase='';
   localStorage.removeItem(SK.fbUrl); localStorage.removeItem(SK.fbKey);
   document.getElementById('fb-connected-box').style.display='none';
   document.getElementById('fb-setup-box').style.display='block';
@@ -2953,8 +2968,10 @@ function renderAdmin() {
   // Settings tab: restore saved values & show correct panel
   const savedUrl = localStorage.getItem(SK.fbUrl)||'';
   const savedKey = localStorage.getItem(SK.fbKey)||'';
-  document.getElementById('fb-url').value = savedUrl;
-  document.getElementById('fb-key').value = savedKey;
+  const urlEl2 = document.getElementById('fb-url');
+  const keyEl2 = document.getElementById('fb-key');
+  if (urlEl2) urlEl2.value = savedUrl;
+  if (keyEl2) keyEl2.value = savedKey;
   if (fbBase) {
     document.getElementById('fb-setup-box').style.display='none';
     document.getElementById('fb-connected-box').style.display='block';
@@ -2986,8 +3003,7 @@ function switchTab(id) {
 (function initFb() {
   try {
     const url = localStorage.getItem(SK.fbUrl);
-    const key = localStorage.getItem(SK.fbKey);
-    if (url && key) { fbBase = url; fbAuth = key; }
+    if (url) { fbBase = url; }
   } catch(e) {}
 })();
 
