@@ -1,10 +1,8 @@
-<!DOCTYPE html>
-<html lang="zh-TW">
-<head>
+<html lang="zh-TW"><head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>線上投票</title>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&amp;display=swap" rel="stylesheet">
 <style>
 :root{--text:#2D2D3A;--muted:#9B9BAD;}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
@@ -126,24 +124,24 @@ input:focus{border-color:#8B7CF6;box-shadow:0 0 0 3px rgba(139,124,246,0.12);}
 <div id="app">
 
 <!-- HOME -->
-<div id="screen-home" class="screen active">
+<div id="screen-home" class="screen">
   <div class="home-header">
     <div class="survey-icon">🗳️</div>
     <div class="home-title">線上投票</div>
     <div class="home-sub">
-      <span class="sync-dot" id="sync-dot"></span>
-      <span id="sync-label" style="font-size:11px;color:#aaa;vertical-align:middle">起動中...</span>
+      <span class="sync-dot live" id="sync-dot"></span>
+      <span id="sync-label" style="font-size:11px;color:#aaa;vertical-align:middle">リアルタイム同期中</span>
     </div>
   </div>
   <div class="qr-section">
-    <div id="qr-wrap" style="display:inline-block;background:#fff;padding:8px;border-radius:8px;"></div>
-    <div id="qr-url-text" style="font-size:10px;color:#aaa;margin-top:10px;word-break:break-all;line-height:1.5;"></div>
+    <div id="qr-wrap" style="display:inline-block;background:#fff;padding:8px;border-radius:8px;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 41 41" style="width:220px;height:220px;display:block"><rect width="41" height="41" fill="white"></rect><path fill="black" d="M4,4h1v1h-1zM5,4h1v1h-1zM6,4h1v1h-1zM7,4h1v1h-1zM8,4h1v1h-1zM9,4h1v1h-1zM10,4h1v1h-1zM12,4h1v1h-1zM13,4h1v1h-1zM16,4h1v1h-1zM22,4h1v1h-1zM25,4h1v1h-1zM26,4h1v1h-1zM30,4h1v1h-1zM31,4h1v1h-1zM32,4h1v1h-1zM33,4h1v1h-1zM34,4h1v1h-1zM35,4h1v1h-1zM36,4h1v1h-1zM4,5h1v1h-1zM10,5h1v1h-1zM12,5h1v1h-1zM14,5h1v1h-1zM15,5h1v1h-1zM16,5h1v1h-1zM21,5h1v1h-1zM23,5h1v1h-1zM24,5h1v1h-1zM30,5h1v1h-1zM36,5h1v1h-1zM4,6h1v1h-1zM6,6h1v1h-1zM7,6h1v1h-1zM8,6h1v1h-1zM10,6h1v1h-1zM12,6h1v1h-1zM13,6h1v1h-1zM14,6h1v1h-1zM19,6h1v1h-1zM20,6h1v1h-1zM21,6h1v1h-1zM22,6h1v1h-1zM23,6h1v1h-1zM25,6h1v1h-1zM26,6h1v1h-1zM30,6h1v1h-1zM32,6h1v1h-1zM33,6h1v1h-1zM34,6h1v1h-1zM36,6h1v1h-1zM4,7h1v1h-1zM6,7h1v1h-1zM7,7h1v1h-1zM8,7h1v1h-1zM10,7h1v1h-1zM13,7h1v1h-1zM16,7h1v1h-1zM19,7h1v1h-1zM23,7h1v1h-1zM25,7h1v1h-1zM26,7h1v1h-1zM30,7h1v1h-1zM32,7h1v1h-1zM33,7h1v1h-1zM34,7h1v1h-1zM36,7h1v1h-1zM4,8h1v1h-1zM6,8h1v1h-1zM7,8h1v1h-1zM8,8h1v1h-1zM10,8h1v1h-1zM12,8h1v1h-1zM13,8h1v1h-1zM14,8h1v1h-1zM16,8h1v1h-1zM18,8h1v1h-1zM19,8h1v1h-1zM21,8h1v1h-1zM22,8h1v1h-1zM24,8h1v1h-1zM30,8h1v1h-1zM32,8h1v1h-1zM33,8h1v1h-1zM34,8h1v1h-1zM36,8h1v1h-1zM4,9h1v1h-1zM10,9h1v1h-1zM13,9h1v1h-1zM14,9h1v1h-1zM16,9h1v1h-1zM18,9h1v1h-1zM21,9h1v1h-1zM22,9h1v1h-1zM24,9h1v1h-1zM25,9h1v1h-1zM27,9h1v1h-1zM28,9h1v1h-1zM30,9h1v1h-1zM36,9h1v1h-1zM4,10h1v1h-1zM5,10h1v1h-1zM6,10h1v1h-1zM7,10h1v1h-1zM8,10h1v1h-1zM9,10h1v1h-1zM10,10h1v1h-1zM12,10h1v1h-1zM14,10h1v1h-1zM16,10h1v1h-1zM18,10h1v1h-1zM20,10h1v1h-1zM22,10h1v1h-1zM24,10h1v1h-1zM26,10h1v1h-1zM28,10h1v1h-1zM30,10h1v1h-1zM31,10h1v1h-1zM32,10h1v1h-1zM33,10h1v1h-1zM34,10h1v1h-1zM35,10h1v1h-1zM36,10h1v1h-1zM13,11h1v1h-1zM14,11h1v1h-1zM15,11h1v1h-1zM16,11h1v1h-1zM17,11h1v1h-1zM23,11h1v1h-1zM24,11h1v1h-1zM28,11h1v1h-1zM4,12h1v1h-1zM7,12h1v1h-1zM8,12h1v1h-1zM9,12h1v1h-1zM10,12h1v1h-1zM11,12h1v1h-1zM12,12h1v1h-1zM13,12h1v1h-1zM15,12h1v1h-1zM18,12h1v1h-1zM19,12h1v1h-1zM20,12h1v1h-1zM21,12h1v1h-1zM23,12h1v1h-1zM29,12h1v1h-1zM32,12h1v1h-1zM34,12h1v1h-1zM35,12h1v1h-1zM36,12h1v1h-1zM4,13h1v1h-1zM8,13h1v1h-1zM9,13h1v1h-1zM13,13h1v1h-1zM14,13h1v1h-1zM18,13h1v1h-1zM19,13h1v1h-1zM23,13h1v1h-1zM25,13h1v1h-1zM26,13h1v1h-1zM27,13h1v1h-1zM32,13h1v1h-1zM33,13h1v1h-1zM34,13h1v1h-1zM4,14h1v1h-1zM6,14h1v1h-1zM8,14h1v1h-1zM10,14h1v1h-1zM11,14h1v1h-1zM12,14h1v1h-1zM14,14h1v1h-1zM18,14h1v1h-1zM19,14h1v1h-1zM21,14h1v1h-1zM22,14h1v1h-1zM26,14h1v1h-1zM27,14h1v1h-1zM28,14h1v1h-1zM29,14h1v1h-1zM30,14h1v1h-1zM32,14h1v1h-1zM33,14h1v1h-1zM34,14h1v1h-1zM35,14h1v1h-1zM36,14h1v1h-1zM5,15h1v1h-1zM11,15h1v1h-1zM12,15h1v1h-1zM13,15h1v1h-1zM14,15h1v1h-1zM16,15h1v1h-1zM18,15h1v1h-1zM21,15h1v1h-1zM24,15h1v1h-1zM30,15h1v1h-1zM31,15h1v1h-1zM34,15h1v1h-1zM35,15h1v1h-1zM4,16h1v1h-1zM5,16h1v1h-1zM6,16h1v1h-1zM7,16h1v1h-1zM9,16h1v1h-1zM10,16h1v1h-1zM11,16h1v1h-1zM13,16h1v1h-1zM15,16h1v1h-1zM17,16h1v1h-1zM18,16h1v1h-1zM19,16h1v1h-1zM20,16h1v1h-1zM21,16h1v1h-1zM22,16h1v1h-1zM24,16h1v1h-1zM25,16h1v1h-1zM26,16h1v1h-1zM30,16h1v1h-1zM35,16h1v1h-1zM4,17h1v1h-1zM7,17h1v1h-1zM8,17h1v1h-1zM9,17h1v1h-1zM11,17h1v1h-1zM13,17h1v1h-1zM14,17h1v1h-1zM16,17h1v1h-1zM17,17h1v1h-1zM20,17h1v1h-1zM23,17h1v1h-1zM25,17h1v1h-1zM27,17h1v1h-1zM29,17h1v1h-1zM31,17h1v1h-1zM33,17h1v1h-1zM4,18h1v1h-1zM7,18h1v1h-1zM8,18h1v1h-1zM9,18h1v1h-1zM10,18h1v1h-1zM12,18h1v1h-1zM13,18h1v1h-1zM14,18h1v1h-1zM18,18h1v1h-1zM20,18h1v1h-1zM21,18h1v1h-1zM22,18h1v1h-1zM30,18h1v1h-1zM31,18h1v1h-1zM33,18h1v1h-1zM5,19h1v1h-1zM6,19h1v1h-1zM11,19h1v1h-1zM16,19h1v1h-1zM18,19h1v1h-1zM19,19h1v1h-1zM23,19h1v1h-1zM28,19h1v1h-1zM29,19h1v1h-1zM32,19h1v1h-1zM34,19h1v1h-1zM36,19h1v1h-1zM5,20h1v1h-1zM6,20h1v1h-1zM7,20h1v1h-1zM8,20h1v1h-1zM9,20h1v1h-1zM10,20h1v1h-1zM11,20h1v1h-1zM12,20h1v1h-1zM14,20h1v1h-1zM15,20h1v1h-1zM17,20h1v1h-1zM18,20h1v1h-1zM20,20h1v1h-1zM23,20h1v1h-1zM24,20h1v1h-1zM27,20h1v1h-1zM28,20h1v1h-1zM29,20h1v1h-1zM30,20h1v1h-1zM31,20h1v1h-1zM32,20h1v1h-1zM33,20h1v1h-1zM7,21h1v1h-1zM8,21h1v1h-1zM9,21h1v1h-1zM11,21h1v1h-1zM16,21h1v1h-1zM18,21h1v1h-1zM19,21h1v1h-1zM22,21h1v1h-1zM23,21h1v1h-1zM25,21h1v1h-1zM30,21h1v1h-1zM32,21h1v1h-1zM34,21h1v1h-1zM36,21h1v1h-1zM5,22h1v1h-1zM7,22h1v1h-1zM8,22h1v1h-1zM9,22h1v1h-1zM10,22h1v1h-1zM13,22h1v1h-1zM15,22h1v1h-1zM16,22h1v1h-1zM19,22h1v1h-1zM23,22h1v1h-1zM24,22h1v1h-1zM27,22h1v1h-1zM30,22h1v1h-1zM31,22h1v1h-1zM33,22h1v1h-1zM34,22h1v1h-1zM36,22h1v1h-1zM6,23h1v1h-1zM7,23h1v1h-1zM8,23h1v1h-1zM9,23h1v1h-1zM11,23h1v1h-1zM12,23h1v1h-1zM13,23h1v1h-1zM16,23h1v1h-1zM21,23h1v1h-1zM22,23h1v1h-1zM23,23h1v1h-1zM24,23h1v1h-1zM25,23h1v1h-1zM27,23h1v1h-1zM30,23h1v1h-1zM32,23h1v1h-1zM33,23h1v1h-1zM34,23h1v1h-1zM35,23h1v1h-1zM5,24h1v1h-1zM6,24h1v1h-1zM9,24h1v1h-1zM10,24h1v1h-1zM13,24h1v1h-1zM16,24h1v1h-1zM17,24h1v1h-1zM23,24h1v1h-1zM24,24h1v1h-1zM25,24h1v1h-1zM27,24h1v1h-1zM28,24h1v1h-1zM33,24h1v1h-1zM36,24h1v1h-1zM4,25h1v1h-1zM5,25h1v1h-1zM8,25h1v1h-1zM12,25h1v1h-1zM14,25h1v1h-1zM15,25h1v1h-1zM16,25h1v1h-1zM17,25h1v1h-1zM18,25h1v1h-1zM20,25h1v1h-1zM21,25h1v1h-1zM22,25h1v1h-1zM24,25h1v1h-1zM26,25h1v1h-1zM27,25h1v1h-1zM29,25h1v1h-1zM31,25h1v1h-1zM32,25h1v1h-1zM33,25h1v1h-1zM4,26h1v1h-1zM6,26h1v1h-1zM7,26h1v1h-1zM8,26h1v1h-1zM10,26h1v1h-1zM13,26h1v1h-1zM14,26h1v1h-1zM15,26h1v1h-1zM16,26h1v1h-1zM17,26h1v1h-1zM19,26h1v1h-1zM20,26h1v1h-1zM21,26h1v1h-1zM22,26h1v1h-1zM25,26h1v1h-1zM27,26h1v1h-1zM29,26h1v1h-1zM35,26h1v1h-1zM36,26h1v1h-1zM4,27h1v1h-1zM7,27h1v1h-1zM11,27h1v1h-1zM12,27h1v1h-1zM16,27h1v1h-1zM18,27h1v1h-1zM20,27h1v1h-1zM21,27h1v1h-1zM22,27h1v1h-1zM27,27h1v1h-1zM30,27h1v1h-1zM31,27h1v1h-1zM32,27h1v1h-1zM34,27h1v1h-1zM36,27h1v1h-1zM4,28h1v1h-1zM5,28h1v1h-1zM6,28h1v1h-1zM8,28h1v1h-1zM10,28h1v1h-1zM12,28h1v1h-1zM13,28h1v1h-1zM14,28h1v1h-1zM19,28h1v1h-1zM20,28h1v1h-1zM22,28h1v1h-1zM23,28h1v1h-1zM26,28h1v1h-1zM28,28h1v1h-1zM29,28h1v1h-1zM30,28h1v1h-1zM31,28h1v1h-1zM32,28h1v1h-1zM12,29h1v1h-1zM13,29h1v1h-1zM15,29h1v1h-1zM16,29h1v1h-1zM19,29h1v1h-1zM20,29h1v1h-1zM22,29h1v1h-1zM24,29h1v1h-1zM26,29h1v1h-1zM28,29h1v1h-1zM32,29h1v1h-1zM34,29h1v1h-1zM35,29h1v1h-1zM4,30h1v1h-1zM5,30h1v1h-1zM6,30h1v1h-1zM7,30h1v1h-1zM8,30h1v1h-1zM9,30h1v1h-1zM10,30h1v1h-1zM12,30h1v1h-1zM13,30h1v1h-1zM16,30h1v1h-1zM19,30h1v1h-1zM22,30h1v1h-1zM23,30h1v1h-1zM24,30h1v1h-1zM25,30h1v1h-1zM26,30h1v1h-1zM27,30h1v1h-1zM28,30h1v1h-1zM30,30h1v1h-1zM32,30h1v1h-1zM34,30h1v1h-1zM35,30h1v1h-1zM4,31h1v1h-1zM10,31h1v1h-1zM12,31h1v1h-1zM15,31h1v1h-1zM16,31h1v1h-1zM17,31h1v1h-1zM19,31h1v1h-1zM23,31h1v1h-1zM24,31h1v1h-1zM27,31h1v1h-1zM28,31h1v1h-1zM32,31h1v1h-1zM33,31h1v1h-1zM34,31h1v1h-1zM4,32h1v1h-1zM6,32h1v1h-1zM7,32h1v1h-1zM8,32h1v1h-1zM10,32h1v1h-1zM12,32h1v1h-1zM13,32h1v1h-1zM14,32h1v1h-1zM18,32h1v1h-1zM19,32h1v1h-1zM21,32h1v1h-1zM22,32h1v1h-1zM24,32h1v1h-1zM25,32h1v1h-1zM27,32h1v1h-1zM28,32h1v1h-1zM29,32h1v1h-1zM30,32h1v1h-1zM31,32h1v1h-1zM32,32h1v1h-1zM36,32h1v1h-1zM4,33h1v1h-1zM6,33h1v1h-1zM7,33h1v1h-1zM8,33h1v1h-1zM10,33h1v1h-1zM12,33h1v1h-1zM13,33h1v1h-1zM14,33h1v1h-1zM16,33h1v1h-1zM17,33h1v1h-1zM24,33h1v1h-1zM28,33h1v1h-1zM29,33h1v1h-1zM31,33h1v1h-1zM33,33h1v1h-1zM34,33h1v1h-1zM36,33h1v1h-1zM4,34h1v1h-1zM6,34h1v1h-1zM7,34h1v1h-1zM8,34h1v1h-1zM10,34h1v1h-1zM13,34h1v1h-1zM14,34h1v1h-1zM15,34h1v1h-1zM16,34h1v1h-1zM18,34h1v1h-1zM20,34h1v1h-1zM24,34h1v1h-1zM25,34h1v1h-1zM26,34h1v1h-1zM27,34h1v1h-1zM28,34h1v1h-1zM29,34h1v1h-1zM31,34h1v1h-1zM32,34h1v1h-1zM35,34h1v1h-1zM36,34h1v1h-1zM4,35h1v1h-1zM10,35h1v1h-1zM15,35h1v1h-1zM18,35h1v1h-1zM19,35h1v1h-1zM20,35h1v1h-1zM22,35h1v1h-1zM29,35h1v1h-1zM31,35h1v1h-1zM32,35h1v1h-1zM33,35h1v1h-1zM34,35h1v1h-1zM35,35h1v1h-1zM36,35h1v1h-1zM4,36h1v1h-1zM5,36h1v1h-1zM6,36h1v1h-1zM7,36h1v1h-1zM8,36h1v1h-1zM9,36h1v1h-1zM10,36h1v1h-1zM12,36h1v1h-1zM15,36h1v1h-1zM16,36h1v1h-1zM18,36h1v1h-1zM20,36h1v1h-1zM21,36h1v1h-1zM24,36h1v1h-1zM26,36h1v1h-1zM28,36h1v1h-1zM31,36h1v1h-1zM32,36h1v1h-1zM33,36h1v1h-1z"></path></svg></div>
+    <div id="qr-url-text" style="font-size:10px;color:#aaa;margin-top:10px;word-break:break-all;line-height:1.5;">https://naonuno1030-hash.github.io/survey-app/</div>
     <div id="qr-warn" style="display:none;font-size:12px;color:#e05555;line-height:1.7;background:#fff5f5;border-radius:10px;padding:12px 14px;margin-top:10px;text-align:left;">
       ⚠️ <b>本機ファイルモード</b>：GitHub Pages にアップロード後 QR コードが表示されます。
     </div>
   </div>
-  <div id="voted-badge" class="voted-badge" style="display:none">✅ 您已完成投票，謝謝！</div>
-  <button id="btn-vote" class="btn-primary">開始投票 →</button>
+  <div id="voted-badge" class="voted-badge" style="display: block;">✅ 您已完成投票，謝謝！</div>
+  <button id="btn-vote" class="btn-primary" style="display: none;">開始投票 →</button>
   <button class="admin-tiny" id="btn-admin-link">⚙</button>
 </div>
 
@@ -198,18 +196,18 @@ input:focus{border-color:#8B7CF6;box-shadow:0 0 0 3px rgba(139,124,246,0.12);}
 </div>
 
 <!-- ADMIN -->
-<div id="screen-admin" class="screen">
+<div id="screen-admin" class="screen active">
   <button class="btn-back" data-to="home">← ログアウト</button>
   <h2 class="screen-title">管理画面</h2>
   <div class="tab-row">
-    <button class="tab-btn active" data-tab="cands">候補者管理</button>
+    <button class="tab-btn" data-tab="cands">候補者管理</button>
     <button class="tab-btn" data-tab="votes">投票ログ</button>
     <button class="tab-btn" data-tab="tally">集計<span class="rt-badge">LIVE</span></button>
-    <button class="tab-btn" data-tab="settings">設定</button>
+    <button class="tab-btn active" data-tab="settings">設定</button>
     <button class="tab-btn" data-tab="qr">QRコード</button>
   </div>
 
-  <div id="tab-cands" class="tab-content active">
+  <div id="tab-cands" class="tab-content">
     <div class="add-row">
       <div class="add-fields">
         <input type="text" id="inp-new-name" placeholder="候補者名前">
@@ -221,7 +219,28 @@ input:focus{border-color:#8B7CF6;box-shadow:0 0 0 3px rgba(139,124,246,0.12);}
       </div>
       <button id="btn-add-cand" class="btn-add">追加</button>
     </div>
-    <div id="admin-cand-list"></div>
+    <div id="admin-cand-list">
+    <div class="list-item">
+      <div class="list-item-l">
+        <div class="lthumb-ph">👤</div>
+        <span class="li-name">田中 太郎</span>
+      </div>
+      <button class="btn-danger" onclick="remC(0)">削除</button>
+    </div>
+    <div class="list-item">
+      <div class="list-item-l">
+        <div class="lthumb-ph">👤</div>
+        <span class="li-name">鈴木 花子</span>
+      </div>
+      <button class="btn-danger" onclick="remC(1)">削除</button>
+    </div>
+    <div class="list-item">
+      <div class="list-item-l">
+        <div class="lthumb-ph">👤</div>
+        <span class="li-name">佐藤 一郎</span>
+      </div>
+      <button class="btn-danger" onclick="remC(2)">削除</button>
+    </div></div>
   </div>
 
   <div id="tab-votes" class="tab-content">
@@ -229,22 +248,31 @@ input:focus{border-color:#8B7CF6;box-shadow:0 0 0 3px rgba(139,124,246,0.12);}
       <span id="vote-cnt-label" style="font-size:13px;color:#aaa">計 0 件</span>
       <button id="btn-clear" class="btn-danger">全削除</button>
     </div>
-    <div id="admin-vote-list"></div>
+    <div id="admin-vote-list"><p class="no-data">投票データなし</p></div>
   </div>
 
   <div id="tab-tally" class="tab-content">
-    <p id="tally-total" style="font-size:13px;color:#aaa;margin-bottom:12px"></p>
-    <div id="admin-tally"></div>
+    <p id="tally-total" style="font-size:13px;color:#aaa;margin-bottom:12px">総投票数：0 票</p>
+    <div id="admin-tally"><div class="tally-row">
+      <div class="tally-hdr"><span class="tally-name">田中 太郎</span><span class="tally-cnt">0 票 (0%)</span></div>
+      <div class="bar-bg"><div class="bar-fill" style="width:0%"></div></div>
+    </div><div class="tally-row">
+      <div class="tally-hdr"><span class="tally-name">鈴木 花子</span><span class="tally-cnt">0 票 (0%)</span></div>
+      <div class="bar-bg"><div class="bar-fill" style="width:0%"></div></div>
+    </div><div class="tally-row">
+      <div class="tally-hdr"><span class="tally-name">佐藤 一郎</span><span class="tally-cnt">0 票 (0%)</span></div>
+      <div class="bar-bg"><div class="bar-fill" style="width:0%"></div></div>
+    </div></div>
   </div>
 
-  <div id="tab-settings" class="tab-content">
+  <div id="tab-settings" class="tab-content active">
     <!-- Firebase connected banner -->
-    <div id="fb-connected-box" class="fb-connected-box" style="display:none">
+    <div id="fb-connected-box" class="fb-connected-box" style="display: block;">
       <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
         <span style="font-size:20px">🟢</span>
         <div>
           <div style="font-weight:800;color:#1A8A55;font-size:14px">Firebase 接続済み</div>
-          <div id="fb-conn-url" style="font-size:11px;color:#888;word-break:break-all"></div>
+          <div id="fb-conn-url" style="font-size:11px;color:#888;word-break:break-all">https://vote-1317e-default-rtdb.firebaseio.com</div>
         </div>
       </div>
       <button onclick="generateUpdatedHtml(fbBase)" style="width:100%;padding:8px;background:#1A8A55;color:#fff;border:none;border-radius:8px;font-weight:700;font-size:12px;cursor:pointer;font-family:inherit;margin-bottom:6px">📥 最新index.htmlをダウンロード（GitHub更新用）</button>
@@ -252,7 +280,7 @@ input:focus{border-color:#8B7CF6;box-shadow:0 0 0 3px rgba(139,124,246,0.12);}
     </div>
 
     <!-- Firebase setup -->
-    <div id="fb-setup-box" class="fb-setup">
+    <div id="fb-setup-box" class="fb-setup" style="display: none;">
       <h3>🔥 Firebase 設定（複数デバイスでデータ共有）</h3>
       <div class="fb-step"><div class="fb-step-num">1</div><div class="fb-step-body"><b>Firebase Console でプロジェクト作成</b><br><a href="https://console.firebase.google.com/" target="_blank" style="color:#FF8F00;font-weight:700">console.firebase.google.com</a> を開き「プロジェクトを追加」</div></div>
       <div class="fb-step"><div class="fb-step-num">2</div><div class="fb-step-body"><b>Realtime Database を有効化</b><br>左メニュー「Realtime Database」→「データベースを作成」→ロケーション選択 →「テストモードで開始」→「有効にする」</div></div>
@@ -2947,7 +2975,7 @@ function generateUpdatedHtml(firebaseUrl) {
     // 現在のページのHTMLを取得し、%%FIREBASE_URL%% を実際のURLに置換
     const currentHtml = document.documentElement.outerHTML;
     const updatedHtml = currentHtml.replace(
-      "const FIREBASE_URL = '%%FIREBASE_URL%%';",
+      "const FIREBASE_URL = 'https://vote-1317e-default-rtdb.firebaseio.com';",
       "const FIREBASE_URL = '" + firebaseUrl + "';"
     );
     const blob = new Blob([updatedHtml], {type: 'text/html'});
@@ -3112,5 +3140,6 @@ document.addEventListener('DOMContentLoaded', () => {
   document.querySelectorAll('.tab-btn').forEach(btn=>btn.addEventListener('click',()=>switchTab(btn.dataset.tab)));
 });
 </script>
-</body>
-</html>
+
+
+</body></html>
