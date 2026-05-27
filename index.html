@@ -120,6 +120,9 @@ input:focus{border-color:#8B7CF6;box-shadow:0 0 0 3px rgba(139,124,246,0.12);}
 .sync-dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:#ccc;margin-right:5px;vertical-align:middle;}
 .sync-dot.live{background:#6FCF97;box-shadow:0 0 6px #6FCF97;animation:pulse 2s infinite;}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+@keyframes goldShine{0%{background-position:200% center}100%{background-position:-200% center}}
+@keyframes lotteryFlash{0%,100%{opacity:1}50%{opacity:0.3}}
+@keyframes resultPop{0%{transform:scale(0.5);opacity:0}60%{transform:scale(1.15)}80%{transform:scale(0.95)}100%{transform:scale(1);opacity:1}}
 </style>
 </head>
 <body>
@@ -235,6 +238,97 @@ input:focus{border-color:#8B7CF6;box-shadow:0 0 0 3px rgba(139,124,246,0.12);}
   <div id="tab-tally" class="tab-content">
     <p id="tally-total" style="font-size:13px;color:#aaa;margin-bottom:12px"></p>
     <div id="admin-tally"></div>
+    <button id="btn-lottery" onclick="startLottery()" style="
+      display:block;width:100%;margin-top:20px;padding:16px 0;
+      background:linear-gradient(90deg,#f7971e,#ffd200,#f7971e);
+      background-size:200% auto;animation:goldShine 2s linear infinite;
+      color:#fff;border:none;border-radius:16px;font-size:18px;font-weight:900;
+      cursor:pointer;font-family:inherit;letter-spacing:2px;
+      box-shadow:0 4px 20px rgba(247,151,30,0.5);
+      text-shadow:0 1px 3px rgba(0,0,0,0.3);">
+      🎰 当選者を発表する！
+    </button>
+  </div>
+
+  <!-- LOTTERY OVERLAY -->
+  <div id="lottery-overlay" style="
+    display:none;position:fixed;inset:0;z-index:9999;
+    background:rgba(0,0,0,0.92);
+    flex-direction:column;align-items:center;justify-content:center;
+    font-family:inherit;overflow:hidden;">
+
+    <!-- Particle canvas -->
+    <canvas id="lottery-canvas" style="position:absolute;inset:0;pointer-events:none"></canvas>
+
+    <!-- Slot machine reel -->
+    <div id="lottery-slot" style="
+      position:relative;z-index:2;text-align:center;padding:0 24px;width:100%;max-width:420px;">
+
+      <div style="font-size:14px;color:#ffd200;letter-spacing:4px;font-weight:700;margin-bottom:24px;text-transform:uppercase">
+        ✨ 当選者発表 ✨
+      </div>
+
+      <!-- Reel box -->
+      <div style="
+        background:linear-gradient(180deg,#1a1a2e,#16213e,#0f3460);
+        border:3px solid #ffd200;border-radius:20px;padding:28px 20px;
+        box-shadow:0 0 40px #ffd200,0 0 80px rgba(255,210,0,0.3);
+        margin-bottom:24px;overflow:hidden;position:relative;">
+
+        <!-- Scanline effect -->
+        <div style="position:absolute;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.03) 2px,rgba(0,0,0,0.03) 4px);pointer-events:none;z-index:1"></div>
+
+        <!-- Aff reel -->
+        <div style="margin-bottom:16px">
+          <div style="font-size:11px;color:#aaa;letter-spacing:3px;margin-bottom:8px">所 属</div>
+          <div id="reel-aff" style="
+            font-size:26px;font-weight:900;color:#fff;
+            min-height:40px;line-height:1.2;
+            text-shadow:0 0 20px #56CCF2,0 0 40px #56CCF2;
+            transition:all 0.05s;letter-spacing:1px;">
+            ーーーー
+          </div>
+        </div>
+
+        <!-- Divider -->
+        <div style="height:1px;background:linear-gradient(90deg,transparent,#ffd200,transparent);margin-bottom:16px"></div>
+
+        <!-- Name reel -->
+        <div>
+          <div style="font-size:11px;color:#aaa;letter-spacing:3px;margin-bottom:8px">氏 名</div>
+          <div id="reel-name" style="
+            font-size:36px;font-weight:900;color:#ffd200;
+            min-height:48px;line-height:1.2;
+            text-shadow:0 0 20px #ffd200,0 0 60px rgba(255,210,0,0.7);
+            transition:all 0.05s;letter-spacing:2px;">
+            ーーーー
+          </div>
+        </div>
+      </div>
+
+      <!-- Result reveal (hidden until end) -->
+      <div id="lottery-result" style="display:none;margin-bottom:24px">
+        <div style="
+          background:linear-gradient(135deg,#f7971e,#ffd200);
+          border-radius:16px;padding:20px;
+          box-shadow:0 0 30px rgba(255,210,0,0.6);">
+          <div style="font-size:13px;color:rgba(0,0,0,0.6);font-weight:700;margin-bottom:4px">🏆 当選者</div>
+          <div id="result-aff" style="font-size:16px;font-weight:700;color:rgba(0,0,0,0.7);margin-bottom:4px"></div>
+          <div id="result-name" style="font-size:28px;font-weight:900;color:#1a1a2e"></div>
+          <div id="result-votes" style="font-size:13px;color:rgba(0,0,0,0.5);margin-top:6px"></div>
+        </div>
+      </div>
+
+      <!-- Close button -->
+      <button id="lottery-close" onclick="closeLottery()" style="
+        display:none;width:100%;padding:14px;
+        background:transparent;color:#ffd200;
+        border:2px solid #ffd200;border-radius:12px;
+        font-size:15px;font-weight:800;cursor:pointer;font-family:inherit;
+        letter-spacing:1px;">
+        閉じる
+      </button>
+    </div>
   </div>
 
   <div id="tab-settings" class="tab-content">
@@ -3049,6 +3143,211 @@ function renderAdmin() {
   } else {
     document.getElementById('fb-setup-box').style.display='block';
     document.getElementById('fb-connected-box').style.display='none';
+  }
+}
+
+// ═══════════════════════════════════════
+//  LOTTERY (パチンコ演出)
+// ═══════════════════════════════════════
+let lotteryTimer = null;
+let particleAnim = null;
+
+function startLottery() {
+  // Find winner candidates (max votes)
+  if (!st.votes.length) { alert('投票データがありません'); return; }
+  if (!st.cands.length) { alert('候補者データがありません'); return; }
+
+  // Tally votes per candidate
+  const tally = st.cands.map(c => ({
+    name: c.name,
+    photo: c.photo || '',
+    cnt: st.votes.filter(v => v.cand === c.name).length
+  })).filter(c => c.cnt > 0);
+
+  if (!tally.length) { alert('まだ投票がありません'); return; }
+
+  const maxVotes = Math.max(...tally.map(c => c.cnt));
+  const topCands = tally.filter(c => c.cnt === maxVotes);
+
+  // Random pick from top candidates
+  const winner = topCands[Math.floor(Math.random() * topCands.length)];
+
+  // Find a vote from winner to get affiliation
+  const winnerVotes = st.votes.filter(v => v.cand === winner.name);
+  // Pick random voter for display (or just show blank aff if none)
+  // Actually show the CANDIDATE's name, not voter - aff doesn't apply to candidates
+  // Instead show dept breakdown for winner
+  const deptMap = {};
+  winnerVotes.forEach(v => { deptMap[v.aff] = (deptMap[v.aff]||0)+1; });
+  const topDept = Object.entries(deptMap).sort((a,b)=>b[1]-a[1])[0];
+
+  // Show overlay
+  const overlay = document.getElementById('lottery-overlay');
+  overlay.style.display = 'flex';
+  document.getElementById('lottery-result').style.display = 'none';
+  document.getElementById('lottery-close').style.display = 'none';
+
+  // Start particles
+  startParticles();
+
+  // Reel spin - fast then slow
+  const reelAff = document.getElementById('reel-aff');
+  const reelName = document.getElementById('reel-name');
+
+  // Dummy names for spinning effect
+  const dummyNames = st.cands.map(c => c.name);
+  const dummyAffs = [...new Set(st.votes.map(v => v.aff))];
+  if (!dummyAffs.length) dummyAffs.push('ーーーー');
+
+  let spinCount = 0;
+  const totalSpins = 48;
+  let interval = 60; // start fast
+
+  function spin() {
+    const progress = spinCount / totalSpins;
+    // Pick random dummy
+    const dName = dummyNames[Math.floor(Math.random() * dummyNames.length)];
+    const dAff = dummyAffs[Math.floor(Math.random() * dummyAffs.length)];
+    reelName.textContent = dName;
+    reelAff.textContent = dAff;
+
+    spinCount++;
+
+    if (spinCount < totalSpins) {
+      // Slow down gradually in last third
+      if (progress > 0.65) interval = 60 + Math.pow((progress - 0.65) / 0.35, 2) * 340;
+      lotteryTimer = setTimeout(spin, interval);
+    } else {
+      // Final reveal
+      reelName.textContent = winner.name;
+      reelAff.textContent = topDept ? topDept[0] : '---';
+      setTimeout(() => revealWinner(winner, maxVotes, topCands.length), 400);
+    }
+  }
+  spin();
+}
+
+function revealWinner(winner, maxVotes, tiedCount) {
+  // Flash effect on reel
+  const reelName = document.getElementById('reel-name');
+  reelName.style.animation = 'lotteryFlash 0.15s ease 4';
+  setTimeout(() => {
+    reelName.style.animation = '';
+    // Show result card
+    const resultEl = document.getElementById('lottery-result');
+    const affEl = document.getElementById('result-aff');
+    const nameEl = document.getElementById('result-name');
+    const votesEl = document.getElementById('result-votes');
+
+    // Get dept info from votes
+    const winnerVotes = st.votes.filter(v => v.cand === winner.name);
+    const deptMap = {};
+    winnerVotes.forEach(v => { deptMap[v.aff] = (deptMap[v.aff]||0)+1; });
+    const deptStr = Object.entries(deptMap).map(([d,n])=>d).join(' / ');
+
+    affEl.textContent = deptStr || '';
+    nameEl.textContent = winner.name;
+    votesEl.textContent = `獲得票数: ${maxVotes}票` + (tiedCount > 1 ? ` (同票${tiedCount}名中から抽選)` : '');
+
+    resultEl.style.display = 'block';
+    resultEl.style.animation = 'resultPop 0.6s cubic-bezier(0.175,0.885,0.32,1.275) forwards';
+
+    // Burst particles
+    burstParticles();
+
+    // Show close button
+    setTimeout(() => {
+      document.getElementById('lottery-close').style.display = 'block';
+    }, 800);
+  }, 600);
+}
+
+function closeLottery() {
+  document.getElementById('lottery-overlay').style.display = 'none';
+  if (lotteryTimer) { clearTimeout(lotteryTimer); lotteryTimer = null; }
+  stopParticles();
+  // Reset reels
+  document.getElementById('reel-aff').textContent = 'ーーーー';
+  document.getElementById('reel-name').textContent = 'ーーーー';
+  document.getElementById('lottery-result').style.display = 'none';
+  document.getElementById('lottery-close').style.display = 'none';
+}
+
+// ── Particle system ──────────────────────────────
+let particles = [];
+let pCtx = null;
+
+function startParticles() {
+  const canvas = document.getElementById('lottery-canvas');
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  pCtx = canvas.getContext('2d');
+  particles = [];
+  spawnParticles(80);
+  animateParticles();
+}
+
+function burstParticles() {
+  spawnParticles(200);
+}
+
+function stopParticles() {
+  if (particleAnim) { cancelAnimationFrame(particleAnim); particleAnim = null; }
+  particles = [];
+  if (pCtx) pCtx.clearRect(0, 0, pCtx.canvas.width, pCtx.canvas.height);
+}
+
+function spawnParticles(n) {
+  const W = window.innerWidth, H = window.innerHeight;
+  const colors = ['#ffd200','#ff6b9d','#56CCF2','#6FCF97','#BB6BD9','#ff4757','#fff'];
+  for (let i = 0; i < n; i++) {
+    particles.push({
+      x: Math.random() * W,
+      y: Math.random() * H * 0.5,
+      vx: (Math.random() - 0.5) * 8,
+      vy: Math.random() * -12 - 3,
+      size: Math.random() * 10 + 4,
+      color: colors[Math.floor(Math.random() * colors.length)],
+      shape: Math.random() > 0.5 ? 'rect' : 'circle',
+      rot: Math.random() * Math.PI * 2,
+      rotV: (Math.random() - 0.5) * 0.3,
+      life: 1,
+      decay: Math.random() * 0.012 + 0.006
+    });
+  }
+}
+
+function animateParticles() {
+  if (!pCtx) return;
+  const W = pCtx.canvas.width, H = pCtx.canvas.height;
+  pCtx.clearRect(0, 0, W, H);
+  particles = particles.filter(p => p.life > 0);
+  particles.forEach(p => {
+    p.x += p.vx; p.y += p.vy;
+    p.vy += 0.35; // gravity
+    p.vx *= 0.99;
+    p.rot += p.rotV;
+    p.life -= p.decay;
+    pCtx.save();
+    pCtx.globalAlpha = Math.max(0, p.life);
+    pCtx.fillStyle = p.color;
+    pCtx.translate(p.x, p.y);
+    pCtx.rotate(p.rot);
+    if (p.shape === 'rect') {
+      pCtx.fillRect(-p.size/2, -p.size/4, p.size, p.size/2);
+    } else {
+      pCtx.beginPath();
+      pCtx.arc(0, 0, p.size/2, 0, Math.PI*2);
+      pCtx.fill();
+    }
+    pCtx.restore();
+  });
+  // Keep spawning while overlay visible
+  if (document.getElementById('lottery-overlay').style.display !== 'none') {
+    if (particles.length < 60 && !document.getElementById('lottery-close').style.display) {
+      spawnParticles(3);
+    }
+    particleAnim = requestAnimationFrame(animateParticles);
   }
 }
 
